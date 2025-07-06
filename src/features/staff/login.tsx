@@ -6,15 +6,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useSetAtom } from "jotai";
-import type { FC } from "react";
+import { type FC, useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { useAlert } from "../../../alert";
-import { getBackendErrorMessage, staffBackend } from "../../../backend";
-import { staffAuthAtom } from "../auth/atom";
-import type { StaffUser } from "../auth/auth-state";
-import { getEndpointForRole } from "../staff-role";
+import { useAlert } from "../../alert";
+import { getBackendErrorMessage } from "../../backend";
+import { useStaffAuthState } from "./shared/staff-auth.state";
+import { getEndpointForRole } from "./shared/staff-role.enum";
+import { StaffService } from "./shared/staff.service";
 
 type LoginInputs = {
   username: string;
@@ -28,22 +27,17 @@ export const StaffLoginPage: FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginInputs>();
 
-  const setAuth = useSetAtom(staffAuthAtom);
+  const { auth, setAuth } = useStaffAuthState();
   const navigate = useNavigate();
 
-  const { showAlert } = useAlert();
+  const { showError } = useAlert();
 
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
-      const res = await staffBackend.post<{
-        accessToken: string;
-        user: StaffUser;
-      }>("/login", {
-        username: data.username,
-        password: data.password,
-      });
-
-      const { accessToken, user } = res.data;
+      const { accessToken, user } = await StaffService.login(
+        data.username,
+        data.password
+      );
       setAuth({
         accessToken,
         user,
@@ -51,20 +45,23 @@ export const StaffLoginPage: FC = () => {
 
       navigate(`/staff/${getEndpointForRole(user.role)}`, { replace: true });
     } catch (error) {
-      showAlert({
-        title: "Login Failed",
-        message: getBackendErrorMessage(error),
-        severity: "error",
-      });
+      showError(getBackendErrorMessage(error));
     }
   };
+
+  useEffect(() => {
+    if (auth) {
+      navigate(`/staff/${getEndpointForRole(auth.user.role)}`, {
+        replace: true,
+      });
+    }
+  }, [auth]);
 
   return (
     <Box
       component="form"
       p={3}
       display="flex"
-      minHeight="100vh"
       noValidate
       autoComplete="off"
       onSubmit={handleSubmit(onSubmit)}
