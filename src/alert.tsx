@@ -3,7 +3,6 @@ import { atom, useAtom } from "jotai";
 import type { FC } from "react";
 
 export interface AppAlert {
-  title?: string;
   message: string;
   severity: "success" | "info" | "warning" | "error";
   action?: {
@@ -25,7 +24,14 @@ export const useAlert = () => {
     setAlert(null);
   };
 
-  return { alert, showAlert, hideAlert };
+  const showError = (message: string) => {
+    showAlert({
+      message,
+      severity: "error",
+    });
+  };
+
+  return { alert, hideAlert, showError };
 };
 
 export const AlertComponent: FC = () => {
@@ -47,7 +53,6 @@ export const AlertComponent: FC = () => {
         variant="filled"
         sx={{ width: "100%" }}
         action={action}
-        title={alert.title}
       >
         {alert.message}
       </Alert>

@@ -2,6 +2,7 @@ import {
   Fastfood,
   Home,
   LocationPin,
+  Login,
   MenuBook,
   People,
   Settings,
@@ -16,27 +17,24 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useAtomValue } from "jotai";
 import { type FC, useMemo } from "react";
 import { Link, useLocation } from "react-router";
-import { staffAuthAtom } from "../../../auth/atom";
-import { StaffRole } from "../../../staff-role";
+import { useStaffAuthState } from "../../shared/staff-auth.state";
+import { StaffRole } from "../../shared/staff-role.enum";
 
 export const SideMenu: FC<{
   open: boolean;
   toggleOpen: (v: boolean) => void;
 }> = ({ open, toggleOpen }) => {
-  const auth = useAtomValue(staffAuthAtom);
+  const { auth } = useStaffAuthState();
   const location = useLocation();
   const links = useMemo(() => {
-    if (!auth) return [];
-
     const links: {
       title: string;
       link: string;
       Icon: any;
     }[] = [];
-    switch (auth.user.role) {
+    switch (auth?.user.role) {
       case StaffRole.Admin:
         links.push(
           {
@@ -72,6 +70,12 @@ export const SideMenu: FC<{
           }
         );
         break;
+      default:
+        links.push({
+          title: "Login",
+          link: "/staff/login",
+          Icon: Login,
+        });
     }
     return links;
   }, [auth]);

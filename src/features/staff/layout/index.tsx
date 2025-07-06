@@ -1,35 +1,28 @@
 import { Box, CircularProgress } from "@mui/material";
-import { useAtom } from "jotai";
 import { type FC, useLayoutEffect, useState } from "react";
 import { Outlet } from "react-router";
 import { useAlert } from "../../../alert";
 import { staffBackend } from "../../../backend";
-import { staffAuthAtom } from "../auth/atom";
-import type { StaffUser } from "../auth/auth-state";
+import { useStaffAuthState } from "../shared/staff-auth.state";
+import { StaffService } from "../shared/staff.service";
+import { Header } from "./header";
 
-export const StaffRootLayout: FC = () => {
-  const [auth, setAuth] = useAtom(staffAuthAtom);
+export const StaffLayout: FC = () => {
+  const { auth, setAuth } = useStaffAuthState();
   const [authLoading, setAuthLoading] = useState(true);
-  const { showAlert } = useAlert();
+  const { showError } = useAlert();
 
+  // intialize authentication
   useLayoutEffect(() => {
     const loadAuth = async () => {
-      await new Promise((res) => setTimeout(res, 2000));
       try {
-        const { data } = await staffBackend.post<null | {
-          accessToken: string;
-          user: StaffUser;
-        }>("/refresh-auth");
+        const state = await StaffService.refreshAuth();
 
-        if (data) {
-          setAuth(data);
+        if (state) {
+          setAuth(state);
         }
       } catch (error) {
-        showAlert({
-          title: "Authentication Error",
-          message: "Failed to load authentication. Please refresh the page.",
-          severity: "error",
-        });
+        showError("Failed to load authentication. Please refresh the page.");
       } finally {
         setAuthLoading(false);
       }
@@ -57,11 +50,9 @@ export const StaffRootLayout: FC = () => {
 
             return staffBackend(originalRequest);
           } catch (error) {
-            showAlert({
-              message:
-                "Your login session expired. Please login again to continue.",
-              severity: "error",
-            });
+            showError(
+              "Your login session expired. Please login again to continue."
+            );
             setAuth(null);
           }
         }
@@ -96,5 +87,12 @@ export const StaffRootLayout: FC = () => {
     );
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Header />
+      <Box p={3}>
+        <Outlet />
+      </Box>
+    </>
+  );
 };
