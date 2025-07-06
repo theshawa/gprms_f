@@ -1,0 +1,39 @@
+.ingredients-page {
+  /* height: calc(100vh - 56px); */
+  font-family: "Segoe UI", sans-serif;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-tabs {
+  position: sticky;
+  top: -0.5rem;
+  /* top: 0; */
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  height: 60px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  background-color: white;
+}
+
+.tab-content {
+  flex: 1;
+  /* overflow-y: auto; */
+  padding: 2rem;
+}

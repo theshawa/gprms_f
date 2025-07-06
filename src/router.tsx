@@ -4,6 +4,11 @@ import { CustomerLayout } from "./pages/customer/layout";
 import { StaffAdminHomePage } from "./pages/staff/admin/home";
 import { StaffLayout } from "./pages/staff/layout";
 import { StaffLoginPage } from "./pages/staff/login";
+import { KitchenManagerHomePage } from "./pages/staff/kitchen-manager/home";
+import { KitchenManagerOrdersPage } from "./pages/staff/kitchen-manager/orders";
+import { KitchenManagerMealsPage } from "./pages/staff/kitchen-manager/meals";
+import { MealItem } from "./pages/staff/kitchen-manager/shared/meal-item";
+import { KitchenManagerIngredientsPage } from "./pages/staff/kitchen-manager/ingredients";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +38,36 @@ export const router = createBrowserRouter([
               {
                 index: true,
                 element: <StaffAdminHomePage />,
+              },
+            ],
+          },
+          {
+            path: "kitchen-manager",
+            children: [
+              {
+                index: true,
+                element: <KitchenManagerHomePage />,
+              },
+              {
+                path: "orders",
+                element: <KitchenManagerOrdersPage />,
+              },
+              {
+                path: "meals",
+                children: [
+                  {
+                    index: true,
+                    element: <KitchenManagerMealsPage />,
+                  },
+                  {
+                    path: "meal-item/:mealId",
+                    element: <MealItem />,
+                  },
+                ],
+              },
+              {
+                path: "ingredients",
+                element: <KitchenManagerIngredientsPage />,
               },
             ],
           },

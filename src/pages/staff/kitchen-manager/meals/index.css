@@ -1,0 +1,32 @@
+.meal-dashboard {
+  display: flex;
+  height: calc(100vh - 56px);
+  width: 100%;
+  overflow: auto;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sticky-header {
+  margin-bottom: 1.5rem;
+  position: sticky;
+  top: 0;
+  padding: 1rem 2rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.category {
+  margin-bottom: 2rem;
+  padding: 0 2rem;
+}
+
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
