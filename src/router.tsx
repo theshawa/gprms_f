@@ -1,15 +1,15 @@
 import { createBrowserRouter } from "react-router";
-import { KitchenManagerHomePage } from "./pages/staff/kitchen-manager/home";
-import { KitchenManagerOrdersPage } from "./pages/staff/kitchen-manager/orders";
-import { KitchenManagerMealsPage } from "./pages/staff/kitchen-manager/meals";
-import { MealItem } from "./pages/staff/kitchen-manager/shared/meal-item";
-import { KitchenManagerIngredientsPage } from "./pages/staff/kitchen-manager/ingredients";
 import { CustomerHomePage } from "./features/customer/home";
 import { CustomerLayout } from "./features/customer/layout";
 import { StaffAdminHomePage } from "./features/staff/admin/home";
 import { StaffAuthenticatedLayout } from "./features/staff/layout/authenticated";
 import { StaffRootLayout } from "./features/staff/layout/root";
 import { StaffLoginPage } from "./features/staff/login";
+import { KitchenManagerHomePage } from "./features/staff/kitchen-manager/home";
+import { KitchenManagerOrdersPage } from "./features/staff/kitchen-manager/orders";
+import { KitchenManagerMealsPage } from "./features/staff/kitchen-manager/meals";
+import { MealItem } from "./features/staff/kitchen-manager/shared/meal-item";
+import { KitchenManagerIngredientsPage } from "./features/staff/kitchen-manager/ingredients";
 
 export const router = createBrowserRouter([
   {
