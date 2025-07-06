@@ -2,6 +2,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  position: fixed;
+  height: calc(100vh - 56px);
 }
 
 .toggle {
@@ -15,7 +17,6 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-height: calc(100vh - 190px);
   overflow-y: auto;
 }
 
