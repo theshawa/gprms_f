@@ -2,68 +2,42 @@ import { AccountCircle } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
-  Box,
-  Divider,
-  Drawer,
+  Button,
   IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   Menu,
   MenuItem,
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useAtom } from "jotai";
 import { type FC, useState } from "react";
-
-const SideMenu: FC<{ open: boolean; toggleOpen: (v: boolean) => void }> = ({
-  open,
-  toggleOpen,
-}) => {
-  return (
-    <Drawer open={open} onClose={() => toggleOpen(false)}>
-      <Box
-        sx={{ width: 250 }}
-        role="presentation"
-        onClick={() => toggleOpen(false)}
-      >
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                {/* <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon> */}
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                {/* <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon> */}
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    </Drawer>
-  );
-};
+import { useNavigate } from "react-router";
+import { staffBackend } from "../../../../../backend";
+import { staffAuthAtom } from "../../../auth/atom";
+import { getNameForRole } from "../../../staff-role";
+import { SideMenu } from "./sidemenu";
 
 export const Header: FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
+  const [auth, setAuth] = useAtom(staffAuthAtom);
+
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const logout = async () => {
+    try {
+      await staffBackend.post("/logout");
+      setAnchorEl(null);
+      setAuth(null);
+      navigate("/staff/login", { replace: true });
+    } catch (error) {
+      console.error("Logout failed", error);
+      alert("Logout failed. Please try again.");
+    }
   };
 
   return (
@@ -81,15 +55,16 @@ export const Header: FC = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Admin Dashboard
+            {getNameForRole(auth?.user.role!)} Dashboard
           </Typography>
-          <IconButton
+          <Button
             size="large"
             onClick={(e) => setAnchorEl(e.currentTarget)}
+            startIcon={<AccountCircle />}
             color="inherit"
           >
-            <AccountCircle />
-          </IconButton>
+            {auth?.user.name}
+          </Button>
           <Menu
             id="menu-appbar"
             anchorEl={anchorEl}
@@ -105,8 +80,7 @@ export const Header: FC = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My account</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
