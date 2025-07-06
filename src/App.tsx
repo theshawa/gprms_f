@@ -1,5 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { RouterProvider } from "react-router";
+import { AlertComponent } from "./alert";
 import { muiTheme } from "./muitheme";
 import { router } from "./router";
 
@@ -8,6 +9,7 @@ function App() {
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <RouterProvider router={router}></RouterProvider>
+      <AlertComponent />
     </ThemeProvider>
   );
 }

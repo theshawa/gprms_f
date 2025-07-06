@@ -1,9 +1,10 @@
 import { createBrowserRouter } from "react-router";
-import { CustomerHomePage } from "./pages/customer/home";
-import { CustomerLayout } from "./pages/customer/layout";
-import { StaffAdminHomePage } from "./pages/staff/admin/home";
-import { StaffLayout } from "./pages/staff/layout";
-import { StaffLoginPage } from "./pages/staff/login";
+import { CustomerHomePage } from "./features/customer/home";
+import { CustomerLayout } from "./features/customer/layout";
+import { StaffAdminHomePage } from "./features/staff/admin/home";
+import { StaffAuthenticatedLayout } from "./features/staff/layout/authenticated";
+import { StaffRootLayout } from "./features/staff/layout/root";
+import { StaffLoginPage } from "./features/staff/login";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/staff",
+    element: <StaffRootLayout />,
     children: [
       {
         path: "login",
@@ -25,7 +27,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "",
-        element: <StaffLayout />,
+        element: <StaffAuthenticatedLayout />,
         children: [
           {
             path: "admin",
