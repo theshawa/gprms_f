@@ -1,0 +1,231 @@
+.main-content {
+  padding: 24px;
+  background-color: #f5f5f5;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+/* Stats Row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon svg {
+  font-size: 24px;
+  color: white;
+}
+
+.stat-info .stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.stat-info .stat-label {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Stat Card Colors */
+.stat-card.blue .stat-icon {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+}
+
+.stat-card.purple .stat-icon {
+  background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+}
+
+.stat-card.teal .stat-icon {
+  background: linear-gradient(135deg, #00bcd4, #0097a7);
+}
+
+/* Charts Row */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stock-table th,
+.stock-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.stock-table th {
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+.stock-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Select Filter */
+.stock-warning-card .chart-actions {
+  margin-left: auto;
+}
+
+.stock-warning-card .filter-select {
+  width: 150px;
+}
+
+.orders {
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+  height: 100%;
+}
+
+/* Pie Chart Styles */
+.pie-chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.pie-chart-container .pie-center-text {
+  font-size: 24px;
+  font-weight: 700;
+  fill: #333;
+}
+
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legend-color.blue {
+  background-color: #2196f3;
+}
+
+.legend-color.purple {
+  background-color: #9c27b0;
+}
+
+.legend-color.green {
+  background-color: #4caf50;
+}
+
+/* Orders Table Card */
+.orders-table-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.table-container .table-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr 1.5fr 1.5fr;
+  gap: 16px;
+  padding: 16px 24px;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table-container .header-row {
+  background-color: #fafafa;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.table-container .table-row:last-child {
+  border-bottom: none;
+}
+
+.table-container .col {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-container .item-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-icon {
+  color: #666;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Optional Status Chip Colors */
+.status-pending {
+  background-color: #ffebee !important;
+  color: #d32f2f !important;
+}
+
+.status-delivery {
+  background-color: #e8f5e8 !important;
+  color: #2e7d32 !important;
+}
+
+.status-preparing {
+  background-color: #fff3e0 !important;
+  color: #f57c00 !important;
+}

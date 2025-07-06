@@ -9,6 +9,11 @@ import { StaffLayout } from "./features/staff/layout";
 import { StaffLoginPage } from "./features/staff/login";
 import { StaffWaiterHomePage } from "./features/staff/waiter/home";
 import { StaffWaiterLayout } from "./features/staff/waiter/layout";
+import { KitchenManagerHomePage } from "./features/staff/kitchen-manager/home";
+import { KitchenManagerOrdersPage } from "./features/staff/kitchen-manager/orders";
+import { KitchenManagerMealsPage } from "./features/staff/kitchen-manager/meals";
+import { MealItem } from "./features/staff/kitchen-manager/shared/meal-item";
+import { KitchenManagerIngredientsPage } from "./features/staff/kitchen-manager/ingredients";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +52,36 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <StaffWaiterHomePage />,
+          },
+          {
+            path: "kitchen-manager",
+            children: [
+              {
+                index: true,
+                element: <KitchenManagerHomePage />,
+              },
+              {
+                path: "orders",
+                element: <KitchenManagerOrdersPage />,
+              },
+              {
+                path: "meals",
+                children: [
+                  {
+                    index: true,
+                    element: <KitchenManagerMealsPage />,
+                  },
+                  {
+                    path: "meal-item/:mealId",
+                    element: <MealItem />,
+                  },
+                ],
+              },
+              {
+                path: "ingredients",
+                element: <KitchenManagerIngredientsPage />,
+              },
+            ],
           },
         ],
       },
