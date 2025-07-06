@@ -1,4 +1,9 @@
 import { createBrowserRouter } from "react-router";
+import { KitchenManagerHomePage } from "./pages/staff/kitchen-manager/home";
+import { KitchenManagerOrdersPage } from "./pages/staff/kitchen-manager/orders";
+import { KitchenManagerMealsPage } from "./pages/staff/kitchen-manager/meals";
+import { MealItem } from "./pages/staff/kitchen-manager/shared/meal-item";
+import { KitchenManagerIngredientsPage } from "./pages/staff/kitchen-manager/ingredients";
 import { CustomerHomePage } from "./features/customer/home";
 import { CustomerLayout } from "./features/customer/layout";
 import { StaffAdminHomePage } from "./features/staff/admin/home";
@@ -35,6 +40,36 @@ export const router = createBrowserRouter([
               {
                 index: true,
                 element: <StaffAdminHomePage />,
+              },
+            ],
+          },
+          {
+            path: "kitchen-manager",
+            children: [
+              {
+                index: true,
+                element: <KitchenManagerHomePage />,
+              },
+              {
+                path: "orders",
+                element: <KitchenManagerOrdersPage />,
+              },
+              {
+                path: "meals",
+                children: [
+                  {
+                    index: true,
+                    element: <KitchenManagerMealsPage />,
+                  },
+                  {
+                    path: "meal-item/:mealId",
+                    element: <MealItem />,
+                  },
+                ],
+              },
+              {
+                path: "ingredients",
+                element: <KitchenManagerIngredientsPage />,
               },
             ],
           },
