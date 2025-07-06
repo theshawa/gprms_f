@@ -1,33 +1,33 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
-  Box,
-  Typography,
-  Card,
-  CardHeader,
   Avatar,
-  CardContent,
-  Chip,
-  Grid,
-  CardActions,
+  Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Chip,
+  FormControlLabel,
+  Grid,
   IconButton,
   Switch,
-  FormControlLabel,
+  Typography,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import type { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router";
 import "./index.css";
 
 export const MealItem: FC = () => {
-  const navigate = useNavigate();
-
   return (
     <Box className="meal-item">
       {/* Back Button */}
       <Box className="back-button">
-        <IconButton onClick={() => navigate("/staff/kitchen-manager/meals")}>
-          <ArrowBackIcon />
-        </IconButton>
+        <Link to={"/staff/kitchen-manager/meals"}>
+          <IconButton>
+            <ArrowBackIcon />
+          </IconButton>
+        </Link>
       </Box>
 
       {/* Meal Details */}
@@ -66,12 +66,12 @@ export const MealItem: FC = () => {
                 "Tomato",
                 "Burger Bun",
               ].map((ing, i) => (
-                <Grid item key={i}>
+                <Grid key={i}>
                   <Chip label={ing} color="primary" />
                 </Grid>
               ))}
               {["Gluten", "Dairy"].map((warn, i) => (
-                <Grid item key={`warn-${i}`}>
+                <Grid key={`warn-${i}`}>
                   <Chip label={warn} color="error" />
                 </Grid>
               ))}

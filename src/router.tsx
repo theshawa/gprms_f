@@ -5,15 +5,16 @@ import { ErrorPage } from "./features/error";
 import { NotFoundPage } from "./features/not-found";
 import { StaffAdminHomePage } from "./features/staff/admin/home";
 import { StaffAdminLayout } from "./features/staff/admin/layout";
+import { KitchenManagerHomePage } from "./features/staff/kitchen-manager/home";
+import { KitchenManagerIngredientsPage } from "./features/staff/kitchen-manager/ingredients";
+import { StaffKitchenManagerLayout } from "./features/staff/kitchen-manager/layout";
+import { KitchenManagerMealsPage } from "./features/staff/kitchen-manager/meals";
+import { KitchenManagerOrdersPage } from "./features/staff/kitchen-manager/orders";
+import { MealItem } from "./features/staff/kitchen-manager/shared/meal-item";
 import { StaffLayout } from "./features/staff/layout";
 import { StaffLoginPage } from "./features/staff/login";
 import { StaffWaiterHomePage } from "./features/staff/waiter/home";
 import { StaffWaiterLayout } from "./features/staff/waiter/layout";
-import { KitchenManagerHomePage } from "./features/staff/kitchen-manager/home";
-import { KitchenManagerOrdersPage } from "./features/staff/kitchen-manager/orders";
-import { KitchenManagerMealsPage } from "./features/staff/kitchen-manager/meals";
-import { MealItem } from "./features/staff/kitchen-manager/shared/meal-item";
-import { KitchenManagerIngredientsPage } from "./features/staff/kitchen-manager/ingredients";
 
 export const router = createBrowserRouter([
   {
@@ -53,35 +54,36 @@ export const router = createBrowserRouter([
             index: true,
             element: <StaffWaiterHomePage />,
           },
+        ],
+      },
+      {
+        path: "kitchen-manager",
+        element: <StaffKitchenManagerLayout />,
+        children: [
           {
-            path: "kitchen-manager",
+            index: true,
+            element: <KitchenManagerHomePage />,
+          },
+          {
+            path: "orders",
+            element: <KitchenManagerOrdersPage />,
+          },
+          {
+            path: "meals",
             children: [
               {
                 index: true,
-                element: <KitchenManagerHomePage />,
+                element: <KitchenManagerMealsPage />,
               },
               {
-                path: "orders",
-                element: <KitchenManagerOrdersPage />,
-              },
-              {
-                path: "meals",
-                children: [
-                  {
-                    index: true,
-                    element: <KitchenManagerMealsPage />,
-                  },
-                  {
-                    path: "meal-item/:mealId",
-                    element: <MealItem />,
-                  },
-                ],
-              },
-              {
-                path: "ingredients",
-                element: <KitchenManagerIngredientsPage />,
+                path: "meal-item/:mealId",
+                element: <MealItem />,
               },
             ],
+          },
+          {
+            path: "ingredients",
+            element: <KitchenManagerIngredientsPage />,
           },
         ],
       },

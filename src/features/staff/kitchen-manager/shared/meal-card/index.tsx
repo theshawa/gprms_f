@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router";
 import "./index.css";
 
 type MealCardProps = {
@@ -19,16 +19,10 @@ export const MealCard: FC<MealCardProps> = ({
   imageUrl,
   // desc = "",
 }) => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate(`/staff/kitchen-manager/meals/meal-item/${mealId}`);
-  };
-
   return (
-    <div
+    <Link
+      to={`/staff/kitchen-manager/meals/meal-item/${mealId}`}
       className="meal-card"
-      onClick={handleClick}
       style={{ cursor: "pointer" }}
     >
       <img src={imageUrl} />
@@ -38,6 +32,6 @@ export const MealCard: FC<MealCardProps> = ({
         <span className="price">Rs. {price}</span>
         <span className={`status ${status.toLowerCase()}`}>{status}</span>
       </div>
-    </div>
+    </Link>
   );
 };
