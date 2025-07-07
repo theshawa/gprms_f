@@ -1,11 +1,15 @@
 import {
+  AttachMoney,
+  CalendarToday,
   Fastfood,
   Home,
+  LocalOfferSharp,
   LocationPin,
   Login,
   MenuBook,
   People,
   Settings,
+  SupervisedUserCircle,
   TableRestaurant,
 } from "@mui/icons-material";
 import {
@@ -18,7 +22,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { type FC, useMemo } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import { StaffRole } from "../../../../enums/staff-role";
 import { useStaffAuth } from "../../../../hooks/useStaffAuth";
 
@@ -44,7 +48,11 @@ export const SideMenu: FC<{
             Icon: Home,
             exactLinkMatch: true,
           },
-          { title: "Staff", link: "/staff/admin/staff", Icon: People },
+          {
+            title: "Staff",
+            link: "/staff/admin/staff",
+            Icon: SupervisedUserCircle,
+          },
           {
             title: "Locations",
             link: "/staff/admin/locations",
@@ -64,6 +72,26 @@ export const SideMenu: FC<{
             title: "Menus",
             link: "/staff/admin/menus",
             Icon: MenuBook,
+          },
+          {
+            title: "Calendar",
+            link: "/staff/admin/calendar",
+            Icon: CalendarToday,
+          },
+          {
+            title: "Customers",
+            link: "/staff/admin/customers",
+            Icon: People,
+          },
+          {
+            title: "Orders",
+            link: "/staff/admin/orders",
+            Icon: AttachMoney,
+          },
+          {
+            title: "Offers",
+            link: "/staff/admin/offers",
+            Icon: LocalOfferSharp,
           },
           {
             title: "Settings",

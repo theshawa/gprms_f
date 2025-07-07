@@ -1,38 +1,6 @@
 import { Alert, Button, Snackbar } from "@mui/material";
-import { atom, useAtom } from "jotai";
 import type { FC } from "react";
-
-export interface AppAlert {
-  message: string;
-  severity: "success" | "info" | "warning" | "error";
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
-}
-
-export const alertAtom = atom<AppAlert | null>(null);
-
-export const useAlert = () => {
-  const [alert, setAlert] = useAtom(alertAtom);
-
-  const showAlert = (newAlert: AppAlert) => {
-    setAlert(newAlert);
-  };
-
-  const hideAlert = () => {
-    setAlert(null);
-  };
-
-  const showError = (message: string) => {
-    showAlert({
-      message,
-      severity: "error",
-    });
-  };
-
-  return { alert, hideAlert, showError };
-};
+import { useAlert } from "../hooks/useAlert";
 
 export const AlertComponent: FC = () => {
   const { alert, hideAlert } = useAlert();

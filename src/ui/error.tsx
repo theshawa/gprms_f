@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import type { FC } from "react";
-import { useRouteError } from "react-router";
+import { useRouteError } from "react-router-dom";
 
 export const ErrorPage: FC = () => {
   const error = useRouteError();

@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { FC } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import "./index.css";
 
 export const KitchenManager_MealItem: FC = () => {
