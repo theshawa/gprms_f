@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from "react";
-import { Navigate } from "react-router";
+import { Navigate } from "react-router-dom";
 import type { StaffRole } from "../enums/staff-role";
 import { useStaffAuth } from "../hooks/useStaffAuth";
 

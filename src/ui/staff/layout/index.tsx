@@ -1,8 +1,8 @@
 import { Box, CircularProgress } from "@mui/material";
 import { type FC, useLayoutEffect, useState } from "react";
-import { Outlet } from "react-router";
-import { useAlert } from "../../../alert";
+import { Outlet } from "react-router-dom";
 import { staffBackend } from "../../../backend";
+import { useAlert } from "../../../hooks/useAlert";
 import { useStaffAuth } from "../../../hooks/useStaffAuth";
 import { StaffService } from "../../../services/staff";
 import { Header } from "./header";
@@ -90,9 +90,7 @@ export const Staff_Layout: FC = () => {
   return (
     <>
       <Header />
-      <Box p={3}>
-        <Outlet />
-      </Box>
+      <Outlet />
     </>
   );
 };

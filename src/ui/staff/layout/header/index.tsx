@@ -10,9 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import { type FC, useState } from "react";
-import { useAlert } from "../../../../alert";
 import { getBackendErrorMessage } from "../../../../backend";
 import { getNameForRole } from "../../../../enums/staff-role";
+import { useAlert } from "../../../../hooks/useAlert";
 import { useStaffAuth } from "../../../../hooks/useStaffAuth";
 import { StaffService } from "../../../../services/staff";
 import { SideMenu } from "./sidemenu";

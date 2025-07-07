@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Outlet } from "react-router";
+import { Outlet } from "react-router-dom";
 
 export const Customer_Layout: FC = () => {
   return (

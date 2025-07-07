@@ -1,8 +1,8 @@
 import { Box, Button, Typography } from "@mui/material";
 import type { FC } from "react";
-import { Link, useNavigate } from "react-router";
-import { useAlert } from "../alert";
+import { Link, useNavigate } from "react-router-dom";
 import { getBackendErrorMessage } from "../backend";
+import { useAlert } from "../hooks/useAlert";
 import { useStaffAuth } from "../hooks/useStaffAuth";
 import { StaffService } from "../services/staff";
 

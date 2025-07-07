@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { StaffAuthGuard } from "./components/staff-auth-guard";
 import { StaffRole } from "./enums/staff-role";
 import { Customer_HomePage } from "./ui/customer/home";

@@ -8,14 +8,14 @@ import {
 } from "@mui/material";
 import { type FC, useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-import { useAlert } from "../../../alert";
+import { useNavigate } from "react-router-dom";
 import { getBackendErrorMessage } from "../../../backend";
 import { getEndpointForRole } from "../../../enums/staff-role";
+import { useAlert } from "../../../hooks/useAlert";
 import { useStaffAuth } from "../../../hooks/useStaffAuth";
 import { StaffService } from "../../../services/staff";
 
-type LoginInputs = {
+export type LoginInputs = {
   username: string;
   password: string;
 };
