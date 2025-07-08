@@ -20,7 +20,11 @@ export const ItemsPageLayout: FC<{
       >
         <Box mb={{ xs: 2, sm: 0 }}>
           <Typography variant="h5">{title}</Typography>
-          <Typography variant="subtitle1" color="textSecondary">
+          <Typography
+            variant="subtitle1"
+            color="textSecondary"
+            maxWidth="50rem"
+          >
             {subtitle}
           </Typography>
         </Box>

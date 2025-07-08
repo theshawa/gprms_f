@@ -79,8 +79,8 @@ export const Admin_ManageStaffPage: FC = () => {
     <>
       <ItemsPageLayout
         title="Staff Accounts"
-        subtitle="Manage Staff Accounts"
-        buttonText="Add New Staff"
+        subtitle="It's your restaurant's team members. You can add new staff and manage existing accounts."
+        buttonText="New Staff Account"
         buttonIcon={<PersonAdd />}
         onButtonClick={() => setManageAccountDialogOpen(true)}
       >
@@ -88,7 +88,7 @@ export const Admin_ManageStaffPage: FC = () => {
           <Table sx={{ minWidth: 1000 }} aria-label="staff accounts table">
             <TableHead>
               <TableRow>
-                <TableCell width="20%">Role</TableCell>
+                <TableCell width="20%">Role & Permissions</TableCell>
                 <TableCell width="20%">Username</TableCell>
                 <TableCell width="30%">Name</TableCell>
                 <TableCell width="30%" align="right">
@@ -100,7 +100,11 @@ export const Admin_ManageStaffPage: FC = () => {
               {data.map((m) => (
                 <TableRow key={m.id}>
                   <TableCell>{getNameForRole(m.role)}</TableCell>
-                  <TableCell>{m.username}</TableCell>
+                  <TableCell>
+                    <Typography fontFamily="monospace" variant="body1">
+                      {m.username}
+                    </Typography>
+                  </TableCell>
                   <TableCell>
                     {m.name} {m.id === auth?.user.id && <>(You)</>}
                   </TableCell>
@@ -150,7 +154,7 @@ export const Admin_ManageStaffPage: FC = () => {
                       </>
                     ) : (
                       <Typography variant="body2" color="textSecondary">
-                        No actions available
+                        No actions available for your own account.
                       </Typography>
                     )}
                   </TableCell>
