@@ -8,7 +8,7 @@ type MealCardProps = {
   price: number;
   status: string;
   imageUrl: string;
-  // desc?: string;
+  desc?: string;
 };
 
 export const MealCard: FC<MealCardProps> = ({
@@ -17,7 +17,7 @@ export const MealCard: FC<MealCardProps> = ({
   price,
   status,
   imageUrl,
-  // desc = "",
+  desc = "",
 }) => {
   return (
     <Link
@@ -27,7 +27,7 @@ export const MealCard: FC<MealCardProps> = ({
     >
       <img src={imageUrl} />
       <h4>{name}</h4>
-      <p className="desc">{}</p>
+      <p className="desc">{desc}</p>
       <div className="meta">
         <span className="price">Rs. {price}</span>
         <span className={`status ${status.toLowerCase()}`}>{status}</span>

@@ -4,20 +4,32 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Grid,
+  Button,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FC } from "react";
 import "./index.css";
 import { OrderCard } from "../shared/order-card";
+import { staffBackend } from "../../../../backend";
 
 export const KitchenManagerOrdersPage: FC = () => {
   const [orderType, setOrderType] = useState<"current" | "archived">("current");
 
-  const ordersList = [
-    { id: 1, status: "new", item: "Pizza" },
-    { id: 2, status: "new", item: "Burger" },
-    // Add more mock or real orders as needed
-  ];
+  const [ordersList, setOrdersList] = useState<any[]>([]);
+
+  const loadOrders = async () => {
+    try {
+      const res = await staffBackend.get("/kitchen-manager/orders");
+      console.log(res.data);
+      setOrdersList(res.data);
+    } catch (err) {
+      console.error("Failed to fetch orders", err);
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
 
   const handleToggle = (
     event: React.MouseEvent<HTMLElement>,
@@ -53,7 +65,7 @@ export const KitchenManagerOrdersPage: FC = () => {
             <Grid container spacing={2} className="cards">
               {ordersList.map((order) => (
                 <Grid item xs={12} md={6} key={order.id}>
-                  <OrderCard />
+                  <OrderCard order={order} />
                 </Grid>
               ))}
             </Grid>
