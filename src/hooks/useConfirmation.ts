@@ -9,11 +9,13 @@ export const useConfirmation = () => {
     message,
     cancelText = "Cancel",
     confirmText = "Yes",
+    confirmButtonDanger = false,
   }: {
     title: string;
     message: string;
     confirmText?: string;
     cancelText?: string;
+    confirmButtonDanger?: boolean;
   }) => {
     return new Promise<boolean>((resolve) => {
       setConfirmation({
@@ -22,6 +24,7 @@ export const useConfirmation = () => {
         confirmText,
         cancelText,
         open: true,
+        confirmButtonDanger,
         onConfirm: (value: boolean) => {
           resolve(value);
           setConfirmation((prev) => ({ ...prev, open: false }));
@@ -33,6 +36,7 @@ export const useConfirmation = () => {
               confirmText: "Yes",
               cancelText: "Cancel",
               onConfirm: () => {},
+              confirmButtonDanger: false,
             });
           }, 300);
         },
