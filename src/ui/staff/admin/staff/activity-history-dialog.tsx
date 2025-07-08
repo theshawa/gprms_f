@@ -4,6 +4,7 @@ import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { StaffUser } from "@/interfaces/staff-user";
 import { StaffService } from "@/services/staff";
+import { formatDateTime } from "@/utils/time-format";
 import {
   Alert,
   Button,
@@ -113,7 +114,7 @@ export const ActivityHistoryDialog: FC<{
                   {data?.activities.map((activity) => (
                     <TableRow key={activity.id}>
                       <TableCell>
-                        {new Date(activity.createdAt).toLocaleString()}
+                        {formatDateTime(activity.createdAt)}
                       </TableCell>
                       <TableCell>{activity.activity}</TableCell>
                     </TableRow>
