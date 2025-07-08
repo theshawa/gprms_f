@@ -64,7 +64,7 @@ export const Admin_ManageStaff_HomePage: FC = () => {
     setManageAccountDialogOpen(false);
     timeOutRef.current = setTimeout(() => {
       setEditingAccount(undefined);
-    }, 600);
+    }, 300);
   };
 
   if (isPending) {
@@ -77,29 +77,13 @@ export const Admin_ManageStaff_HomePage: FC = () => {
 
   return (
     <>
-      <Box p={3}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          flexDirection={{ xs: "column", sm: "row" }}
-          alignItems="start"
-          mb={3}
-        >
-          <Box mb={{ xs: 2, sm: 0 }}>
-            <Typography variant="h5">Staff Accounts</Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              Manage Staff Accounts
-            </Typography>
-          </Box>
-          <Button
-            onClick={() => setManageAccountDialogOpen(true)}
-            variant="contained"
-            color="primary"
-            startIcon={<PersonAdd />}
-          >
-            Add New Staff
-          </Button>
-        </Box>
+      <ItemsPageLayout
+        title="Staff Accounts"
+        subtitle="Manage Staff Accounts"
+        buttonText="Add New Staff"
+        buttonIcon={<PersonAdd />}
+        onButtonClick={() => setManageAccountDialogOpen(true)}
+      >
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 1000 }} aria-label="staff accounts table">
             <TableHead>
@@ -131,7 +115,6 @@ export const Admin_ManageStaff_HomePage: FC = () => {
                                 title: "Are you sure?",
                                 message: `You are going to delete the account of ${m.name}? All associated data related to this account will be lost. This action cannot be undone.`,
                                 confirmText: " Delete Account",
-                                cancelText: "Cancel",
                                 confirmButtonDanger: true,
                               })
                             ) {
@@ -176,7 +159,7 @@ export const Admin_ManageStaff_HomePage: FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </Box>
+      </ItemsPageLayout>
       <ManageAccountDialog
         currentAccount={editingAccount}
         open={manageAccountDialogOpen}
@@ -192,7 +175,7 @@ export const Admin_ManageStaff_HomePage: FC = () => {
           setActivityHistoryDialogOpen(false);
           timeOutRef.current = setTimeout(() => {
             setActivityHistoryAccount(undefined);
-          }, 600);
+          }, 300);
         }}
         account={activityHistoryAccount}
       />

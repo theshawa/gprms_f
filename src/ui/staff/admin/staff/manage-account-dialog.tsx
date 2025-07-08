@@ -58,7 +58,7 @@ export const ManageAccountDialog: FC<{
   const close = () => {
     setTimeout(() => {
       reset();
-    }, 600);
+    }, 300);
     handleClose();
   };
 
@@ -99,7 +99,6 @@ export const ManageAccountDialog: FC<{
           close();
         }
       }}
-      transitionDuration={600}
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
