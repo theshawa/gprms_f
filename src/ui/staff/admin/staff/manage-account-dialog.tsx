@@ -192,7 +192,7 @@ export const ManageAccountDialog: FC<{
           error={!!errors.password}
           helperText={
             errors.password?.message ??
-            (currentAccount && "Keep empty to keep the same password")
+            (currentAccount && "Leave empty to keep the same password")
           }
           margin="dense"
         />
