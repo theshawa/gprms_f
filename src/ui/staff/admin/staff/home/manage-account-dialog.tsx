@@ -189,7 +189,6 @@ export const ManageAccountDialog: FC<{
           })}
           label="Password"
           variant="filled"
-          type="password"
           fullWidth
           error={!!errors.password}
           helperText={
