@@ -160,9 +160,9 @@ export const ActivityHistoryDialog: FC<{
           onClick={async () => {
             if (
               await confirm({
-                title: "Clear Activity History",
-                message: `Are you sure you want to clear the activity history of ${account?.name}? This action cannot be undone.`,
-                confirmText: "Clear History",
+                title: "Are you sure?",
+                message: `You are going to clear the activity history of ${account?.name}? This action cannot be undone.`,
+                confirmText: "Yes, Clear History",
                 confirmButtonDanger: true,
               })
             ) {

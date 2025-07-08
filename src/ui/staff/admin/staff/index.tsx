@@ -128,9 +128,9 @@ export const Admin_ManageStaff_HomePage: FC = () => {
                           onClick={async () => {
                             if (
                               await confirm({
-                                title: "Delete Staff Account",
-                                message: `Are you sure you want to delete account of ${m.name}? All associated data related to this account will be lost. This action cannot be undone.`,
-                                confirmText: "Delete Account",
+                                title: "Are you sure?",
+                                message: `You are going to delete the account of ${m.name}? All associated data related to this account will be lost. This action cannot be undone.`,
+                                confirmText: " Delete Account",
                                 cancelText: "Cancel",
                                 confirmButtonDanger: true,
                               })
