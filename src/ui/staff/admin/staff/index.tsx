@@ -26,7 +26,7 @@ import { ItemsPageLayout } from "../../shared/items-page-layout";
 import { ActivityHistoryDialog } from "./activity-history-dialog";
 import { ManageAccountDialog } from "./manage-account-dialog";
 
-export const Admin_ManageStaff_HomePage: FC = () => {
+export const Admin_ManageStaffPage: FC = () => {
   const { isPending, error, data, refetch } = useQuery({
     queryKey: ["admin_manageStaff_home"],
     queryFn: () => StaffService.getStaffAccounts(),

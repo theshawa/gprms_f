@@ -5,7 +5,7 @@ import { Customer_Layout } from "@/ui/customer/layout";
 import { ErrorPage } from "@/ui/error";
 import { NotFoundPage } from "@/ui/not-found";
 import { Admin_HomePage } from "@/ui/staff/admin/home";
-import { Admin_ManageStaff_HomePage } from "@/ui/staff/admin/staff";
+import { Admin_ManageStaffPage } from "@/ui/staff/admin/staff";
 import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
 import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
 import { KitchenManager_MealsPage } from "@/ui/staff/kitchen-manager/meals";
@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
                 index: true,
                 element: (
                   <StaffAuthGuard role={StaffRole.Admin}>
-                    <Admin_ManageStaff_HomePage />
+                    <Admin_ManageStaffPage />
                   </StaffAuthGuard>
                 ),
               },
