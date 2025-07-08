@@ -11,7 +11,6 @@ import { PageError } from "@/ui/staff/shared/page-error";
 import { PageLoader } from "@/ui/staff/shared/page-loader";
 import { PersonAdd } from "@mui/icons-material";
 import {
-  Box,
   Button,
   Paper,
   Table,
@@ -23,6 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { ItemsPageLayout } from "../../shared/items-page-layout";
 import { ActivityHistoryDialog } from "./activity-history-dialog";
 import { ManageAccountDialog } from "./manage-account-dialog";
 
