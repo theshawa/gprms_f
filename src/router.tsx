@@ -1,89 +1,143 @@
-import { createBrowserRouter } from "react-router";
-import { CustomerHomePage } from "./features/customer/home";
-import { CustomerLayout } from "./features/customer/layout";
-import { ErrorPage } from "./features/error";
-import { NotFoundPage } from "./features/not-found";
-import { StaffAdminHomePage } from "./features/staff/admin/home";
-import { StaffAdminLayout } from "./features/staff/admin/layout";
-import { KitchenManagerHomePage } from "./features/staff/kitchen-manager/home";
-import { KitchenManagerIngredientsPage } from "./features/staff/kitchen-manager/ingredients";
-import { StaffKitchenManagerLayout } from "./features/staff/kitchen-manager/layout";
-import { KitchenManagerMealsPage } from "./features/staff/kitchen-manager/meals";
-import { KitchenManagerOrdersPage } from "./features/staff/kitchen-manager/orders";
-import { MealItem } from "./features/staff/kitchen-manager/shared/meal-item";
-import { StaffLayout } from "./features/staff/layout";
-import { StaffLoginPage } from "./features/staff/login";
-import { StaffWaiterHomePage } from "./features/staff/waiter/home";
-import { StaffWaiterLayout } from "./features/staff/waiter/layout";
+import { StaffAuthGuard } from "@/components/staff-auth-guard";
+import { StaffRole } from "@/enums/staff-role";
+import { Customer_HomePage } from "@/ui/customer/home";
+import { Customer_Layout } from "@/ui/customer/layout";
+import { ErrorPage } from "@/ui/error";
+import { NotFoundPage } from "@/ui/not-found";
+import { Admin_HomePage } from "@/ui/staff/admin/home";
+import { Admin_ManageStaffPage } from "@/ui/staff/admin/staff";
+import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
+import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
+import { KitchenManager_MealsPage } from "@/ui/staff/kitchen-manager/meals";
+import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
+import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-item";
+import { Staff_Layout } from "@/ui/staff/layout";
+import { Staff_LoginPage } from "@/ui/staff/login";
+import { Waiter_HomePage } from "@/ui/staff/waiter/home";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+
 
 export const router = createBrowserRouter([
   {
     path: "/",
     errorElement: <ErrorPage />,
-    element: <CustomerLayout />,
+    element: <Customer_Layout />,
     children: [
       {
         index: true,
-        element: <CustomerHomePage />,
+        element: <Customer_HomePage />,
       },
     ],
   },
   {
     path: "/staff",
-    element: <StaffLayout />,
+    element: <Staff_Layout />,
     children: [
       {
+        index: true,
+        element: <Navigate to="/staff/login" replace />,
+      },
+      {
         path: "login",
-        element: <StaffLoginPage />,
+        element: <Staff_LoginPage />,
       },
       {
         path: "admin",
-        element: <StaffAdminLayout />,
         children: [
           {
             index: true,
-            element: <StaffAdminHomePage />,
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_HomePage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "staff",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ManageStaffPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "locations",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ManageLocationsPage />
+              </StaffAuthGuard>
+            ),
           },
         ],
       },
       {
         path: "waiter",
-        element: <StaffWaiterLayout />,
         children: [
           {
             index: true,
-            element: <StaffWaiterHomePage />,
+            element: (
+              <StaffAuthGuard role={StaffRole.Waiter}>
+                <Waiter_HomePage />
+              </StaffAuthGuard>
+            ),
           },
+          {
+            path: "table/:tableId",
+            element: (
+              <StaffAuthGuard role={StaffRole.Waiter}>
+                <Waiter_TableDetailsPage />
+              </StaffAuthGuard>
+            )
+          }
         ],
       },
       {
         path: "kitchen-manager",
-        element: <StaffKitchenManagerLayout />,
         children: [
           {
             index: true,
-            element: <KitchenManagerHomePage />,
+            element: (
+              <StaffAuthGuard role={StaffRole.KitchenManager}>
+                <KitchenManager_HomePage />
+              </StaffAuthGuard>
+            ),
           },
           {
             path: "orders",
-            element: <KitchenManagerOrdersPage />,
+            element: (
+              <StaffAuthGuard role={StaffRole.KitchenManager}>
+                <KitchenManager_OrdersPage />
+              </StaffAuthGuard>
+            ),
           },
           {
             path: "meals",
             children: [
               {
                 index: true,
-                element: <KitchenManagerMealsPage />,
+                element: (
+                  <StaffAuthGuard role={StaffRole.KitchenManager}>
+                    <KitchenManager_MealsPage />
+                  </StaffAuthGuard>
+                ),
               },
               {
                 path: "meal-item/:mealId",
-                element: <MealItem />,
+                element: (
+                  <StaffAuthGuard role={StaffRole.KitchenManager}>
+                    <KitchenManager_MealItem />
+                  </StaffAuthGuard>
+                ),
               },
             ],
           },
           {
             path: "ingredients",
-            element: <KitchenManagerIngredientsPage />,
+            element: (
+              <StaffAuthGuard role={StaffRole.KitchenManager}>
+                <KitchenManager_IngredientsPage />
+              </StaffAuthGuard>
+            ),
           },
         ],
       },
