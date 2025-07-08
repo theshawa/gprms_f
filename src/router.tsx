@@ -14,7 +14,8 @@ import { KitchenManager_OrdersPage } from "./ui/staff/kitchen-manager/orders";
 import { KitchenManager_MealItem } from "./ui/staff/kitchen-manager/shared/meal-item";
 import { Staff_Layout } from "./ui/staff/layout";
 import { Staff_LoginPage } from "./ui/staff/login";
-import { Waiter_HomePage } from "./ui/staff/waiter/home";
+import { Waiter_HomePage } from "./ui/staff/waiter";
+import { Waiter_TableDetailsPage } from "./ui/staff/waiter/table-details";
 
 export const router = createBrowserRouter([
   {
@@ -77,6 +78,14 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
+          {
+            path: "table/:tableId",
+            element: (
+              <StaffAuthGuard role={StaffRole.Waiter}>
+                <Waiter_TableDetailsPage />
+              </StaffAuthGuard>
+            )
+          }
         ],
       },
       {
