@@ -92,13 +92,7 @@ export const ManageAccountDialog: FC<{
   return (
     <Dialog
       open={open}
-      disablePortal
       maxWidth="xs"
-      onClose={(_, reason) => {
-        if (reason !== "backdropClick") {
-          close();
-        }
-      }}
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
