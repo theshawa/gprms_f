@@ -1,3 +1,4 @@
+import { useConfirmation } from "@/hooks/useConfirmation";
 import {
   Button,
   Dialog,
@@ -7,7 +8,6 @@ import {
   DialogTitle,
 } from "@mui/material";
 import type { FC } from "react";
-import { useConfirmation } from "../hooks/useConfirmation";
 
 export const ConfirmationComponent: FC = () => {
   const { _confirmation } = useConfirmation();

@@ -1,7 +1,7 @@
-import { staffBackend } from "../backend";
-import type { StaffActivityLog } from "../interfaces/staff-activity-log";
-import type { StaffAuthState } from "../interfaces/staff-auth-state";
-import type { StaffUser } from "../interfaces/staff-user";
+import { staffBackend } from "@/backend";
+import type { StaffActivityLog } from "@/interfaces/staff-activity-log";
+import type { StaffAuthState } from "@/interfaces/staff-auth-state";
+import type { StaffUser } from "@/interfaces/staff-user";
 
 export class StaffService {
   static async login(username: string, password: string) {

@@ -1,7 +1,17 @@
 import { type FC, useRef, useState } from "react";
 
+import { getBackendErrorMessage } from "@/backend";
+import { getNameForRole } from "@/enums/staff-role";
+import { useAlert } from "@/hooks/useAlert";
+import { useConfirmation } from "@/hooks/useConfirmation";
+import { useStaffAuth } from "@/hooks/useStaffAuth";
+import type { StaffUser } from "@/interfaces/staff-user";
+import { StaffService } from "@/services/staff";
+import { PageError } from "@/ui/staff/shared/page-error";
+import { PageLoader } from "@/ui/staff/shared/page-loader";
 import { PersonAdd } from "@mui/icons-material";
 import {
+  Box,
   Button,
   Paper,
   Table,
@@ -13,16 +23,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getBackendErrorMessage } from "../../../../backend";
-import { getNameForRole } from "../../../../enums/staff-role";
-import { useAlert } from "../../../../hooks/useAlert";
-import { useConfirmation } from "../../../../hooks/useConfirmation";
-import { useStaffAuth } from "../../../../hooks/useStaffAuth";
-import type { StaffUser } from "../../../../interfaces/staff-user";
-import { StaffService } from "../../../../services/staff";
-import { ItemsPageLayout } from "../../shared/items-page-layout";
-import { PageError } from "../../shared/page-error";
-import { PageLoader } from "../../shared/page-loader";
 import { ActivityHistoryDialog } from "./activity-history-dialog";
 import { ManageAccountDialog } from "./manage-account-dialog";
 
@@ -112,10 +112,9 @@ export const Admin_ManageStaff_HomePage: FC = () => {
                           onClick={async () => {
                             if (
                               await confirm({
-                                title: "Delete Staff Account",
-                                message: `Are you sure you want to delete account of ${m.name}? All associated data related to this account will be lost. This action cannot be undone.`,
-                                confirmText: "Delete Account",
-                                cancelText: "Cancel",
+                                title: "Are you sure?",
+                                message: `You are going to delete the account of ${m.name}? All associated data related to this account will be lost. This action cannot be undone.`,
+                                confirmText: " Delete Account",
                                 confirmButtonDanger: true,
                               })
                             ) {

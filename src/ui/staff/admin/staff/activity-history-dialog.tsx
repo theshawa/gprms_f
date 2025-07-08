@@ -1,3 +1,9 @@
+import { getBackendErrorMessage } from "@/backend";
+import { getNameForRole } from "@/enums/staff-role";
+import { useAlert } from "@/hooks/useAlert";
+import { useConfirmation } from "@/hooks/useConfirmation";
+import type { StaffUser } from "@/interfaces/staff-user";
+import { StaffService } from "@/services/staff";
 import {
   Alert,
   Button,
@@ -19,12 +25,6 @@ import {
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { type FC, useState } from "react";
-import { getBackendErrorMessage } from "../../../../backend";
-import { getNameForRole } from "../../../../enums/staff-role";
-import { useAlert } from "../../../../hooks/useAlert";
-import { useConfirmation } from "../../../../hooks/useConfirmation";
-import type { StaffUser } from "../../../../interfaces/staff-user";
-import { StaffService } from "../../../../services/staff";
 
 export const ActivityHistoryDialog: FC<{
   open: boolean;
@@ -160,9 +160,9 @@ export const ActivityHistoryDialog: FC<{
           onClick={async () => {
             if (
               await confirm({
-                title: "Clear Activity History",
-                message: `Are you sure you want to clear the activity history of ${account?.name}? This action cannot be undone.`,
-                confirmText: "Clear History",
+                title: "Are you sure?",
+                message: `You are going to clear the activity history of ${account?.name}? This action cannot be undone.`,
+                confirmText: "Yes, Clear History",
                 confirmButtonDanger: true,
               })
             ) {

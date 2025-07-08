@@ -1,6 +1,6 @@
+import { staffBackend } from "@/backend";
 import { Button } from "@mui/material";
 import type { FC } from "react";
-import { staffBackend } from "../../../../backend";
 
 export const Admin_HomePage: FC = () => {
   const loadActivities = async () => {

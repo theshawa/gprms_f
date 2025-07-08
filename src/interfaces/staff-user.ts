@@ -1,4 +1,4 @@
-import type { StaffRole } from "../enums/staff-role";
+import type { StaffRole } from "@/enums/staff-role";
 
 export interface StaffUser {
   id: number;
