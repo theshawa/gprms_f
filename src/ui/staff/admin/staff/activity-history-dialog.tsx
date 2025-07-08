@@ -19,12 +19,12 @@ import {
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { type FC, useState } from "react";
-import { getBackendErrorMessage } from "../../../../../backend";
-import { getNameForRole } from "../../../../../enums/staff-role";
-import { useAlert } from "../../../../../hooks/useAlert";
-import { useConfirmation } from "../../../../../hooks/useConfirmation";
-import type { StaffUser } from "../../../../../interfaces/staff-user";
-import { StaffService } from "../../../../../services/staff";
+import { getBackendErrorMessage } from "../../../../backend";
+import { getNameForRole } from "../../../../enums/staff-role";
+import { useAlert } from "../../../../hooks/useAlert";
+import { useConfirmation } from "../../../../hooks/useConfirmation";
+import type { StaffUser } from "../../../../interfaces/staff-user";
+import { StaffService } from "../../../../services/staff";
 
 export const ActivityHistoryDialog: FC<{
   open: boolean;

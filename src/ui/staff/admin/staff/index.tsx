@@ -14,15 +14,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getBackendErrorMessage } from "../../../../../backend";
-import { getNameForRole } from "../../../../../enums/staff-role";
-import { useAlert } from "../../../../../hooks/useAlert";
-import { useConfirmation } from "../../../../../hooks/useConfirmation";
-import { useStaffAuth } from "../../../../../hooks/useStaffAuth";
-import type { StaffUser } from "../../../../../interfaces/staff-user";
-import { StaffService } from "../../../../../services/staff";
-import { PageError } from "../../../shared/page-error";
-import { PageLoader } from "../../../shared/page-loader";
+import { getBackendErrorMessage } from "../../../../backend";
+import { getNameForRole } from "../../../../enums/staff-role";
+import { useAlert } from "../../../../hooks/useAlert";
+import { useConfirmation } from "../../../../hooks/useConfirmation";
+import { useStaffAuth } from "../../../../hooks/useStaffAuth";
+import type { StaffUser } from "../../../../interfaces/staff-user";
+import { StaffService } from "../../../../services/staff";
+import { PageError } from "../../shared/page-error";
+import { PageLoader } from "../../shared/page-loader";
 import { ActivityHistoryDialog } from "./activity-history-dialog";
 import { ManageAccountDialog } from "./manage-account-dialog";
 

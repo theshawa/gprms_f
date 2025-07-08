@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 import { type FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { getBackendErrorMessage } from "../../../../../backend";
-import { StaffRole } from "../../../../../enums/staff-role";
-import { useAlert } from "../../../../../hooks/useAlert";
-import type { StaffUser } from "../../../../../interfaces/staff-user";
-import { StaffService } from "../../../../../services/staff";
+import { getBackendErrorMessage } from "../../../../backend";
+import { StaffRole } from "../../../../enums/staff-role";
+import { useAlert } from "../../../../hooks/useAlert";
+import type { StaffUser } from "../../../../interfaces/staff-user";
+import { StaffService } from "../../../../services/staff";
 
 type FormInputs = {
   role: string;
