@@ -1,8 +1,7 @@
-import { type FC, useState } from "react";
+import { type FC, useRef, useState } from "react";
 
 import { PersonAdd } from "@mui/icons-material";
 import {
-  Alert,
   Box,
   Button,
   Paper,
@@ -14,7 +13,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getBackendErrorMessage } from "../../../../../backend";
 import { getNameForRole } from "../../../../../enums/staff-role";
 import { useAlert } from "../../../../../hooks/useAlert";
@@ -22,7 +21,9 @@ import { useConfirmation } from "../../../../../hooks/useConfirmation";
 import { useStaffAuth } from "../../../../../hooks/useStaffAuth";
 import type { StaffUser } from "../../../../../interfaces/staff-user";
 import { StaffService } from "../../../../../services/staff";
+import { PageError } from "../../../shared/page-error";
 import { PageLoader } from "../../../shared/page-loader";
+import { ActivityHistoryDialog } from "./activity-history-dialog";
 import { ManageAccountDialog } from "./manage-account-dialog";
 
 export const Admin_ManageStaff_HomePage: FC = () => {
@@ -35,50 +36,44 @@ export const Admin_ManageStaff_HomePage: FC = () => {
 
   const [manageAccountDialogOpen, setManageAccountDialogOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<StaffUser>();
+  const [activityHistoryDialogOpen, setActivityHistoryDialogOpen] =
+    useState(false);
+  const [activityHistoryAccount, setActivityHistoryAccount] =
+    useState<StaffUser>();
+
+  const timeOutRef = useRef<number>(null);
 
   const { confirm } = useConfirmation();
   const { showError, showSuccess } = useAlert();
+
+  const { mutate: deleteAccount, isPending: isDeleting } = useMutation({
+    mutationFn: (id: number) => StaffService.deleteStaffAccount(id),
+    mutationKey: ["admin_manageStaff_deleteAccount"],
+    onSuccess: () => {
+      refetch();
+      showSuccess("Staff account deleted successfully.");
+    },
+    onError: (err) => {
+      showError(
+        `Failed to delete staff account: ${getBackendErrorMessage(err)}`
+      );
+    },
+  });
+
+  const closeManageAccountDialog = () => {
+    setManageAccountDialogOpen(false);
+    timeOutRef.current = setTimeout(() => {
+      setEditingAccount(undefined);
+    }, 600);
+  };
 
   if (isPending) {
     return <PageLoader />;
   }
 
   if (error) {
-    return (
-      <Box p={3}>
-        <Alert severity="error">
-          Failed to load staff accounts: {getBackendErrorMessage(error)}
-        </Alert>
-      </Box>
-    );
+    return <PageError error={error} />;
   }
-
-  const closeDialog = () => {
-    setManageAccountDialogOpen(false);
-    setTimeout(() => {
-      setEditingAccount(undefined);
-    }, 600);
-  };
-
-  const deleteAccount = async (id: number) => {
-    const ok = await confirm({
-      title: "Delete Staff Account",
-      message: "Are you sure you want to delete this staff account?",
-      confirmText: "Delete",
-      cancelText: "Cancel",
-    });
-    if (!ok) return;
-
-    try {
-      await StaffService.deleteStaffAccount(id);
-      refetch();
-      showSuccess("Staff account deleted successfully.");
-    } catch (error) {
-      showError(
-        `Failed to delete staff account: ${getBackendErrorMessage(error)}`
-      );
-    }
-  };
 
   return (
     <>
@@ -130,19 +125,45 @@ export const Admin_ManageStaff_HomePage: FC = () => {
                       <>
                         <Button
                           color="error"
-                          onClick={() => deleteAccount(m.id)}
+                          onClick={async () => {
+                            if (
+                              await confirm({
+                                title: "Delete Staff Account",
+                                message: `Are you sure you want to delete account of ${m.name}? All associated data related to this account will be lost. This action cannot be undone.`,
+                                confirmText: "Delete Account",
+                                cancelText: "Cancel",
+                                confirmButtonDanger: true,
+                              })
+                            ) {
+                              deleteAccount(m.id);
+                            }
+                          }}
+                          disabled={isDeleting}
                         >
                           Delete
                         </Button>
                         <Button
                           onClick={() => {
+                            if (timeOutRef.current) {
+                              clearTimeout(timeOutRef.current);
+                            }
                             setEditingAccount(m);
                             setManageAccountDialogOpen(true);
                           }}
                         >
                           Edit
                         </Button>
-                        <Button>Activity History</Button>
+                        <Button
+                          onClick={() => {
+                            if (timeOutRef.current) {
+                              clearTimeout(timeOutRef.current);
+                            }
+                            setActivityHistoryAccount(m);
+                            setActivityHistoryDialogOpen(true);
+                          }}
+                        >
+                          Activity History
+                        </Button>
                       </>
                     ) : (
                       <Typography variant="body2" color="textSecondary">
@@ -159,11 +180,21 @@ export const Admin_ManageStaff_HomePage: FC = () => {
       <ManageAccountDialog
         currentAccount={editingAccount}
         open={manageAccountDialogOpen}
-        handleClose={closeDialog}
+        handleClose={closeManageAccountDialog}
         onManageSuccess={() => {
           refetch();
-          closeDialog();
+          closeManageAccountDialog();
         }}
+      />
+      <ActivityHistoryDialog
+        open={activityHistoryDialogOpen}
+        handleClose={() => {
+          setActivityHistoryDialogOpen(false);
+          timeOutRef.current = setTimeout(() => {
+            setActivityHistoryAccount(undefined);
+          }, 600);
+        }}
+        account={activityHistoryAccount}
       />
     </>
   );

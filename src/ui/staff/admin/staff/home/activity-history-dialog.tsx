@@ -42,14 +42,14 @@ export const ActivityHistoryDialog: FC<{
       activitiesPerPage,
     ],
     queryFn: async () => {
-      if (!account) return { activities: [], totalCount: 0 };
-      const { activities, totalCount } =
-        await StaffService.getStaffActivityHistory(
-          account.id,
-          currentPage,
-          activitiesPerPage
-        );
-      return { activities, totalCount };
+      if (!account) {
+        return { activities: [], totalCount: 0 };
+      }
+      return StaffService.getStaffActivityHistory(
+        account.id,
+        currentPage,
+        activitiesPerPage
+      );
     },
     enabled: open && !!account,
     refetchOnWindowFocus: false,
@@ -57,12 +57,6 @@ export const ActivityHistoryDialog: FC<{
 
   const { confirm } = useConfirmation();
   const { showError, showSuccess } = useAlert();
-
-  const close = () => {
-    setCurrentPage(1);
-    setActivitiesPerPage(10);
-    handleClose();
-  };
 
   const { mutate: clearHistory, isPending: isClearingHistory } = useMutation({
     mutationFn: () => StaffService.clearStaffActivityHistory(account!.id),
@@ -76,6 +70,12 @@ export const ActivityHistoryDialog: FC<{
       );
     },
   });
+
+  const close = () => {
+    setCurrentPage(1);
+    setActivitiesPerPage(10);
+    handleClose();
+  };
 
   return (
     <Dialog open={open} maxWidth="xl">
@@ -135,7 +135,9 @@ export const ActivityHistoryDialog: FC<{
                 <TablePagination
                   colSpan={2}
                   disabled={isPending || data?.totalCount === 0}
-                  rowsPerPageOptions={[10, 20]}
+                  rowsPerPageOptions={
+                    (data?.totalCount ?? 0) > 10 ? [10, 20] : [10]
+                  }
                   count={data?.totalCount ?? -1}
                   onPageChange={(_, p) => setCurrentPage(p + 1)}
                   page={currentPage - 1}
@@ -151,7 +153,7 @@ export const ActivityHistoryDialog: FC<{
         </TableContainer>
       </DialogContent>
       <DialogActions>
-        <Button onClick={close} disabled={isPending || isClearingHistory}>
+        <Button onClick={close} disabled={isClearingHistory}>
           Close
         </Button>
         <Button
@@ -160,6 +162,8 @@ export const ActivityHistoryDialog: FC<{
               await confirm({
                 title: "Clear Activity History",
                 message: `Are you sure you want to clear the activity history of ${account?.name}? This action cannot be undone.`,
+                confirmText: "Clear History",
+                confirmButtonDanger: true,
               })
             ) {
               clearHistory();
