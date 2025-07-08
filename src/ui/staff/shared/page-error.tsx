@@ -1,6 +1,6 @@
+import { getBackendErrorMessage } from "@/backend";
 import { Alert, Box } from "@mui/material";
 import type { FC } from "react";
-import { getBackendErrorMessage } from "../../../backend";
 
 export const PageError: FC<{ error: any }> = ({ error }) => {
   return (

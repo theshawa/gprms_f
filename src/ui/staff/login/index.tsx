@@ -1,3 +1,8 @@
+import { getBackendErrorMessage } from "@/backend";
+import { getEndpointForRole } from "@/enums/staff-role";
+import { useAlert } from "@/hooks/useAlert";
+import { useStaffAuth } from "@/hooks/useStaffAuth";
+import { StaffService } from "@/services/staff";
 import {
   Box,
   Button,
@@ -9,11 +14,6 @@ import {
 import { type FC, useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { getBackendErrorMessage } from "../../../backend";
-import { getEndpointForRole } from "../../../enums/staff-role";
-import { useAlert } from "../../../hooks/useAlert";
-import { useStaffAuth } from "../../../hooks/useStaffAuth";
-import { StaffService } from "../../../services/staff";
 
 export type LoginInputs = {
   username: string;

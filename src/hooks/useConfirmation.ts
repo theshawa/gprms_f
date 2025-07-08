@@ -1,5 +1,5 @@
+import { confirmationAtom } from "@/atoms/confirmation";
 import { useAtom } from "jotai";
-import { confirmationAtom } from "../atoms/confirmation";
 
 export const useConfirmation = () => {
   const [confirmation, setConfirmation] = useAtom(confirmationAtom);
