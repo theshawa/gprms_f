@@ -3,6 +3,8 @@ import {
   CalendarToday,
   Fastfood,
   Home,
+  Kitchen,
+  LocalPizza,
   LocalOfferSharp,
   LocationPin,
   Login,
@@ -96,6 +98,35 @@ export const SideMenu: FC<{
           {
             title: "Settings",
             link: "/staff/admin/settings",
+            Icon: Settings,
+          }
+        );
+        break;
+      case StaffRole.KitchenManager:
+        links.push(
+          {
+            title: "Home",
+            link: "/staff/kitchen-manager",
+            Icon: Home,
+          },
+          {
+            title: "Orders",
+            link: "/staff/kitchen-manager/orders",
+            Icon: Fastfood,
+          },
+          {
+            title: "Meals",
+            link: "/staff/kitchen-manager/meals",
+            Icon: LocalPizza,
+          },
+          {
+            title: "Ingredients",
+            link: "/staff/kitchen-manager/ingredients",
+            Icon: Kitchen,
+          },
+          {
+            title: "Settings",
+            link: "/staff/kitchen-manager/settings",
             Icon: Settings,
           }
         );

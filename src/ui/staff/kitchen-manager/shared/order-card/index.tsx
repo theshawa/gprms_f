@@ -17,16 +17,20 @@ import type { FC } from "react";
 //   quantity: number;
 // };
 
-// type Order = {
-//   orderCode: string;
-//   customerName: string;
-//   createdAt: string;
-//   tableNumber: number;
-//   note?: string;
-//   items: OrderItem[];
-// };
+type Order = {
+  orderCode: string;
+  // customerName: string;
+  // createdAt: string;
+  // tableNumber: number;
+  // note?: string;
+  // items: OrderItem[];
+};
 
-export const OrderCard: FC = () => {
+interface OrderCardProps {
+  order: Order;
+}
+
+export const OrderCard: FC<OrderCardProps> = ({ order }) => {
   return (
     <Card sx={{ color: "black", borderRadius: 2, boxShadow: 4 }}>
       <CardHeader
@@ -36,7 +40,7 @@ export const OrderCard: FC = () => {
             sx={{ width: 40, height: 40, border: "2px solid #ccc" }}
           />
         }
-        title={<Typography variant="subtitle1">Order #1</Typography>}
+        title={<Typography variant="subtitle1">{order?.orderCode}</Typography>}
         subheader={<Typography variant="caption">John Doe</Typography>}
       />
 
