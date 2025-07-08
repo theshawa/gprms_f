@@ -1,6 +1,7 @@
-import { staffBackend } from "../backend";
-import type { StaffAuthState } from "../interfaces/staff-auth-state";
-import type { StaffUser } from "../interfaces/staff-user";
+import { staffBackend } from "@/backend";
+import type { StaffActivityLog } from "@/interfaces/staff-activity-log";
+import type { StaffAuthState } from "@/interfaces/staff-auth-state";
+import type { StaffUser } from "@/interfaces/staff-user";
 
 export class StaffService {
   static async login(username: string, password: string) {
@@ -48,5 +49,24 @@ export class StaffService {
 
   static async deleteStaffAccount(id: number) {
     await staffBackend.delete(`/admin/delete-staff-member/${id}`);
+  }
+
+  static async getStaffActivityHistory(
+    id: number,
+    page: number = 1,
+    perPage: number = 10
+  ) {
+    const { data } = await staffBackend.get<{
+      activities: StaffActivityLog[];
+      totalCount: number;
+    }>(`/admin/activity-logs/${id}`, {
+      params: { page, perPage },
+    });
+
+    return data;
+  }
+
+  static async clearStaffActivityHistory(id: number) {
+    await staffBackend.delete(`/admin/activity-logs/${id}`);
   }
 }

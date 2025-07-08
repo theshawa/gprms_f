@@ -1,12 +1,13 @@
+import { useConfirmation } from "@/hooks/useConfirmation";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
 } from "@mui/material";
 import type { FC } from "react";
-import { useConfirmation } from "../hooks/useConfirmation";
 
 export const ConfirmationComponent: FC = () => {
   const { _confirmation } = useConfirmation();
@@ -21,7 +22,9 @@ export const ConfirmationComponent: FC = () => {
       }}
     >
       <DialogTitle>{_confirmation?.title}</DialogTitle>
-      <DialogContent>{_confirmation?.message}</DialogContent>
+      <DialogContent>
+        <DialogContentText>{_confirmation?.message}</DialogContentText>
+      </DialogContent>
       <DialogActions>
         <Button
           onClick={() => {
@@ -35,6 +38,7 @@ export const ConfirmationComponent: FC = () => {
             _confirmation?.onConfirm(true);
           }}
           variant="contained"
+          color={_confirmation?.confirmButtonDanger ? "error" : "primary"}
         >
           {_confirmation?.confirmText || "Yes"}
         </Button>

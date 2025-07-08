@@ -1,6 +1,6 @@
+import { useAlert } from "@/hooks/useAlert";
 import { Alert, Button, Snackbar } from "@mui/material";
 import type { FC } from "react";
-import { useAlert } from "../hooks/useAlert";
 
 export const AlertComponent: FC = () => {
   const { alert, hideAlert } = useAlert();

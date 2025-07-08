@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowImportingTsExtensions": true,
+    "baseUrl": ".",
     "erasableSyntaxOnly": false,
     "jsx": "react-jsx",
     "lib": [
@@ -17,6 +18,11 @@
     "noUncheckedSideEffectImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
     "skipLibCheck": true,
     /* Linting */
     "strict": true,

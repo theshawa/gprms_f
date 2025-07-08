@@ -1,3 +1,8 @@
+import { getBackendErrorMessage } from "@/backend";
+import { StaffRole } from "@/enums/staff-role";
+import { useAlert } from "@/hooks/useAlert";
+import type { StaffUser } from "@/interfaces/staff-user";
+import { StaffService } from "@/services/staff";
 import {
   Button,
   Dialog,
@@ -13,11 +18,6 @@ import {
 } from "@mui/material";
 import { type FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { getBackendErrorMessage } from "../../../../../backend";
-import { StaffRole } from "../../../../../enums/staff-role";
-import { useAlert } from "../../../../../hooks/useAlert";
-import type { StaffUser } from "../../../../../interfaces/staff-user";
-import { StaffService } from "../../../../../services/staff";
 
 type FormInputs = {
   role: string;
@@ -58,7 +58,7 @@ export const ManageAccountDialog: FC<{
   const close = () => {
     setTimeout(() => {
       reset();
-    }, 600);
+    }, 300);
     handleClose();
   };
 
@@ -99,7 +99,6 @@ export const ManageAccountDialog: FC<{
           close();
         }
       }}
-      transitionDuration={600}
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
@@ -189,10 +188,12 @@ export const ManageAccountDialog: FC<{
           })}
           label="Password"
           variant="filled"
-          type="password"
           fullWidth
           error={!!errors.password}
-          helperText={errors.password?.message}
+          helperText={
+            errors.password?.message ??
+            (currentAccount && "Leave empty to keep the same password")
+          }
           margin="dense"
         />
       </DialogContent>

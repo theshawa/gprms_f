@@ -1,21 +1,21 @@
+import { StaffAuthGuard } from "@/components/staff-auth-guard";
+import { StaffRole } from "@/enums/staff-role";
+import { Customer_HomePage } from "@/ui/customer/home";
+import { Customer_Layout } from "@/ui/customer/layout";
+import { ErrorPage } from "@/ui/error";
+import { NotFoundPage } from "@/ui/not-found";
+import { Admin_HomePage } from "@/ui/staff/admin/home";
+import { Admin_ManageStaffPage } from "@/ui/staff/admin/staff";
+import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
+import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
+import { KitchenManager_MealsPage } from "@/ui/staff/kitchen-manager/meals";
+import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
+import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-item";
+import { Staff_Layout } from "@/ui/staff/layout";
+import { Staff_LoginPage } from "@/ui/staff/login";
+import { Waiter_HomePage } from "@/ui/staff/waiter/home";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { StaffAuthGuard } from "./components/staff-auth-guard";
-import { StaffRole } from "./enums/staff-role";
-import { Customer_HomePage } from "./ui/customer/home";
-import { Customer_Layout } from "./ui/customer/layout";
-import { ErrorPage } from "./ui/error";
-import { NotFoundPage } from "./ui/not-found";
-import { Admin_HomePage } from "./ui/staff/admin/home";
-import { Admin_ManageStaff_HomePage } from "./ui/staff/admin/staff/home";
-import { KitchenManager_HomePage } from "./ui/staff/kitchen-manager/home";
-import { KitchenManager_IngredientsPage } from "./ui/staff/kitchen-manager/ingredients";
-import { KitchenManager_MealsPage } from "./ui/staff/kitchen-manager/meals";
-import { KitchenManager_OrdersPage } from "./ui/staff/kitchen-manager/orders";
-import { KitchenManager_MealItem } from "./ui/staff/kitchen-manager/shared/meal-item";
-import { Staff_Layout } from "./ui/staff/layout";
-import { Staff_LoginPage } from "./ui/staff/login";
-import { Waiter_HomePage } from "./ui/staff/waiter";
-import { Waiter_TableDetailsPage } from "./ui/staff/waiter/table-details";
+
 
 export const router = createBrowserRouter([
   {
@@ -54,16 +54,19 @@ export const router = createBrowserRouter([
           },
           {
             path: "staff",
-            children: [
-              {
-                index: true,
-                element: (
-                  <StaffAuthGuard role={StaffRole.Admin}>
-                    <Admin_ManageStaff_HomePage />
-                  </StaffAuthGuard>
-                ),
-              },
-            ],
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ManageStaffPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "locations",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ManageLocationsPage />
+              </StaffAuthGuard>
+            ),
           },
         ],
       },

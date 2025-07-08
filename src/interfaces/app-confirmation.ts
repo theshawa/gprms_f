@@ -4,5 +4,6 @@ export interface AppConfirmation {
   message: string;
   confirmText?: string;
   cancelText?: string;
+  confirmButtonDanger?: boolean;
   onConfirm: (v: boolean) => void;
 }

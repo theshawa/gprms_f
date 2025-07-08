@@ -1,6 +1,6 @@
+import { alertAtom } from "@/atoms/alert";
+import type { AppAlert } from "@/interfaces/app-alert";
 import { useAtom } from "jotai";
-import { alertAtom } from "../atoms/alert";
-import type { AppAlert } from "../interfaces/app-alert";
 
 export const useAlert = () => {
   const [alert, setAlert] = useAtom(alertAtom);
