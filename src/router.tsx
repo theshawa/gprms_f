@@ -33,6 +33,7 @@ export const router = createBrowserRouter([
   {
     path: "/staff",
     element: <Staff_Layout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,

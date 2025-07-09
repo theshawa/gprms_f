@@ -153,9 +153,9 @@ export const Admin_ManageStaffPage: FC = () => {
                         </Button>
                       </>
                     ) : (
-                      <Typography variant="body2" color="textSecondary">
+                      <Button disabled color="info">
                         No actions available for your own account.
-                      </Typography>
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>
