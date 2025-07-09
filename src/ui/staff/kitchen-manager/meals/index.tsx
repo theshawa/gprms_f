@@ -36,6 +36,7 @@ export const KitchenManager_MealsPage: FC = () => {
                     name={"Margerita Pizza"}
                     price={3560}
                     status={"Available"}
+                    desc={"The most basic pizza."}
                   />
                 ))}
               </Box>

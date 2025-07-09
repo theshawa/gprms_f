@@ -50,11 +50,6 @@ export const KitchenManager_HomePage: FC = () => {
 
   return (
     <Box className="dashboard-container" p={3}>
-      {/* Header */}
-      <Box mb={3}>
-        <Typography variant="h4">Dashboard</Typography>
-      </Box>
-
       {/* Stats Cards */}
       <Box display="flex" gap={2} mb={3}>
         <Card sx={{ flex: 1 }}>

@@ -27,6 +27,6 @@ export class LocationsService {
   }
 
   static async deleteLocation(id: number) {
-    return staffBackend.delete(`/admin/locations/${id}`);
+    await staffBackend.delete(`/admin/locations/${id}`);
   }
 }

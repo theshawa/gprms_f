@@ -25,7 +25,7 @@ export const ItemsPageLayout: FC<{
           <Typography
             variant="subtitle1"
             color="textSecondary"
-            maxWidth="50rem"
+            maxWidth="30rem"
           >
             {subtitle}
           </Typography>
