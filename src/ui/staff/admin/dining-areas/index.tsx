@@ -35,7 +35,7 @@ export const Admin_ManageDiningAreasPage: FC = () => {
       <ItemsPageLayout
         title="Manage Dining Areas"
         subtitle="Organize your restaurant space with different dining areas."
-        buttonText="Add New Dining Area"
+        buttonText="New Dining Area"
         buttonIcon={<AddLocationAlt />}
         onButtonClick={() => setNewDialogOpen(true)}
       >
@@ -53,7 +53,7 @@ export const Admin_ManageDiningAreasPage: FC = () => {
         </Grid>
         {diningAreas.length === 0 && (
           <Typography variant="body2" color="textSecondary">
-            No dining areas found. Click "Add New Dining Area" to create one.
+            No dining areas found. Click "New Dining Area" to create one.
           </Typography>
         )}
       </ItemsPageLayout>
