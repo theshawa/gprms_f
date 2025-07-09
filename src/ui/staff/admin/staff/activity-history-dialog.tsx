@@ -29,7 +29,7 @@ import { type FC, useState } from "react";
 
 export const ActivityHistoryDialog: FC<{
   open: boolean;
-  account?: StaffUser;
+  account: StaffUser;
   handleClose: () => void;
 }> = ({ handleClose, open, account }) => {
   const [activitiesPerPage, setActivitiesPerPage] = useState(10);
@@ -38,21 +38,17 @@ export const ActivityHistoryDialog: FC<{
   const { data, isPending, error } = useQuery({
     queryKey: [
       "staff_activity_history",
-      account?.id ?? null,
+      account.id,
       currentPage,
       activitiesPerPage,
     ],
-    queryFn: async () => {
-      if (!account) {
-        return { activities: [], totalCount: 0 };
-      }
-      return StaffService.getStaffActivityHistory(
+    queryFn: async () =>
+      StaffService.getStaffActivityHistory(
         account.id,
         currentPage,
         activitiesPerPage
-      );
-    },
-    enabled: open && !!account,
+      ),
+    enabled: open,
     refetchOnWindowFocus: false,
   });
 
@@ -60,10 +56,10 @@ export const ActivityHistoryDialog: FC<{
   const { showError, showSuccess } = useAlert();
 
   const { mutate: clearHistory, isPending: isClearingHistory } = useMutation({
-    mutationFn: () => StaffService.clearStaffActivityHistory(account!.id),
+    mutationFn: () => StaffService.clearStaffActivityHistory(account.id),
     onSuccess: () => {
-      close();
       showSuccess("Activity history cleared successfully.");
+      close();
     },
     onError: (err) => {
       showError(
@@ -81,8 +77,7 @@ export const ActivityHistoryDialog: FC<{
   return (
     <Dialog open={open} maxWidth="xl">
       <DialogTitle>
-        Activity History of {account?.name}{" "}
-        {account ? `(${getNameForRole(account.role)})` : ""}
+        Activity History of {account.name} ({getNameForRole(account.role)})
       </DialogTitle>
       <DialogContent>
         <TableContainer component={Paper}>
@@ -162,7 +157,7 @@ export const ActivityHistoryDialog: FC<{
             if (
               await confirm({
                 title: "Are you sure?",
-                message: `You are going to clear the activity history of ${account?.name}? This action cannot be undone.`,
+                message: `You are going to clear the activity history of ${account.name}? This action cannot be undone.`,
                 confirmText: "Yes, Clear History",
                 confirmButtonDanger: true,
               })
@@ -171,10 +166,7 @@ export const ActivityHistoryDialog: FC<{
             }
           }}
           disabled={
-            !account ||
-            data?.activities.length === 0 ||
-            isPending ||
-            isClearingHistory
+            data?.activities.length === 0 || isPending || isClearingHistory
           }
           color="error"
         >

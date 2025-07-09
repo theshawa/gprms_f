@@ -1,3 +1,7 @@
+import { getBackendErrorMessage } from "@/backend";
+import { useAlert } from "@/hooks/useAlert";
+import type { Location } from "@/interfaces/location";
+import { LocationsService } from "@/services/locations";
 import {
   Button,
   Dialog,
@@ -6,7 +10,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import type { FC } from "react";
+import { type FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormInputs = {
@@ -17,21 +21,50 @@ type FormInputs = {
 export const ManageLocationDialog: FC<{
   open: boolean;
   handleClose: () => void;
-}> = ({ handleClose, open }) => {
+  onManageSuccess: (v: Partial<Location>) => void;
+  editingLocation?: Location;
+}> = ({ handleClose, open, onManageSuccess, editingLocation }) => {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-    control,
     reset,
   } = useForm<FormInputs>();
 
+  const { showSuccess, showError } = useAlert();
+
+  useEffect(() => {
+    reset(
+      editingLocation ?? {
+        description: "",
+        name: "",
+      }
+    );
+  }, [editingLocation]);
+
   const onSubmit = async (data: FormInputs) => {
-    console.log("Form submitted with data:", data);
-    // Here you would typically call an API to create the location
-    // For example:
-    // await LocationService.createLocation(data);
-    handleClose();
+    try {
+      if (editingLocation) {
+        await LocationsService.updateLocation(
+          editingLocation.id,
+          data.name,
+          data.description
+        );
+      } else {
+        await LocationsService.createLocation(data.name, data.description);
+        reset({
+          name: "",
+          description: "",
+        });
+      }
+      showSuccess(
+        `Location ${editingLocation ? "updated" : "created"} successfully!`
+      );
+      onManageSuccess(data);
+      handleClose();
+    } catch (error) {
+      showError(`Failed to create location: ${getBackendErrorMessage(error)}`);
+    }
   };
 
   return (
@@ -41,7 +74,7 @@ export const ManageLocationDialog: FC<{
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <DialogTitle>New Location</DialogTitle>
+      <DialogTitle>{editingLocation ? "Update" : "New"} Location</DialogTitle>
       <DialogContent>
         <TextField
           {...register("name", {
@@ -78,7 +111,7 @@ export const ManageLocationDialog: FC<{
       </DialogContent>
       <DialogActions>
         <Button variant="contained" type="submit" disabled={isSubmitting}>
-          Create
+          {editingLocation ? "Update" : "Create"}
         </Button>
         <Button onClick={handleClose} type="reset" disabled={isSubmitting}>
           Cancel
