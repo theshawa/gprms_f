@@ -29,9 +29,9 @@ type FormInputs = {
 export const ManageAccountDialog: FC<{
   open: boolean;
   handleClose: () => void;
-  currentAccount?: StaffUser;
-  onManageSuccess: () => void;
-}> = ({ handleClose, open, currentAccount, onManageSuccess }) => {
+  editingAccount?: StaffUser;
+  onManageSuccess: (v: Partial<StaffUser>) => void;
+}> = ({ handleClose, open, editingAccount, onManageSuccess }) => {
   const {
     handleSubmit,
     register,
@@ -43,8 +43,8 @@ export const ManageAccountDialog: FC<{
   const { showError, showSuccess } = useAlert();
 
   useEffect(() => {
-    if (currentAccount) {
-      reset({ ...currentAccount, password: "" });
+    if (editingAccount) {
+      reset({ ...editingAccount, password: "" });
     } else {
       reset({
         role: StaffRole.Waiter,
@@ -53,20 +53,13 @@ export const ManageAccountDialog: FC<{
         password: "",
       });
     }
-  }, [currentAccount]);
-
-  const close = () => {
-    setTimeout(() => {
-      reset();
-    }, 300);
-    handleClose();
-  };
+  }, [editingAccount]);
 
   const onSubmit = async (data: FormInputs) => {
     try {
-      if (currentAccount) {
+      if (editingAccount) {
         await StaffService.updateStaffAccount({
-          ...currentAccount,
+          ...editingAccount,
           ...data,
           role: data.role as StaffRole,
         });
@@ -75,15 +68,22 @@ export const ManageAccountDialog: FC<{
           ...data,
           role: data.role as StaffRole,
         });
+        reset({
+          role: StaffRole.Waiter,
+          name: "",
+          username: "",
+          password: "",
+        });
       }
-      onManageSuccess();
+      onManageSuccess(data as Partial<StaffUser>);
       showSuccess(
-        `Account ${currentAccount ? "updated" : "created"} successfully`
+        `Account ${editingAccount ? "updated" : "created"} successfully`
       );
+      handleClose();
     } catch (error) {
       showError(
         `Failed to ${
-          currentAccount ? "update" : "create"
+          editingAccount ? "update" : "create"
         } account: ${getBackendErrorMessage(error)}`
       );
     }
@@ -92,18 +92,12 @@ export const ManageAccountDialog: FC<{
   return (
     <Dialog
       open={open}
-      disablePortal
       maxWidth="xs"
-      onClose={(_, reason) => {
-        if (reason !== "backdropClick") {
-          close();
-        }
-      }}
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
       <DialogTitle>
-        {currentAccount ? "Update" : "New"} Staff Account
+        {editingAccount ? "Update" : "New"} Staff Account
       </DialogTitle>
 
       <DialogContent>
@@ -112,7 +106,7 @@ export const ManageAccountDialog: FC<{
           margin="dense"
           variant="filled"
           error={!!errors.role}
-          disabled={!!currentAccount}
+          disabled={!!editingAccount}
         >
           <InputLabel id="role-select-label">Role</InputLabel>
           <Controller
@@ -177,7 +171,7 @@ export const ManageAccountDialog: FC<{
         />
         <TextField
           {...register("password", {
-            required: !currentAccount && {
+            required: !editingAccount && {
               message: "Field is required",
               value: true,
             },
@@ -192,7 +186,7 @@ export const ManageAccountDialog: FC<{
           error={!!errors.password}
           helperText={
             errors.password?.message ??
-            (currentAccount && "Leave empty to keep the same password")
+            (editingAccount && "Leave empty to keep the same password")
           }
           margin="dense"
         />
@@ -204,9 +198,9 @@ export const ManageAccountDialog: FC<{
           type="submit"
           disabled={isSubmitting}
         >
-          {currentAccount ? "Update" : "Create"}
+          {editingAccount ? "Update" : "Create"}
         </Button>
-        <Button disabled={isSubmitting} onClick={close} sx={{ ml: 1 }}>
+        <Button disabled={isSubmitting} onClick={handleClose} sx={{ ml: 1 }}>
           Cancel
         </Button>
       </DialogActions>

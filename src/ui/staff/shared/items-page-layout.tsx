@@ -16,10 +16,12 @@ export const ItemsPageLayout: FC<{
         justifyContent="space-between"
         flexDirection={{ xs: "column", sm: "row" }}
         alignItems="start"
-        mb={3}
+        mb={5}
       >
         <Box mb={{ xs: 2, sm: 0 }}>
-          <Typography variant="h5">{title}</Typography>
+          <Typography variant="h5" gutterBottom>
+            {title}
+          </Typography>
           <Typography
             variant="subtitle1"
             color="textSecondary"
