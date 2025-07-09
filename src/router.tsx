@@ -15,7 +15,7 @@ import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
 import { Waiter_HomePage } from "@/ui/staff/waiter";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { Admin_ManageLocationsPage } from "./ui/staff/admin/locations";
+import { Admin_ManageDiningAreasPage } from "./ui/staff/admin/dining-areas";
 import { Waiter_TableDetailsPage } from "./ui/staff/waiter/table-details";
 
 export const router = createBrowserRouter([
@@ -63,10 +63,10 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "locations",
+            path: "dining-areas",
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
-                <Admin_ManageLocationsPage />
+                <Admin_ManageDiningAreasPage />
               </StaffAuthGuard>
             ),
           },

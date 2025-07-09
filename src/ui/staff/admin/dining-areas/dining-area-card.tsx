@@ -1,8 +1,8 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
-import type { Location } from "@/interfaces/location";
-import { LocationsService } from "@/services/locations";
+import type { DiningArea } from "@/interfaces/dining-area";
+import { DiningAreasService } from "@/services/dining-areas";
 import {
   Button,
   Card,
@@ -13,28 +13,28 @@ import {
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { type FC, useState } from "react";
-import { ManageLocationDialog } from "./manage-location-dialog";
+import { ManageDininAreaDialog } from "./manage-dining-area-dialog";
 
-export const LocationCard: FC<{ location: Location; onDelete: () => void }> = ({
-  location: initialLocation,
-  onDelete,
-}) => {
-  const [location, setLocation] = useState<Location>(initialLocation);
+export const DiningAreaCard: FC<{
+  diningArea: DiningArea;
+  onDelete: () => void;
+}> = ({ diningArea: initialDiningArea, onDelete }) => {
+  const [diningArea, seDiningArea] = useState<DiningArea>(initialDiningArea);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const { showError, showSuccess } = useAlert();
 
   const { confirm } = useConfirmation();
 
-  const { mutate: deleteLocation, isPending: isDeleting } = useMutation({
-    mutationFn: (id: number) => LocationsService.deleteLocation(id),
-    mutationKey: ["admin_manageLocation_deleteLocation"],
+  const { mutate: deleteDiningArea, isPending: isDeleting } = useMutation({
+    mutationFn: (id: number) => DiningAreasService.delete(id),
+    mutationKey: ["admin_manageDiningArea_deleteDiningArea"],
     onSuccess: () => {
       onDelete();
-      showSuccess("Location deleted successfully.");
+      showSuccess("Dining area deleted successfully.");
     },
     onError: (err) => {
-      showError(`Failed to delete location: ${getBackendErrorMessage(err)}`);
+      showError(`Failed to delete dining area: ${getBackendErrorMessage(err)}`);
     },
   });
 
@@ -43,15 +43,15 @@ export const LocationCard: FC<{ location: Location; onDelete: () => void }> = ({
       <Card>
         <CardMedia
           sx={{ height: 140 }}
-          image="/location-example.jpg"
-          title={`${location.name} image`}
+          image="/dining-area-example.jpg"
+          title={`${diningArea.name} image`}
         />
         <CardContent>
           <Typography gutterBottom variant="h6">
-            {location.name}
+            {diningArea.name}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {location.description || "No description provided."}
+            {diningArea.description || "No description provided."}
           </Typography>
         </CardContent>
         <CardActions>
@@ -72,12 +72,12 @@ export const LocationCard: FC<{ location: Location; onDelete: () => void }> = ({
               if (
                 await confirm({
                   title: "Are you sure?",
-                  message: `You are going to delete the location '${location.name}'. This action cannot be undone.`,
+                  message: `You are going to delete the dining area '${diningArea.name}'. This action cannot be undone.`,
                   confirmButtonDanger: true,
                   confirmText: "Yes, Delete",
                 })
               ) {
-                deleteLocation(location.id);
+                deleteDiningArea(diningArea.id);
               }
             }}
           >
@@ -85,11 +85,11 @@ export const LocationCard: FC<{ location: Location; onDelete: () => void }> = ({
           </Button>
         </CardActions>
       </Card>
-      <ManageLocationDialog
+      <ManageDininAreaDialog
         open={editDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
-        editingLocation={location}
-        onManageSuccess={(v) => setLocation((pl) => ({ ...pl, ...v }))}
+        editingDiningArea={diningArea}
+        onManageSuccess={(v) => seDiningArea((pda) => ({ ...pda, ...v }))}
       />
     </>
   );

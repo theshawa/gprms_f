@@ -1,7 +1,7 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
-import type { Location } from "@/interfaces/location";
-import { LocationsService } from "@/services/locations";
+import type { DiningArea } from "@/interfaces/dining-area";
+import { DiningAreasService } from "@/services/dining-areas";
 import {
   Button,
   Dialog,
@@ -18,12 +18,12 @@ type FormInputs = {
   description: string;
 };
 
-export const ManageLocationDialog: FC<{
+export const ManageDininAreaDialog: FC<{
   open: boolean;
   handleClose: () => void;
-  onManageSuccess: (v: Partial<Location>) => void;
-  editingLocation?: Location;
-}> = ({ handleClose, open, onManageSuccess, editingLocation }) => {
+  onManageSuccess: (v: Partial<DiningArea>) => void;
+  editingDiningArea?: DiningArea;
+}> = ({ handleClose, open, onManageSuccess, editingDiningArea }) => {
   const {
     handleSubmit,
     register,
@@ -35,35 +35,37 @@ export const ManageLocationDialog: FC<{
 
   useEffect(() => {
     reset(
-      editingLocation ?? {
+      editingDiningArea ?? {
         description: "",
         name: "",
       }
     );
-  }, [editingLocation]);
+  }, [editingDiningArea]);
 
   const onSubmit = async (data: FormInputs) => {
     try {
-      if (editingLocation) {
-        await LocationsService.updateLocation(
-          editingLocation.id,
+      if (editingDiningArea) {
+        await DiningAreasService.update(
+          editingDiningArea.id,
           data.name,
           data.description
         );
       } else {
-        await LocationsService.createLocation(data.name, data.description);
+        await DiningAreasService.create(data.name, data.description);
         reset({
           name: "",
           description: "",
         });
       }
       showSuccess(
-        `Location ${editingLocation ? "updated" : "created"} successfully!`
+        `Dining area ${editingDiningArea ? "updated" : "created"} successfully!`
       );
       onManageSuccess(data);
       handleClose();
     } catch (error) {
-      showError(`Failed to create location: ${getBackendErrorMessage(error)}`);
+      showError(
+        `Failed to create dining area: ${getBackendErrorMessage(error)}`
+      );
     }
   };
 
@@ -74,7 +76,9 @@ export const ManageLocationDialog: FC<{
       component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <DialogTitle>{editingLocation ? "Update" : "New"} Location</DialogTitle>
+      <DialogTitle>
+        {editingDiningArea ? "Update" : "New"} Dining Area
+      </DialogTitle>
       <DialogContent>
         <TextField
           {...register("name", {
@@ -111,7 +115,7 @@ export const ManageLocationDialog: FC<{
       </DialogContent>
       <DialogActions>
         <Button variant="contained" type="submit" disabled={isSubmitting}>
-          {editingLocation ? "Update" : "Create"}
+          {editingDiningArea ? "Update" : "Create"}
         </Button>
         <Button onClick={handleClose} type="reset" disabled={isSubmitting}>
           Cancel
