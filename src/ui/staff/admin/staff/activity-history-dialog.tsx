@@ -81,7 +81,7 @@ export const ActivityHistoryDialog: FC<{
       </DialogTitle>
       <DialogContent>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 600 }}>
+          <Table sx={{ minWidth: 600 }} size="small">
             <TableHead>
               <TableRow>
                 <TableCell width="30%">Time</TableCell>
@@ -106,7 +106,7 @@ export const ActivityHistoryDialog: FC<{
                 </TableRow>
               ) : (
                 <>
-                  {data?.activities.map((activity) => (
+                  {data.activities.map((activity) => (
                     <TableRow key={activity.id}>
                       <TableCell>
                         {formatDateTime(activity.createdAt)}
@@ -114,7 +114,7 @@ export const ActivityHistoryDialog: FC<{
                       <TableCell>{activity.activity}</TableCell>
                     </TableRow>
                   ))}
-                  {data?.activities.length === 0 && (
+                  {data.activities.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={2} align="center">
                         <Typography variant="body1" color="textSecondary">

@@ -18,49 +18,47 @@ type FormInputs = {
   description: string;
 };
 
-export const ManageDininAreaDialog: FC<{
+export const ManageDiningAreaDialog: FC<{
   open: boolean;
   handleClose: () => void;
-  onManageSuccess: (v: Partial<DiningArea>) => void;
+  refreshParent: (v: Partial<DiningArea>) => void;
   editingDiningArea?: DiningArea;
-}> = ({ handleClose, open, onManageSuccess, editingDiningArea }) => {
+}> = ({ handleClose, open, refreshParent, editingDiningArea }) => {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormInputs>();
+  } = useForm<FormInputs>({
+    defaultValues: {
+      description: "",
+      name: "",
+    },
+  });
 
   const { showSuccess, showError } = useAlert();
 
   useEffect(() => {
-    reset(
-      editingDiningArea ?? {
-        description: "",
-        name: "",
-      }
-    );
+    reset(editingDiningArea);
   }, [editingDiningArea]);
 
   const onSubmit = async (data: FormInputs) => {
     try {
+      let res: Partial<DiningArea>;
       if (editingDiningArea) {
-        await DiningAreasService.update(
+        res = await DiningAreasService.update(
           editingDiningArea.id,
           data.name,
           data.description
         );
       } else {
-        await DiningAreasService.create(data.name, data.description);
-        reset({
-          name: "",
-          description: "",
-        });
+        res = await DiningAreasService.create(data.name, data.description);
+        reset();
       }
       showSuccess(
         `Dining area ${editingDiningArea ? "updated" : "created"} successfully!`
       );
-      onManageSuccess(data);
+      refreshParent(res);
       handleClose();
     } catch (error) {
       showError(
@@ -79,7 +77,7 @@ export const ManageDininAreaDialog: FC<{
       <DialogTitle>
         {editingDiningArea ? "Update" : "New"} Dining Area
       </DialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         <TextField
           {...register("name", {
             required: {
@@ -101,6 +99,10 @@ export const ManageDininAreaDialog: FC<{
               message: "Field is required",
               value: true,
             },
+            maxLength: {
+              value: 100,
+              message: "Description cannot exceed 100 characters",
+            },
           })}
           label="Description"
           variant="filled"
@@ -117,7 +119,14 @@ export const ManageDininAreaDialog: FC<{
         <Button variant="contained" type="submit" disabled={isSubmitting}>
           {editingDiningArea ? "Update" : "Create"}
         </Button>
-        <Button onClick={handleClose} type="reset" disabled={isSubmitting}>
+        <Button
+          onClick={() => {
+            reset();
+            handleClose();
+          }}
+          type="reset"
+          disabled={isSubmitting}
+        >
           Cancel
         </Button>
       </DialogActions>

@@ -9,11 +9,14 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Chip,
+  Stack,
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { type FC, useState } from "react";
-import { ManageDininAreaDialog } from "./manage-dining-area-dialog";
+import { AssignWaitersDialog } from "./assign-waiters-dialog";
+import { ManageDiningAreaDialog } from "./manage-dining-area-dialog";
 
 export const DiningAreaCard: FC<{
   diningArea: DiningArea;
@@ -21,13 +24,17 @@ export const DiningAreaCard: FC<{
 }> = ({ diningArea: initialDiningArea, onDelete }) => {
   const [diningArea, seDiningArea] = useState<DiningArea>(initialDiningArea);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [assignWaitersDialogOpen, setAssignWaitersDialogOpen] = useState(false);
+  const [assignedWaitersCount, setAssignedWaitersCount] = useState<number>(
+    initialDiningArea.assignedWaiters.length || 0
+  );
 
   const { showError, showSuccess } = useAlert();
 
   const { confirm } = useConfirmation();
 
   const { mutate: deleteDiningArea, isPending: isDeleting } = useMutation({
-    mutationFn: (id: number) => DiningAreasService.delete(id),
+    mutationFn: () => DiningAreasService.delete(diningArea.id),
     mutationKey: ["admin_manageDiningArea_deleteDiningArea"],
     onSuccess: () => {
       onDelete();
@@ -53,8 +60,41 @@ export const DiningAreaCard: FC<{
           <Typography variant="body2" color="textSecondary">
             {diningArea.description || "No description provided."}
           </Typography>
+          <Stack direction="row" spacing={1} mt={2}>
+            <Chip
+              size="small"
+              disabled={!diningArea.diningTables.length}
+              label={
+                diningArea.diningTables.length
+                  ? `${diningArea.diningTables.length} Table${
+                      diningArea.diningTables.length === 1 ? "" : "s"
+                    }`
+                  : "No tables"
+              }
+            />
+            <Chip
+              size="small"
+              disabled={!assignedWaitersCount}
+              label={
+                assignedWaitersCount
+                  ? `${assignedWaitersCount} Waiter${
+                      assignedWaitersCount === 1 ? "" : "s"
+                    } Assigned`
+                  : "No waiters"
+              }
+            />
+          </Stack>
         </CardContent>
         <CardActions>
+          <Button
+            size="small"
+            color="info"
+            sx={{ flexShrink: 0 }}
+            disabled={isDeleting}
+            onClick={() => setAssignWaitersDialogOpen(true)}
+          >
+            Assign Waiters
+          </Button>
           <Button
             size="small"
             onClick={() => {
@@ -77,7 +117,7 @@ export const DiningAreaCard: FC<{
                   confirmText: "Yes, Delete",
                 })
               ) {
-                deleteDiningArea(diningArea.id);
+                deleteDiningArea();
               }
             }}
           >
@@ -85,11 +125,17 @@ export const DiningAreaCard: FC<{
           </Button>
         </CardActions>
       </Card>
-      <ManageDininAreaDialog
+      <ManageDiningAreaDialog
         open={editDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
         editingDiningArea={diningArea}
-        onManageSuccess={(v) => seDiningArea((pda) => ({ ...pda, ...v }))}
+        refreshParent={(v) => seDiningArea((pda) => ({ ...pda, ...v }))}
+      />
+      <AssignWaitersDialog
+        open={assignWaitersDialogOpen}
+        handleClose={() => setAssignWaitersDialogOpen(false)}
+        diningArea={diningArea}
+        setParentAssignedWaitersCount={setAssignedWaitersCount}
       />
     </>
   );

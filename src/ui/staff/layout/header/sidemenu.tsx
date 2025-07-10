@@ -61,8 +61,8 @@ export const SideMenu: FC<{
             Icon: LocationPin,
           },
           {
-            title: "Tables",
-            link: "/staff/admin/tables",
+            title: "Dining Tables",
+            link: "/staff/admin/dining-tables",
             Icon: TableRestaurant,
           },
           {

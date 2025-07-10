@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import type { FC, ReactNode } from "react";
 
 export const ItemsPageLayout: FC<{
@@ -11,14 +11,15 @@ export const ItemsPageLayout: FC<{
 }> = ({ buttonText, buttonIcon, children, onButtonClick, subtitle, title }) => {
   return (
     <Box p={3}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        flexDirection={{ xs: "column", sm: "row" }}
-        alignItems="start"
+      <Stack
+        direction={{ xm: "column", sm: "row" }}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "start",
+        }}
         mb={5}
       >
-        <Box mb={{ xs: 2, sm: 0 }}>
+        <Stack mb={{ xs: 2, sm: 0 }}>
           <Typography variant="h5" gutterBottom>
             {title}
           </Typography>
@@ -29,7 +30,7 @@ export const ItemsPageLayout: FC<{
           >
             {subtitle}
           </Typography>
-        </Box>
+        </Stack>
         <Button
           onClick={onButtonClick}
           variant="contained"
@@ -38,7 +39,7 @@ export const ItemsPageLayout: FC<{
         >
           {buttonText}
         </Button>
-      </Box>
+      </Stack>
       {children}
     </Box>
   );

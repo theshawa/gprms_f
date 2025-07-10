@@ -1,4 +1,5 @@
 import { staffBackend } from "@/backend";
+import type { StaffRole } from "@/enums/staff-role";
 import type { StaffActivityLog } from "@/interfaces/staff-activity-log";
 import type { StaffAuthState } from "@/interfaces/staff-auth-state";
 import type { StaffUser } from "@/interfaces/staff-user";
@@ -24,8 +25,10 @@ export class StaffService {
     await staffBackend.post("/logout");
   }
 
-  static async getStaffAccounts() {
-    const { data } = await staffBackend.get<StaffUser[]>("/admin/staff");
+  static async getStaffAccounts(role?: StaffRole) {
+    const { data } = await staffBackend.get<StaffUser[]>("/admin/staff", {
+      params: { role },
+    });
     return data;
   }
 
