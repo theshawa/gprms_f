@@ -1,5 +1,7 @@
 import { staffBackend } from "@/backend";
 import type { DiningArea } from "@/interfaces/dining-area";
+import type { StaffUser } from "@/interfaces/staff-user";
+import type { WaiterAssignment } from "@/interfaces/waiter-assignment";
 
 export class DiningAreasService {
   static async create(name: string, description: string) {
@@ -33,5 +35,34 @@ export class DiningAreasService {
 
   static async delete(id: number) {
     await staffBackend.delete(`/admin/dining-areas/${id}`);
+  }
+
+  static async getAssignedWaiters(diningTableId: number) {
+    const { data } = await staffBackend.get<StaffUser[]>(
+      `/admin/dining-areas/assigned-waiters/${diningTableId}`
+    );
+    return data;
+  }
+
+  static async assignWaiter(diningAreaId: number, waiterId: number) {
+    const { data } = await staffBackend.post<WaiterAssignment>(
+      `/admin/dining-areas/assign-waiter`,
+      {
+        waiterId,
+        diningAreaId,
+      }
+    );
+    return data;
+  }
+
+  static async unAssignWaiter(diningAreaId: number, waiterId: number) {
+    const { data } = await staffBackend.post<WaiterAssignment>(
+      `/admin/dining-areas/unassign-waiter`,
+      {
+        waiterId,
+        diningAreaId,
+      }
+    );
+    return data;
   }
 }

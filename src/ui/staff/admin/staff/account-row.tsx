@@ -5,16 +5,18 @@ import { useConfirmation } from "@/hooks/useConfirmation";
 import { useStaffAuth } from "@/hooks/useStaffAuth";
 import type { StaffUser } from "@/interfaces/staff-user";
 import { StaffService } from "@/services/staff";
-import { Button, TableCell, TableRow, Typography } from "@mui/material";
+import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { type FC, useState } from "react";
+import type { SetStateAction } from "jotai";
+import { type Dispatch, type FC, useState } from "react";
 import { ActivityHistoryDialog } from "./activity-history-dialog";
 import { ManageAccountDialog } from "./manage-account-dialog";
 
-export const AccountRow: FC<{ account: StaffUser; onDelete: () => void }> = ({
-  account: initialAccount,
-  onDelete,
-}) => {
+export const AccountRow: FC<{
+  account: StaffUser;
+  onDelete: () => void;
+  setRoleFilter: Dispatch<SetStateAction<string[]>>;
+}> = ({ account: initialAccount, onDelete, setRoleFilter }) => {
   const [account, setAccount] = useState<StaffUser>(initialAccount);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [activityHistoryDialogOpen, setActivityHistoryDialogOpen] =
@@ -25,7 +27,7 @@ export const AccountRow: FC<{ account: StaffUser; onDelete: () => void }> = ({
   const { showError, showSuccess } = useAlert();
 
   const { mutate: deleteAccount, isPending: isDeleting } = useMutation({
-    mutationFn: (id: number) => StaffService.deleteStaffAccount(id),
+    mutationFn: () => StaffService.deleteStaffAccount(account.id),
     mutationKey: ["admin_manageStaff_deleteAccount"],
     onSuccess: () => {
       onDelete();
@@ -41,7 +43,11 @@ export const AccountRow: FC<{ account: StaffUser; onDelete: () => void }> = ({
   return (
     <>
       <TableRow>
-        <TableCell>{getNameForRole(account.role)}</TableCell>
+        <TableCell>
+          <Button onClick={() => setRoleFilter([account.role])}>
+            {getNameForRole(account.role)}
+          </Button>
+        </TableCell>
         <TableCell>
           <Typography fontFamily="monospace" variant="body1">
             {account.username}
@@ -50,9 +56,22 @@ export const AccountRow: FC<{ account: StaffUser; onDelete: () => void }> = ({
         <TableCell>
           {account.name} {account.id === auth?.user.id && <>(You)</>}
         </TableCell>
-        <TableCell align="right" sx={{ display: "flex", gap: 1 }}>
+        <TableCell align="right">
           {account.id !== auth?.user.id ? (
-            <>
+            <Stack direction="row" justifyContent="end" spacing={0.5}>
+              <Button
+                onClick={() => setActivityHistoryDialogOpen(true)}
+                disabled={isDeleting}
+                sx={{ flexShrink: 0 }}
+              >
+                Activity History
+              </Button>
+              <Button
+                onClick={() => setEditDialogOpen(true)}
+                disabled={isDeleting}
+              >
+                Edit
+              </Button>
               <Button
                 color="error"
                 onClick={async () => {
@@ -64,28 +83,16 @@ export const AccountRow: FC<{ account: StaffUser; onDelete: () => void }> = ({
                       confirmButtonDanger: true,
                     })
                   ) {
-                    deleteAccount(account.id);
+                    deleteAccount();
                   }
                 }}
                 disabled={isDeleting}
               >
                 Delete
               </Button>
-              <Button
-                onClick={() => setEditDialogOpen(true)}
-                disabled={isDeleting}
-              >
-                Edit
-              </Button>
-              <Button
-                onClick={() => setActivityHistoryDialogOpen(true)}
-                disabled={isDeleting}
-              >
-                Activity History
-              </Button>
-            </>
+            </Stack>
           ) : (
-            <Button color="info" disabled>
+            <Button color="info" disabled size="small">
               No actions available for your own account.
             </Button>
           )}

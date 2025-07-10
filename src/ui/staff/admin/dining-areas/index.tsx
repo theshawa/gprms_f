@@ -7,7 +7,7 @@ import { ItemsPageLayout } from "../../shared/items-page-layout";
 import { PageError } from "../../shared/page-error";
 import { PageLoader } from "../../shared/page-loader";
 import { DiningAreaCard } from "./dining-area-card";
-import { ManageDininAreaDialog } from "./manage-dining-area-dialog";
+import { ManageDiningAreaDialog } from "./manage-dining-area-dialog";
 
 export const Admin_ManageDiningAreasPage: FC = () => {
   const [newDialogOpen, setNewDialogOpen] = useState(false);
@@ -17,31 +17,32 @@ export const Admin_ManageDiningAreasPage: FC = () => {
     refetch,
     isPending,
     error,
+    isRefetching,
   } = useQuery({
     queryKey: ["admin_manageDiningAreas_home"],
     queryFn: () => DiningAreasService.getAll(),
   });
 
-  if (isPending) {
+  if (isPending || isRefetching) {
     return <PageLoader />;
   }
 
   if (error) {
-    return <PageError error={error} />;
+    return <PageError title="dining areas list" error={error} />;
   }
 
   return (
     <>
       <ItemsPageLayout
-        title="Manage Dining Areas"
+        title="Dining Areas"
         subtitle="Organize your restaurant space with different dining areas."
         buttonText="New Dining Area"
         buttonIcon={<AddLocationAlt />}
         onButtonClick={() => setNewDialogOpen(true)}
       >
         <Grid container spacing={2} columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
-          {diningAreas.map((da, i) => (
-            <Grid size={1} key={i}>
+          {diningAreas.map((da) => (
+            <Grid size={1} key={da.id}>
               <DiningAreaCard
                 onDelete={() => {
                   refetch();
@@ -57,10 +58,10 @@ export const Admin_ManageDiningAreasPage: FC = () => {
           </Typography>
         )}
       </ItemsPageLayout>
-      <ManageDininAreaDialog
+      <ManageDiningAreaDialog
         handleClose={() => setNewDialogOpen(false)}
         open={newDialogOpen}
-        onManageSuccess={() => refetch()}
+        refreshParent={() => refetch()}
       />
     </>
   );

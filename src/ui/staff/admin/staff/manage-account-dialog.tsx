@@ -38,44 +38,47 @@ export const ManageAccountDialog: FC<{
     formState: { errors, isSubmitting },
     control,
     reset,
-  } = useForm<FormInputs>();
+  } = useForm<FormInputs>({
+    defaultValues: {
+      role: StaffRole.Waiter,
+      name: "",
+      username: "",
+      password: "",
+    },
+  });
 
   const { showError, showSuccess } = useAlert();
 
   useEffect(() => {
-    if (editingAccount) {
-      reset({ ...editingAccount, password: "" });
-    } else {
-      reset({
-        role: StaffRole.Waiter,
-        name: "",
-        username: "",
-        password: "",
-      });
-    }
+    reset(
+      editingAccount
+        ? { ...editingAccount, password: "" }
+        : {
+            role: StaffRole.Waiter,
+            name: "",
+            username: "",
+            password: "",
+          }
+    );
   }, [editingAccount]);
 
   const onSubmit = async (data: FormInputs) => {
     try {
+      let res: Partial<StaffUser>;
       if (editingAccount) {
-        await StaffService.updateStaffAccount({
+        res = await StaffService.updateStaffAccount({
           ...editingAccount,
           ...data,
           role: data.role as StaffRole,
         });
       } else {
-        await StaffService.createStaffAccount({
+        res = await StaffService.createStaffAccount({
           ...data,
           role: data.role as StaffRole,
         });
-        reset({
-          role: StaffRole.Waiter,
-          name: "",
-          username: "",
-          password: "",
-        });
+        reset();
       }
-      onManageSuccess(data as Partial<StaffUser>);
+      onManageSuccess(res);
       showSuccess(
         `Account ${editingAccount ? "updated" : "created"} successfully`
       );
@@ -200,7 +203,14 @@ export const ManageAccountDialog: FC<{
         >
           {editingAccount ? "Update" : "Create"}
         </Button>
-        <Button disabled={isSubmitting} onClick={handleClose} sx={{ ml: 1 }}>
+        <Button
+          disabled={isSubmitting}
+          onClick={() => {
+            reset();
+            handleClose();
+          }}
+          sx={{ ml: 1 }}
+        >
           Cancel
         </Button>
       </DialogActions>
