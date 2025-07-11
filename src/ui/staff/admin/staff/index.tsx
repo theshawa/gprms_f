@@ -47,8 +47,8 @@ export const Admin_ManageStaffPage: FC = () => {
       const searchLower = searchFilter.toLowerCase();
       filteredData = filteredData.filter(
         (d) =>
-          d.username.toLowerCase().startsWith(searchLower) ||
-          d.name.toLowerCase().startsWith(searchLower)
+          d.username.toLowerCase().includes(searchLower) ||
+          d.name.toLowerCase().includes(searchLower)
       );
     }
 

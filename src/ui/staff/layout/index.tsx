@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from "@mui/material";
 import { type FC, useLayoutEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { staffBackend } from "../../../backend";
+import { staffBackend, staffSSEBackend } from "../../../backend";
 import { useAlert } from "../../../hooks/useAlert";
 import { useStaffAuth } from "../../../hooks/useStaffAuth";
 import { StaffService } from "../../../services/staff";
@@ -61,8 +61,35 @@ export const Staff_Layout: FC = () => {
       }
     );
 
+    const refreshInterceptorSSE = staffSSEBackend.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+        if (error.response?.status === 401) {
+          try {
+            const res = await staffSSEBackend.post("/refresh-auth");
+            setAuth(res.data);
+
+            originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+            originalRequest._retry = true;
+            console.log("Staff access token refreshed!");
+
+            return staffSSEBackend(originalRequest);
+          } catch (error) {
+            showError(
+              "Your login session expired. Please login again to continue."
+            );
+            setAuth(null);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
     return () => {
       staffBackend.interceptors.response.eject(refreshInterceptor);
+      staffSSEBackend.interceptors.response.eject(refreshInterceptorSSE);
     };
   }, []);
 
@@ -74,8 +101,18 @@ export const Staff_Layout: FC = () => {
       return config;
     });
 
+    const authInjectorSSE = staffSSEBackend.interceptors.request.use(
+      (config) => {
+        if (auth && !(config as any)._retry) {
+          config.headers.Authorization = `Bearer ${auth.accessToken}`;
+        }
+        return config;
+      }
+    );
+
     return () => {
       staffBackend.interceptors.request.eject(authInjector);
+      staffSSEBackend.interceptors.request.eject(authInjectorSSE);
     };
   }, [auth]);
 
