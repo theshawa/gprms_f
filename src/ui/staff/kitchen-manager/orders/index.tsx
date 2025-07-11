@@ -5,11 +5,11 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+
 import { useEffect, useState } from "react";
 import type { FC } from "react";
 import { OrderCard } from "../shared/order-card";
 import { staffBackend } from "../../../../backend";
-import "./index.css";
 
 export const KitchenManager_OrdersPage: FC = () => {
   const [orderType, setOrderType] = useState<"current" | "archived">("current");
@@ -40,7 +40,7 @@ export const KitchenManager_OrdersPage: FC = () => {
   return (
     <>
       {/* Toggle Controls */}
-      <Box className="toggle">
+      <Box className="fixed right-20 mt-4 z-[11]">
         <ToggleButtonGroup
           value={orderType}
           exclusive
@@ -55,15 +55,24 @@ export const KitchenManager_OrdersPage: FC = () => {
 
       {/* Current Orders */}
       {orderType === "current" && (
-        <Box className="kitchen-container" px={3}>
+        <Box className="grid grid-cols-1 md:grid-cols-2 gap-6" px={3}>
           {/* New Orders */}
-          <Box className="order-section new-orders">
-            <Typography variant="h5" className="section-title">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto new-orders">
+            <Typography
+              variant="h5"
+              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+            >
               New Orders
             </Typography>
-            <Grid container spacing={2} className="cards">
+            <Grid
+              container
+              spacing={2}
+              ml={6}
+              mr={6}
+              justifyContent="space-between"
+            >
               {ordersList.map((order) => (
-                <Grid item xs={12} md={6} key={order.id}>
+                <Grid xs={12} md={6} key={order.id}>
                   <OrderCard order={order} />
                 </Grid>
               ))}
@@ -71,13 +80,24 @@ export const KitchenManager_OrdersPage: FC = () => {
           </Box>
 
           {/* In Progress */}
-          <Box className="order-section in-progress-orders">
-            <Typography variant="h5" className="section-title">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto in-progress-orders">
+            <Typography
+              variant="h5"
+              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+            >
               In Progress
             </Typography>
-            <Grid container spacing={2} className="cards">
-              {[...Array(6)].map((_, i) => (
-                <Grid key={i}>{/* <OrderCard /> */}</Grid>
+            <Grid
+              container
+              spacing={2}
+              ml={6}
+              mr={6}
+              justifyContent="space-between"
+            >
+              {ordersList.map((order) => (
+                <Grid xs={12} md={6} key={order.id}>
+                  <OrderCard order={order} />
+                </Grid>
               ))}
             </Grid>
           </Box>
@@ -86,27 +106,49 @@ export const KitchenManager_OrdersPage: FC = () => {
 
       {/* Archived Orders */}
       {orderType === "archived" && (
-        <Box className="kitchen-container" px={3}>
+        <Box className="grid grid-cols-1 md:grid-cols-2 gap-6" px={3}>
           {/* Completed */}
-          <Box className="order-section completed-orders">
-            <Typography variant="h5" className="section-title">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto completed-orders">
+            <Typography
+              variant="h5"
+              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+            >
               Completed Orders
             </Typography>
-            <Grid container spacing={2} className="cards">
-              {[...Array(4)].map((_, i) => (
-                <Grid key={i}>{/* <OrderCard /> */}</Grid>
+            <Grid
+              container
+              spacing={2}
+              ml={6}
+              mr={6}
+              justifyContent="space-between"
+            >
+              {ordersList.map((order) => (
+                <Grid xs={12} md={6} key={order.id}>
+                  <OrderCard order={order} />
+                </Grid>
               ))}
             </Grid>
           </Box>
 
           {/* Rejected */}
-          <Box className="order-section rejected-orders">
-            <Typography variant="h5" className="section-title">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto rejected-orders">
+            <Typography
+              variant="h5"
+              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+            >
               Rejected Orders
             </Typography>
-            <Grid container spacing={2} className="cards">
-              {[...Array(3)].map((_, i) => (
-                <Grid key={i}>{/* <OrderCard /> */}</Grid>
+            <Grid
+              container
+              spacing={2}
+              ml={6}
+              mr={6}
+              justifyContent="space-between"
+            >
+              {ordersList.map((order) => (
+                <Grid xs={12} md={6} key={order.id}>
+                  <OrderCard order={order} />
+                </Grid>
               ))}
             </Grid>
           </Box>

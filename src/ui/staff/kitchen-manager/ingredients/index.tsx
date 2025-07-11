@@ -35,7 +35,7 @@ export const KitchenManager_IngredientsPage: FC = () => {
   );
 
   return (
-    <Box className="ingredients-page">
+    <Box className="w-[100%] flex flex-col">
       <Box className="header-tabs">
         {/* Header */}
         <Box className="header">
