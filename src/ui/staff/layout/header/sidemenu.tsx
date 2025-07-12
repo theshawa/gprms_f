@@ -4,8 +4,8 @@ import {
   Fastfood,
   Home,
   Kitchen,
-  LocalPizza,
   LocalOfferSharp,
+  LocalPizza,
   LocationPin,
   Login,
   MenuBook,
@@ -56,13 +56,13 @@ export const SideMenu: FC<{
             Icon: SupervisedUserCircle,
           },
           {
-            title: "Locations",
-            link: "/staff/admin/locations",
+            title: "Dining Areas",
+            link: "/staff/admin/dining-areas",
             Icon: LocationPin,
           },
           {
-            title: "Tables",
-            link: "/staff/admin/tables",
+            title: "Dining Tables",
+            link: "/staff/admin/dining-tables",
             Icon: TableRestaurant,
           },
           {

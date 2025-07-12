@@ -1,0 +1,68 @@
+import { DiningAreasService } from "@/services/dining-areas";
+import { AddLocationAlt } from "@mui/icons-material";
+import { Grid, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { type FC, useState } from "react";
+import { ItemsPageLayout } from "../../shared/items-page-layout";
+import { PageError } from "../../shared/page-error";
+import { PageLoader } from "../../shared/page-loader";
+import { DiningAreaCard } from "./dining-area-card";
+import { ManageDiningAreaDialog } from "./manage-dining-area-dialog";
+
+export const Admin_ManageDiningAreasPage: FC = () => {
+  const [newDialogOpen, setNewDialogOpen] = useState(false);
+
+  const {
+    data: diningAreas,
+    refetch,
+    isPending,
+    error,
+    isRefetching,
+  } = useQuery({
+    queryKey: ["admin_manageDiningAreas_home"],
+    queryFn: () => DiningAreasService.getAll(),
+  });
+
+  if (isPending || isRefetching) {
+    return <PageLoader />;
+  }
+
+  if (error) {
+    return <PageError title="dining areas list" error={error} />;
+  }
+
+  return (
+    <>
+      <ItemsPageLayout
+        title="Dining Areas"
+        subtitle="Organize your restaurant space with different dining areas."
+        buttonText="New Dining Area"
+        buttonIcon={<AddLocationAlt />}
+        onButtonClick={() => setNewDialogOpen(true)}
+      >
+        <Grid container spacing={2} columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
+          {diningAreas.map((da) => (
+            <Grid size={1} key={da.id}>
+              <DiningAreaCard
+                onDelete={() => {
+                  refetch();
+                }}
+                diningArea={da}
+              />
+            </Grid>
+          ))}
+        </Grid>
+        {diningAreas.length === 0 && (
+          <Typography variant="body2" color="textSecondary">
+            No dining areas found. Click "New Dining Area" to create one.
+          </Typography>
+        )}
+      </ItemsPageLayout>
+      <ManageDiningAreaDialog
+        handleClose={() => setNewDialogOpen(false)}
+        open={newDialogOpen}
+        refreshParent={() => refetch()}
+      />
+    </>
+  );
+};

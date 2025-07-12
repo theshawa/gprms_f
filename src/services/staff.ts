@@ -1,4 +1,5 @@
 import { staffBackend } from "@/backend";
+import type { StaffRole } from "@/enums/staff-role";
 import type { StaffActivityLog } from "@/interfaces/staff-activity-log";
 import type { StaffAuthState } from "@/interfaces/staff-auth-state";
 import type { StaffUser } from "@/interfaces/staff-user";
@@ -24,16 +25,16 @@ export class StaffService {
     await staffBackend.post("/logout");
   }
 
-  static async getStaffAccounts() {
-    const { data } = await staffBackend.get<StaffUser[]>(
-      "/admin/staff-members"
-    );
+  static async getStaffAccounts(role?: StaffRole) {
+    const { data } = await staffBackend.get<StaffUser[]>("/admin/staff", {
+      params: { role },
+    });
     return data;
   }
 
   static async createStaffAccount(data: Omit<StaffUser, "id">) {
     const { data: createdUser } = await staffBackend.post<StaffUser>(
-      "/admin/create-staff-member",
+      "/admin/staff",
       data
     );
     return createdUser;
@@ -41,14 +42,14 @@ export class StaffService {
 
   static async updateStaffAccount(data: StaffUser) {
     const { data: updatedUser } = await staffBackend.put<StaffUser>(
-      `/admin/update-staff-member/${data.id}`,
+      `/admin/staff/${data.id}`,
       data
     );
     return updatedUser;
   }
 
   static async deleteStaffAccount(id: number) {
-    await staffBackend.delete(`/admin/delete-staff-member/${id}`);
+    await staffBackend.delete(`/admin/staff/${id}`);
   }
 
   static async getStaffActivityHistory(
@@ -59,7 +60,7 @@ export class StaffService {
     const { data } = await staffBackend.get<{
       activities: StaffActivityLog[];
       totalCount: number;
-    }>(`/admin/activity-logs/${id}`, {
+    }>(`/admin/staff/activity-logs/${id}`, {
       params: { page, perPage },
     });
 
@@ -67,6 +68,6 @@ export class StaffService {
   }
 
   static async clearStaffActivityHistory(id: number) {
-    await staffBackend.delete(`/admin/activity-logs/${id}`);
+    await staffBackend.delete(`/admin/staff/activity-logs/${id}`);
   }
 }
