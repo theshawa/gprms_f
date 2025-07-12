@@ -1,11 +1,3 @@
-.ingredients-page {
-  /* height: calc(100vh - 56px); */
-  font-family: "Segoe UI", sans-serif;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .header-tabs {
   position: sticky;
   top: -0.5rem;
