@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { ItemsPageLayout } from "../../shared/items-page-layout";
+import { PageLayout } from "../../shared/page-layout";
 import { AccountRow } from "./account-row";
 import { FilterBar } from "./filter-bar";
 import { ManageAccountDialog } from "./manage-account-dialog";
@@ -67,12 +67,14 @@ export const Admin_ManageStaffPage: FC = () => {
 
   return (
     <>
-      <ItemsPageLayout
+      <PageLayout
         title="Staff Accounts"
         subtitle="It's your restaurant's team members. You can add new staff and manage existing accounts."
-        buttonText="New Staff Account"
-        buttonIcon={<PersonAdd />}
-        onButtonClick={() => setNewAccountDialogOpen(true)}
+        button={{
+          icon: <PersonAdd />,
+          text: "New Staff Account",
+          onClick: () => setNewAccountDialogOpen(true),
+        }}
       >
         <FilterBar
           roleFilter={roleFilter}
@@ -113,7 +115,7 @@ export const Admin_ManageStaffPage: FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </ItemsPageLayout>
+      </PageLayout>
       <ManageAccountDialog
         open={newAccountDialogOpen}
         handleClose={() => setNewAccountDialogOpen(false)}

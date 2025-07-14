@@ -3,8 +3,8 @@ import { AddLocationAlt } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { type FC, useState } from "react";
-import { ItemsPageLayout } from "../../shared/items-page-layout";
 import { PageError } from "../../shared/page-error";
+import { PageLayout } from "../../shared/page-layout";
 import { PageLoader } from "../../shared/page-loader";
 import { DiningAreaCard } from "./dining-area-card";
 import { ManageDiningAreaDialog } from "./manage-dining-area-dialog";
@@ -33,12 +33,14 @@ export const Admin_ManageDiningAreasPage: FC = () => {
 
   return (
     <>
-      <ItemsPageLayout
+      <PageLayout
         title="Dining Areas"
         subtitle="Organize your restaurant space with different dining areas."
-        buttonText="New Dining Area"
-        buttonIcon={<AddLocationAlt />}
-        onButtonClick={() => setNewDialogOpen(true)}
+        button={{
+          text: "New Dining Area",
+          icon: <AddLocationAlt />,
+          onClick: () => setNewDialogOpen(true),
+        }}
       >
         <Grid container spacing={2} columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
           {diningAreas.map((da) => (
@@ -57,7 +59,7 @@ export const Admin_ManageDiningAreasPage: FC = () => {
             No dining areas found. Click "New Dining Area" to create one.
           </Typography>
         )}
-      </ItemsPageLayout>
+      </PageLayout>
       <ManageDiningAreaDialog
         handleClose={() => setNewDialogOpen(false)}
         open={newDialogOpen}

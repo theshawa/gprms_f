@@ -2,9 +2,9 @@ import { StaffRole } from "@/enums/staff-role";
 import {
   AttachMoney,
   CalendarToday,
+  EventSeat,
   Fastfood,
   Home,
-  HomeFilled,
   Kitchen,
   LocalOfferSharp,
   LocalPizza,
@@ -78,6 +78,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: AttachMoney,
         },
         {
+          title: "Reservations",
+          link: "/staff/admin/reservations",
+          Icon: EventSeat,
+        },
+        {
           title: "Offers",
           link: "/staff/admin/offers",
           Icon: LocalOfferSharp,
@@ -119,17 +124,24 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
       );
       break;
     case StaffRole.Waiter:
-      links.push({
-        title: "Home",
-        link: "/staff/waiter",
-        Icon: HomeFilled,
-        exactLinkMatch: true,
-      });
-      links.push({
-        title: "My Ratings",
-        link: "/staff/waiter/ratings",
-        Icon: RateReview,
-      });
+      links.push(
+        {
+          title: "Dining Table Status",
+          link: "/staff/waiter",
+          Icon: TableRestaurant,
+          exactLinkMatch: true,
+        },
+        {
+          title: "Reservations",
+          link: "/staff/waiter/reservations",
+          Icon: EventSeat,
+        },
+        {
+          title: "My Ratings",
+          link: "/staff/waiter/ratings",
+          Icon: RateReview,
+        }
+      );
       break;
     default:
       links.push({

@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { type FC, useEffect, useState } from "react";
-import { ItemsPageLayout } from "../../shared/items-page-layout";
 import { PageError } from "../../shared/page-error";
+import { PageLayout } from "../../shared/page-layout";
 import { PageLoader } from "../../shared/page-loader";
 import { DiningTableRow } from "./dining-table-row";
 import { FilterBar } from "./filter-bar";
@@ -72,12 +72,14 @@ export const Admin_ManageDiningTablesPage: FC = () => {
 
   return (
     <>
-      <ItemsPageLayout
+      <PageLayout
         title="Dining Tables"
-        subtitle="Organize your restaurant space with different dining tables."
-        buttonText="New Dining Table"
-        buttonIcon={<TableRestaurant />}
-        onButtonClick={() => setNewDialogOpen(true)}
+        subtitle="Create, edit, and organize dining tables for your restaurant"
+        button={{
+          icon: <TableRestaurant />,
+          text: "New Dining Table",
+          onClick: () => setNewDialogOpen(true),
+        }}
       >
         <FilterBar
           diningAreaFilter={diningAreaFilter}
@@ -117,7 +119,7 @@ export const Admin_ManageDiningTablesPage: FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </ItemsPageLayout>
+      </PageLayout>
       <ManageDiningTableDialog
         handleClose={() => setNewDialogOpen(false)}
         open={newDialogOpen}

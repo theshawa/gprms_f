@@ -1,3 +1,5 @@
+import { getBackendErrorMessage } from "@/backend";
+import { useAlert } from "@/hooks/useAlert";
 import type { DiningTable } from "@/interfaces/dining-table";
 import {
   Card,
@@ -7,16 +9,41 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
+import { useSocketConnection } from "../socket-context";
 
-export const TableCard: FC<{ diningTable: DiningTable }> = ({
-  diningTable,
-}) => {
+export const TableCard: FC<{
+  diningTable: DiningTable;
+}> = ({ diningTable }) => {
   const [ongoing, setOngoing] = useState(false);
+  const socket = useSocketConnection();
+
+  const { showError } = useAlert();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.emit("getDiningTableStatus", diningTable.id);
+
+    socket.on("diningTableStatus", (tableId: number, status: boolean) => {
+      if (tableId === diningTable.id) {
+        setOngoing(status);
+      }
+    });
+
+    socket.on("diningTableStatusError", (err) => {
+      showError(`Failed to fetch table status: ${getBackendErrorMessage(err)}`);
+    });
+
+    return () => {
+      socket.off("diningTableStatus");
+      socket.off("diningTableStatusError");
+    };
+  }, [socket, diningTable]);
 
   return (
     <Grid size={1}>
-      <Card>
+      <Card sx={{ backgroundColor: ongoing ? "lightgreen" : "white" }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {diningTable.name}
