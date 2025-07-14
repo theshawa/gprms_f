@@ -1,14 +1,17 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import type { FC, ReactNode } from "react";
 
-export const ItemsPageLayout: FC<{
+export const PageLayout: FC<{
   title: string;
   subtitle: string;
-  buttonText: string;
-  onButtonClick: () => void;
+  button?: {
+    text: string;
+    icon: ReactNode;
+    onClick: () => void;
+  };
   children: ReactNode;
-  buttonIcon?: ReactNode;
-}> = ({ buttonText, buttonIcon, children, onButtonClick, subtitle, title }) => {
+  noMargin?: boolean;
+}> = ({ button, children, subtitle, title, noMargin }) => {
   return (
     <Box p={3}>
       <Stack
@@ -17,7 +20,7 @@ export const ItemsPageLayout: FC<{
           justifyContent: "space-between",
           alignItems: "start",
         }}
-        mb={5}
+        mb={noMargin ? 2 : 5}
       >
         <Stack mb={{ xs: 2, sm: 0 }}>
           <Typography variant="h5" gutterBottom>
@@ -31,14 +34,15 @@ export const ItemsPageLayout: FC<{
             {subtitle}
           </Typography>
         </Stack>
-        <Button
-          onClick={onButtonClick}
-          variant="contained"
-          color="primary"
-          startIcon={buttonIcon}
-        >
-          {buttonText}
-        </Button>
+        {button && (
+          <Button
+            variant="contained"
+            startIcon={button.icon}
+            onClick={button.onClick}
+          >
+            {button.text}
+          </Button>
+        )}
       </Stack>
       {children}
     </Box>

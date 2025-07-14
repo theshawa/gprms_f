@@ -13,11 +13,16 @@ import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
 import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-item";
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
-import { Waiter_HomePage } from "@/ui/staff/waiter";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Admin_ManageDiningAreasPage } from "./ui/staff/admin/dining-areas";
 import { Admin_ManageDiningTablesPage } from "./ui/staff/admin/dining-tables";
-import { Waiter_TableDetailsPage } from "./ui/staff/waiter/table-details";
+import { Admin_ManageOffersHomePage } from "./ui/staff/admin/offers";
+import { Admin_OrdersLayout } from "./ui/staff/admin/orders";
+import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders";
+import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
+import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
+import { Waiter_Root } from "./ui/staff/waiter";
+import { Waiter_HomePage } from "./ui/staff/waiter/home";
 
 export const router = createBrowserRouter([
   {
@@ -79,10 +84,45 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
+          {
+            path: "offers",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ManageOffersHomePage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "orders",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_OrdersLayout />
+              </StaffAuthGuard>
+            ),
+            children: [
+              {
+                index: true,
+                element: <Admin_OrdersDineInOrders />,
+              },
+              {
+                path: "take-away",
+                element: <Admin_OrdersTakeAwayOrders />,
+              },
+            ],
+          },
+          {
+            path: "reservations",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ReservationsHomePage />
+              </StaffAuthGuard>
+            ),
+          },
         ],
       },
       {
         path: "waiter",
+        element: <Waiter_Root />,
         children: [
           {
             index: true,
@@ -92,14 +132,14 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
-          {
-            path: "table/:tableId",
-            element: (
-              <StaffAuthGuard role={StaffRole.Waiter}>
-                <Waiter_TableDetailsPage />
-              </StaffAuthGuard>
-            ),
-          },
+          // {
+          //   path: "table/:tableId",
+          //   element: (
+          //     <StaffAuthGuard role={StaffRole.Waiter}>
+          //       <Waiter_TableDetailsPage />
+          //     </StaffAuthGuard>
+          //   ),
+          // },
         ],
       },
       {

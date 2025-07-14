@@ -8,7 +8,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardMedia,
   Chip,
   Stack,
   Typography,
@@ -48,11 +47,11 @@ export const DiningAreaCard: FC<{
   return (
     <>
       <Card>
-        <CardMedia
+        {/* <CardMedia
           sx={{ height: 140 }}
           image="/dining-area-example.jpg"
           title={`${diningArea.name} image`}
-        />
+        /> */}
         <CardContent>
           <Typography gutterBottom variant="h6">
             {diningArea.name}

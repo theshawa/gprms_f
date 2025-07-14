@@ -1,19 +1,4 @@
-import {
-  AttachMoney,
-  CalendarToday,
-  Fastfood,
-  Home,
-  Kitchen,
-  LocalOfferSharp,
-  LocalPizza,
-  LocationPin,
-  Login,
-  MenuBook,
-  People,
-  Settings,
-  SupervisedUserCircle,
-  TableRestaurant,
-} from "@mui/icons-material";
+import { Login } from "@mui/icons-material";
 import {
   Box,
   Drawer,
@@ -25,8 +10,8 @@ import {
 } from "@mui/material";
 import { type FC, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { StaffRole } from "../../../../enums/staff-role";
 import { useStaffAuth } from "../../../../hooks/useStaffAuth";
+import { getSideMenuLinks } from "./links";
 
 export const SideMenu: FC<{
   open: boolean;
@@ -35,110 +20,17 @@ export const SideMenu: FC<{
   const { auth } = useStaffAuth();
   const location = useLocation();
   const links = useMemo(() => {
-    const links: {
-      title: string;
-      link: string;
-      Icon: any;
-      exactLinkMatch?: boolean;
-    }[] = [];
-    switch (auth?.user.role) {
-      case StaffRole.Admin:
-        links.push(
-          {
-            title: "Home",
-            link: "/staff/admin",
-            Icon: Home,
-            exactLinkMatch: true,
-          },
-          {
-            title: "Staff",
-            link: "/staff/admin/staff",
-            Icon: SupervisedUserCircle,
-          },
-          {
-            title: "Dining Areas",
-            link: "/staff/admin/dining-areas",
-            Icon: LocationPin,
-          },
-          {
-            title: "Dining Tables",
-            link: "/staff/admin/dining-tables",
-            Icon: TableRestaurant,
-          },
-          {
-            title: "Meals",
-            link: "/staff/admin/meals",
-            Icon: Fastfood,
-          },
-          {
-            title: "Menus",
-            link: "/staff/admin/menus",
-            Icon: MenuBook,
-          },
-          {
-            title: "Calendar",
-            link: "/staff/admin/calendar",
-            Icon: CalendarToday,
-          },
-          {
-            title: "Customers",
-            link: "/staff/admin/customers",
-            Icon: People,
-          },
-          {
-            title: "Orders",
-            link: "/staff/admin/orders",
-            Icon: AttachMoney,
-          },
-          {
-            title: "Offers",
-            link: "/staff/admin/offers",
-            Icon: LocalOfferSharp,
-          },
-          {
-            title: "Settings",
-            link: "/staff/admin/settings",
-            Icon: Settings,
-          }
-        );
-        break;
-      case StaffRole.KitchenManager:
-        links.push(
-          {
-            title: "Home",
-            link: "/staff/kitchen-manager",
-            Icon: Home,
-          },
-          {
-            title: "Orders",
-            link: "/staff/kitchen-manager/orders",
-            Icon: Fastfood,
-          },
-          {
-            title: "Meals",
-            link: "/staff/kitchen-manager/meals",
-            Icon: LocalPizza,
-          },
-          {
-            title: "Ingredients",
-            link: "/staff/kitchen-manager/ingredients",
-            Icon: Kitchen,
-          },
-          {
-            title: "Settings",
-            link: "/staff/kitchen-manager/settings",
-            Icon: Settings,
-          }
-        );
-        break;
-      default:
-        links.push({
-          title: "Login",
-          link: "/staff/login",
-          Icon: Login,
-        });
+    if (auth?.user) {
+      return getSideMenuLinks(auth.user.role);
     }
-    return links;
+    return [
+      {
+        title: "Login",
+        link: "/staff/login",
+        Icon: Login,
+        exactLinkMatch: true,
+      },
+    ];
   }, [auth]);
 
   return (
