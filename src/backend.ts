@@ -10,16 +10,6 @@ export const staffBackend = axios.create({
   withCredentials: true,
 });
 
-export const staffSSEBackend = axios.create({
-  baseURL: BACKEND_URL + "/staff",
-  headers: {
-    "Content-Type": "text/event-stream",
-  },
-  withCredentials: true,
-  adapter: "fetch",
-  responseType: "stream",
-});
-
 export const customerBackend = axios.create({
   baseURL: BACKEND_URL + "/customer",
   headers: {
