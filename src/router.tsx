@@ -23,6 +23,7 @@ import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-or
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
+import { Customer_Reservations } from "./ui/customer/reservations";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Customer_HomePage />,
+      },
+      {
+        path: "reservations",
+        element: <Customer_Reservations />,
       },
     ],
   },
