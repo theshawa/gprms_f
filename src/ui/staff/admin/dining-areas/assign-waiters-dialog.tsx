@@ -14,7 +14,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   IconButton,
   InputAdornment,
   LinearProgress,
@@ -23,7 +22,6 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  Paper,
   Stack,
   TextField,
   Typography,
@@ -32,111 +30,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { type FC, useEffect, useState } from "react";
 
-const WaitersList: FC<{
-  waiters: StaffUser[];
-  listItemAction: (id: number) => void;
-  iconIsRemove?: boolean;
-  headerMessage: string;
-  disabled?: boolean;
-}> = ({ waiters, listItemAction, iconIsRemove, headerMessage, disabled }) => {
-  const [showingItems, setShowingItems] = useState<StaffUser[]>(waiters);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setShowingItems(waiters);
-    } else {
-      const lowerSearchTerm = searchTerm.trim().toLowerCase();
-      setShowingItems(
-        waiters.filter(
-          (waiter) =>
-            waiter.name.toLowerCase().includes(lowerSearchTerm) ||
-            waiter.username.toLowerCase().includes(lowerSearchTerm)
-        )
-      );
-    }
-  }, [waiters, searchTerm]);
-
-  return (
-    <Grid
-      component={Paper}
-      px={1}
-      size={1}
-      sx={
-        disabled
-          ? { opacity: 0.5, pointerEvents: "none", userSelect: "none" }
-          : {}
-      }
-    >
-      <List disablePadding>
-        <ListSubheader>
-          <Stack pb={2}>
-            <Typography variant="inherit">{headerMessage}</Typography>
-            {waiters.length > 0 && (
-              <TextField
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                }}
-                size="small"
-                prefix="as"
-                placeholder="Search..."
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search />
-                      </InputAdornment>
-                    ),
-                    endAdornment: searchTerm && (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setSearchTerm("")}
-                          disableRipple
-                        >
-                          <Close fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-            )}
-          </Stack>
-        </ListSubheader>
-
-        {showingItems.map((waiter) => (
-          <ListItem
-            key={waiter.id}
-            secondaryAction={
-              <IconButton
-                onClick={() => listItemAction(waiter.id)}
-                color={iconIsRemove ? "error" : "primary"}
-                edge="end"
-              >
-                {iconIsRemove ? <Remove /> : <Add />}
-              </IconButton>
-            }
-          >
-            <ListItemIcon>
-              <Person />
-            </ListItemIcon>
-            <ListItemText>
-              {waiter.name} ({waiter.username})
-            </ListItemText>
-          </ListItem>
-        ))}
-      </List>
-    </Grid>
-  );
-};
+interface AssignableWaiter extends StaffUser {
+  assigned: boolean;
+}
 
 export const AssignWaitersDialog: FC<{
   open: boolean;
   handleClose: () => void;
   diningArea: DiningArea;
-  setParentAssignedWaitersCount: (count: number) => void;
-}> = ({ open, handleClose, diningArea, setParentAssignedWaitersCount }) => {
+  onWaiterAssigned: (v: { waiterId: number; assigned: boolean }) => void;
+}> = ({ open, handleClose, diningArea, onWaiterAssigned }) => {
   const { data, isPending, error } = useQuery({
     queryKey: ["assign_waiters_dialog", diningArea.id],
     queryFn: async () => {
@@ -149,49 +52,59 @@ export const AssignWaitersDialog: FC<{
     enabled: open,
   });
 
-  const [unAssignedWaiters, setUnAssignedWaiters] = useState<StaffUser[]>([]);
-  const [assignedWaiters, setAssignedWaiters] = useState<StaffUser[]>([]);
+  const [waiters, setWaiters] = useState<AssignableWaiter[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (!data) {
-      setUnAssignedWaiters([]);
-      setAssignedWaiters([]);
       return;
     }
-    setAssignedWaiters(data.assignedWaiters);
-    setUnAssignedWaiters(
-      data.allWaiters.filter(
+
+    let allWaiters = data.allWaiters.map((w) => ({
+      ...w,
+      assigned: data.assignedWaiters.some((aw) => aw.id === w.id),
+    }));
+    if (searchTerm.trim()) {
+      const lowerSearchTerm = searchTerm.trim().toLowerCase();
+      allWaiters = allWaiters.filter(
         (waiter) =>
-          !data.assignedWaiters.some((assigned) => assigned.id === waiter.id)
-      )
-    );
-  }, [data]);
+          waiter.name.toLowerCase().includes(lowerSearchTerm) ||
+          waiter.username.toLowerCase().includes(lowerSearchTerm)
+      );
+    }
+    setWaiters(allWaiters);
+  }, [data, searchTerm]);
 
   const { showError, showSuccess } = useAlert();
-
-  const sortWaiters = () => {
-    setUnAssignedWaiters((prev) =>
-      [...prev].sort((a, b) => a.name.localeCompare(b.name))
-    );
-    setAssignedWaiters((prev) =>
-      [...prev].sort((a, b) => a.name.localeCompare(b.name))
-    );
-  };
 
   const { mutate: assignWaiterMutation, isPending: assigningWaiter } =
     useMutation<WaiterAssignment, AxiosError, number>({
       mutationFn: (waiterId: number) =>
         DiningAreasService.assignWaiter(diningArea.id, waiterId),
-      onSuccess: ({ waiterId }) => {
+      onSuccess: (assignment) => {
         showSuccess("Waiter assigned successfully.");
-        setAssignedWaiters((prev) => [
-          ...prev,
-          unAssignedWaiters.find((w) => w.id === waiterId)!,
-        ]);
-        setUnAssignedWaiters((prev) => prev.filter((w) => w.id !== waiterId));
-        sortWaiters();
 
-        setParentAssignedWaitersCount(assignedWaiters.length + 1);
+        setWaiters((prev) =>
+          prev.map((w) =>
+            w.id === assignment.waiterId ? { ...w, assigned: true } : w
+          )
+        );
+
+        onWaiterAssigned({ waiterId: assignment.waiterId, assigned: true });
+        const completeAssignment = { ...assignment, diningArea };
+        setWaiters((prev) =>
+          prev.map((w) => {
+            if (w.id === assignment.waiterId) {
+              return {
+                ...w,
+                assignedDiningAreas: w.assignedDiningAreas
+                  ? [...w.assignedDiningAreas, completeAssignment]
+                  : [completeAssignment],
+              };
+            }
+            return w;
+          })
+        );
       },
       onError: (err) => {
         showError("Failed to assign waiter: " + getBackendErrorMessage(err));
@@ -204,14 +117,23 @@ export const AssignWaitersDialog: FC<{
         DiningAreasService.unAssignWaiter(diningArea.id, waiterId),
       onSuccess: ({ waiterId }) => {
         showSuccess("Waiter unassigned successfully.");
-        setUnAssignedWaiters((prev) => [
-          ...prev,
-          assignedWaiters.find((w) => w.id === waiterId)!,
-        ]);
-        setAssignedWaiters((prev) => prev.filter((w) => w.id !== waiterId));
-        sortWaiters();
-
-        setParentAssignedWaitersCount(assignedWaiters.length - 1);
+        setWaiters((prev) =>
+          prev.map((w) => (w.id === waiterId ? { ...w, assigned: false } : w))
+        );
+        onWaiterAssigned({ waiterId, assigned: false });
+        setWaiters((prev) =>
+          prev.map((w) => {
+            if (w.id === waiterId) {
+              return {
+                ...w,
+                assignedDiningAreas: w.assignedDiningAreas?.filter(
+                  (area) => area.diningArea.id !== diningArea.id
+                ),
+              };
+            }
+            return w;
+          })
+        );
       },
       onError: (err) => {
         showError("Failed to unassign waiter: " + getBackendErrorMessage(err));
@@ -219,7 +141,7 @@ export const AssignWaitersDialog: FC<{
     });
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth>
+    <Dialog open={open} maxWidth="sm" fullWidth>
       <DialogTitle>
         Assign Waiters to Area <q>{diningArea.name}</q>
       </DialogTitle>
@@ -235,37 +157,82 @@ export const AssignWaitersDialog: FC<{
             No waiters found to assign. Create some first.
           </Alert>
         ) : (
-          <Grid
-            container
-            minHeight={400}
-            spacing={2}
-            columns={{ xs: 1, sm: 2 }}
-          >
-            <WaitersList
-              waiters={unAssignedWaiters}
-              listItemAction={assignWaiterMutation}
-              disabled={assigningWaiter}
-              iconIsRemove={false}
-              headerMessage={
-                unAssignedWaiters.length === 0
-                  ? "All waiters are assigned to this area."
-                  : "Unassigned Waiters"
-              }
-            />
-            <WaitersList
-              waiters={assignedWaiters}
-              listItemAction={unAssignWaiterMutation}
-              disabled={unAssigningWaiter}
-              iconIsRemove={true}
-              headerMessage={
-                assignedWaiters.length === 0
-                  ? "No waiters assigned to this area yet."
-                  : `${assignedWaiters.length} Waiter${
-                      assignedWaiters.length === 1 ? "" : "s"
-                    } Assigned`
-              }
-            />
-          </Grid>
+          <List disablePadding>
+            <ListSubheader>
+              <Stack pb={2}>
+                {waiters.length > 0 && (
+                  <TextField
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                    }}
+                    size="small"
+                    prefix="as"
+                    placeholder="Search..."
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search />
+                          </InputAdornment>
+                        ),
+                        endAdornment: searchTerm && (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setSearchTerm("")}
+                              disableRipple
+                            >
+                              <Close fontSize="small" />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+                )}
+              </Stack>
+            </ListSubheader>
+
+            {waiters.map((waiter) => (
+              <ListItem
+                key={waiter.id}
+                secondaryAction={
+                  <IconButton
+                    onClick={() =>
+                      waiter.assigned
+                        ? unAssignWaiterMutation(waiter.id)
+                        : assignWaiterMutation(waiter.id)
+                    }
+                    color={waiter.assigned ? "error" : "primary"}
+                    edge="end"
+                  >
+                    {waiter.assigned ? <Remove /> : <Add />}
+                  </IconButton>
+                }
+              >
+                <ListItemIcon>
+                  <Person />
+                </ListItemIcon>
+                <ListItemText>
+                  <Stack>
+                    <Typography variant="body1">
+                      {waiter.name} ({waiter.username})
+                    </Typography>
+                    <Typography
+                      textOverflow="ellipsis"
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      Assigned to areas:{" "}
+                      {waiter.assignedDiningAreas
+                        ?.map((area) => area.diningArea?.name)
+                        .join(", ") || "None"}
+                    </Typography>
+                  </Stack>
+                </ListItemText>
+              </ListItem>
+            ))}
+          </List>
         )}
       </DialogContent>
       <DialogActions>

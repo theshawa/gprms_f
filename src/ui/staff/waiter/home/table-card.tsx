@@ -16,6 +16,7 @@ export const TableCard: FC<{
   diningTable: DiningTable;
 }> = ({ diningTable }) => {
   const [ongoing, setOngoing] = useState(false);
+  const [customerIsWaiting, setCustomerIsWaiting] = useState(false);
   const socket = useSocketConnection();
 
   const { showError } = useAlert();
@@ -26,24 +27,43 @@ export const TableCard: FC<{
     socket.emit("getDiningTableStatus", diningTable.id);
 
     socket.on("diningTableStatus", (tableId: number, status: boolean) => {
-      if (tableId === diningTable.id) {
-        setOngoing(status);
-      }
+      // if (tableId === diningTable.id) {
+      //   setOngoing(status);
+      // }
     });
 
     socket.on("diningTableStatusError", (err) => {
       showError(`Failed to fetch table status: ${getBackendErrorMessage(err)}`);
     });
 
+    socket.on("customerWaitingAtDiningTable", (data) => {
+      console.log(data.tableId, diningTable.id);
+
+      if (data.tableId === diningTable.id) {
+        console.log("Customer waiting at dining table:", data);
+
+        setCustomerIsWaiting(true);
+      }
+    });
+
     return () => {
       socket.off("diningTableStatus");
       socket.off("diningTableStatusError");
+      socket.off("customerWaitingAtDiningTable");
     };
   }, [socket, diningTable]);
 
   return (
     <Grid size={1}>
-      <Card sx={{ backgroundColor: ongoing ? "lightgreen" : "white" }}>
+      <Card
+        sx={{
+          backgroundColor: customerIsWaiting
+            ? "orange"
+            : ongoing
+            ? "lightgreen"
+            : "white",
+        }}
+      >
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {diningTable.name}
@@ -56,9 +76,17 @@ export const TableCard: FC<{
         </CardContent>
         <CardActions>
           <Chip
-            label={ongoing ? "Order Ongoing" : "Available"}
+            label={
+              customerIsWaiting
+                ? "Customer Waiting"
+                : ongoing
+                ? "Order Ongoing"
+                : "Available"
+            }
             size="small"
-            color={ongoing ? "success" : "default"}
+            color={
+              customerIsWaiting ? "warning" : ongoing ? "success" : "default"
+            }
           />
         </CardActions>
       </Card>

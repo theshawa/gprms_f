@@ -1,11 +1,11 @@
-import type { DiningTable } from "./dining-table";
+import type { DiningArea } from "./dining-area";
 import type { StaffUser } from "./staff-user";
 
 export interface WaiterAssignment {
   id: number;
-  diningTableId: number;
+  diningAreaId: number;
   waiterId: number;
   assignedAt: string;
-  diningTable: DiningTable;
+  diningArea: DiningArea;
   waiter: StaffUser;
 }

@@ -60,18 +60,18 @@ export const Header: FC = () => {
           </Typography>
           {auth && (
             <>
-              <span className="hidden lg:block">
+              <span className="hidden sm:block">
                 <Button
                   size="large"
                   onClick={(e) => setAnchorEl(e.currentTarget)}
                   startIcon={<AccountCircle />}
                   color="inherit"
-                  className="hidden lg:block m-20"
+                  className="hidden sm:block m-20"
                 >
                   {auth?.user.name}
                 </Button>
               </span>
-              <span className="lg:hidden">
+              <span className="sm:hidden">
                 <IconButton
                   onClick={(e) => setAnchorEl(e.currentTarget)}
                   size="large"

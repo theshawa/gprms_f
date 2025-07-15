@@ -24,8 +24,9 @@ export const DiningAreaCard: FC<{
   const [diningArea, seDiningArea] = useState<DiningArea>(initialDiningArea);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [assignWaitersDialogOpen, setAssignWaitersDialogOpen] = useState(false);
-  const [assignedWaitersCount, setAssignedWaitersCount] = useState<number>(
-    initialDiningArea.assignedWaiters.length || 0
+
+  const [assignedWaitersCount, setAssignedWaitersCount] = useState(
+    diningArea.assignedWaiters.length
   );
 
   const { showError, showSuccess } = useAlert();
@@ -134,7 +135,9 @@ export const DiningAreaCard: FC<{
         open={assignWaitersDialogOpen}
         handleClose={() => setAssignWaitersDialogOpen(false)}
         diningArea={diningArea}
-        setParentAssignedWaitersCount={setAssignedWaitersCount}
+        onWaiterAssigned={(v) => {
+          setAssignedWaitersCount((prev) => (v.assigned ? prev + 1 : prev - 1));
+        }}
       />
     </>
   );

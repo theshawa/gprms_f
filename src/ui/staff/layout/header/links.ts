@@ -2,6 +2,7 @@ import { StaffRole } from "@/enums/staff-role";
 import {
   AttachMoney,
   CalendarToday,
+  EggAlt,
   EventSeat,
   Fastfood,
   Home,
@@ -51,6 +52,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Dining Tables",
           link: "/staff/admin/dining-tables",
           Icon: TableRestaurant,
+        },
+        {
+          title: "Ingredients",
+          link: "/staff/admin/ingredients",
+          Icon: EggAlt,
         },
         {
           title: "Meals",

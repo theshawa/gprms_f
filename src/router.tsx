@@ -16,6 +16,8 @@ import { Staff_LoginPage } from "@/ui/staff/login";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Admin_ManageDiningAreasPage } from "./ui/staff/admin/dining-areas";
 import { Admin_ManageDiningTablesPage } from "./ui/staff/admin/dining-tables";
+import { Admin_ManangeIngredientsHomePage } from "./ui/staff/admin/ingredients";
+import { Admin_ManangeMealsHomePage } from "./ui/staff/admin/meals";
 import { Admin_ManageOffersHomePage } from "./ui/staff/admin/offers";
 import { Admin_OrdersLayout } from "./ui/staff/admin/orders";
 import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders";
@@ -115,6 +117,22 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
                 <Admin_ReservationsHomePage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "meals",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ManangeMealsHomePage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "ingredients",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_ManangeIngredientsHomePage />
               </StaffAuthGuard>
             ),
           },
