@@ -14,6 +14,7 @@ import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { Customer_Reservations } from "./ui/customer/reservations";
 import { Admin_ManageDiningAreasPage } from "./ui/staff/admin/dining-areas";
 import { Admin_ManageDiningTablesPage } from "./ui/staff/admin/dining-tables";
 import { Admin_ManangeIngredientsHomePage } from "./ui/staff/admin/ingredients";
@@ -23,9 +24,12 @@ import { Admin_OrdersLayout } from "./ui/staff/admin/orders";
 import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders";
 import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
+import { Cashier_HomePage } from "./ui/staff/cashier/home";
+import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
 import { Waiter_Root } from "./ui/staff/waiter";
+import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
-import { Customer_Reservations } from "./ui/customer/reservations";
+import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
 
 export const router = createBrowserRouter([
   {
@@ -155,6 +159,22 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
+          {
+            path: "customer-feedbacks",
+            element: (
+              <StaffAuthGuard role={StaffRole.Waiter}>
+                <Waiter_CustomerFeedbacksPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "reservations",
+            element: (
+              <StaffAuthGuard role={StaffRole.Waiter}>
+                <Waiter_CustomerReservationsPage />
+              </StaffAuthGuard>
+            ),
+          },
           // {
           //   path: "table/:tableId",
           //   element: (
@@ -210,6 +230,27 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.KitchenManager}>
                 <KitchenManager_IngredientsPage />
+              </StaffAuthGuard>
+            ),
+          },
+        ],
+      },
+      {
+        path: "cashier",
+        children: [
+          {
+            index: true,
+            element: (
+              <StaffAuthGuard role={StaffRole.Cashier}>
+                <Cashier_HomePage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "invoices",
+            element: (
+              <StaffAuthGuard role={StaffRole.Cashier}>
+                <Cashier_InvoicesPage />
               </StaffAuthGuard>
             ),
           },
