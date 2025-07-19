@@ -58,7 +58,7 @@ export const sampleInvoices: CashierInvoice[] = [
     discount: 0,
     loyaltyPoints: 4507,
     total: 497865,
-    createdAt: "2025-07-19T11:15:00Z",
+    createdAt: "2025-06-15T08:15:00Z",
     status: "pending",
   },
   {
@@ -88,7 +88,7 @@ export const sampleInvoices: CashierInvoice[] = [
     discount: 0,
     loyaltyPoints: 58,
     total: 6399,
-    createdAt: "2025-07-19T12:00:00Z",
+    createdAt: "2024-12-25T14:30:00Z",
     status: "pending",
   },
   {
@@ -117,7 +117,7 @@ export const sampleInvoices: CashierInvoice[] = [
     discount: 200,
     loyaltyPoints: 39,
     total: 3819,
-    createdAt: "2025-07-19T13:30:00Z",
+    createdAt: "2025-07-18T16:45:00Z",
     status: "pending",
   },
   {
@@ -146,7 +146,7 @@ export const sampleInvoices: CashierInvoice[] = [
     discount: 0,
     loyaltyPoints: 42,
     total: 4270,
-    createdAt: "2025-07-19T14:15:00Z",
+    createdAt: "2025-07-10T09:15:00Z",
     status: "pending",
   },
   {
@@ -176,7 +176,7 @@ export const sampleInvoices: CashierInvoice[] = [
     discount: 0,
     loyaltyPoints: 44,
     total: 4873,
-    createdAt: "2025-07-19T15:00:00Z",
+    createdAt: "2025-05-20T18:00:00Z",
     status: "pending",
   },
   {
@@ -205,7 +205,7 @@ export const sampleInvoices: CashierInvoice[] = [
     discount: 500,
     loyaltyPoints: 53,
     total: 4913,
-    createdAt: "2025-07-19T16:30:00Z",
+    createdAt: "2025-03-11T20:30:00Z",
     status: "pending",
   },
   {
