@@ -26,9 +26,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { type FC, useEffect, useState } from "react";
+import { QKs } from "../../query-keys";
 
 interface AssignableWaiter extends StaffUser {
   assigned: boolean;
@@ -38,8 +39,7 @@ export const AssignWaitersDialog: FC<{
   open: boolean;
   handleClose: () => void;
   diningArea: DiningArea;
-  onWaiterAssigned: (v: { waiterId: number; assigned: boolean }) => void;
-}> = ({ open, handleClose, diningArea, onWaiterAssigned }) => {
+}> = ({ open, handleClose, diningArea }) => {
   const { data, isPending, error } = useQuery({
     queryKey: ["assign_waiters_dialog", diningArea.id],
     queryFn: async () => {
@@ -51,6 +51,8 @@ export const AssignWaitersDialog: FC<{
     },
     enabled: open,
   });
+
+  const queryClient = useQueryClient();
 
   const [waiters, setWaiters] = useState<AssignableWaiter[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -90,7 +92,8 @@ export const AssignWaitersDialog: FC<{
           )
         );
 
-        onWaiterAssigned({ waiterId: assignment.waiterId, assigned: true });
+        queryClient.invalidateQueries({ queryKey: QKs.admin_diningAreas });
+
         const completeAssignment = { ...assignment, diningArea };
         setWaiters((prev) =>
           prev.map((w) => {
@@ -120,7 +123,9 @@ export const AssignWaitersDialog: FC<{
         setWaiters((prev) =>
           prev.map((w) => (w.id === waiterId ? { ...w, assigned: false } : w))
         );
-        onWaiterAssigned({ waiterId, assigned: false });
+
+        queryClient.invalidateQueries({ queryKey: QKs.admin_diningAreas });
+
         setWaiters((prev) =>
           prev.map((w) => {
             if (w.id === waiterId) {

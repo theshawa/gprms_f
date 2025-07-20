@@ -1,8 +1,8 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import type { Ingredient } from "@/interfaces/ingredient";
-import type { IngredientStockMovement } from "@/interfaces/ingredient-stock-movement";
 import { IngredientsService } from "@/services/ingredients";
+import { QKs } from "@/ui/staff/query-keys";
 import {
   Button,
   Dialog,
@@ -16,8 +16,10 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import type { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { QKs as LocalQks } from "./query_keys";
 
 export type FormInputs = {
   type: "addition" | "reduction";
@@ -27,10 +29,11 @@ export type FormInputs = {
 
 export const NewStockMovementDialog: FC<{
   ingredient: Ingredient;
-  onStockMovementCreated: (sm: IngredientStockMovement) => void;
   open: boolean;
   handleClose: () => void;
-}> = ({ ingredient, onStockMovementCreated, open, handleClose }) => {
+  currentPage: number;
+  activitiesPerPage: number;
+}> = ({ ingredient, open, handleClose, currentPage, activitiesPerPage }) => {
   const {
     handleSubmit,
     register,
@@ -48,10 +51,12 @@ export const NewStockMovementDialog: FC<{
 
   const { showSuccess, showError } = useAlert();
 
+  const queryClient = useQueryClient();
+
   const onSubmit = async (data: FormInputs) => {
     try {
       const mutation = (data.type === "reduction" ? -1 : 1) * data.quantity;
-      const mv = await IngredientsService.createStockMovement(
+      await IngredientsService.createStockMovement(
         ingredient.id,
         mutation,
         data.reason
@@ -64,7 +69,18 @@ export const NewStockMovementDialog: FC<{
         } ${ingredient.unit}`
       );
       reset();
-      onStockMovementCreated(mv);
+
+      queryClient.invalidateQueries({
+        queryKey: LocalQks.admin_ingredient_stock_movements_dialog(
+          ingredient.id,
+          currentPage,
+          activitiesPerPage
+        ),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QKs.admin_ingredients,
+      });
+
       handleClose();
     } catch (error) {
       showError(

@@ -3,9 +3,14 @@ import type { Ingredient } from "@/interfaces/ingredient";
 import type { IngredientStockMovement } from "@/interfaces/ingredient-stock-movement";
 
 export class IngredientsService {
-  static async create(
-    payload: Omit<Ingredient, "id" | "createdAt"> & { initialQuantity: number }
-  ) {
+  static async create(payload: {
+    name: string;
+    description: string;
+    costPerUnit: number;
+    unit: string;
+    initialQuantity: number;
+    lowStockThreshold: number;
+  }) {
     const { data } = await staffBackend.post<Ingredient>(
       "/admin/ingredients",
       payload
@@ -20,7 +25,13 @@ export class IngredientsService {
 
   static async update(
     id: number,
-    payload: Omit<Ingredient, "id" | "createdAt">
+    payload: {
+      name: string;
+      description: string;
+      costPerUnit: number;
+      unit: string;
+      lowStockThreshold: number;
+    }
   ) {
     const { data } = await staffBackend.put<Ingredient>(
       `/admin/ingredients/${id}`,

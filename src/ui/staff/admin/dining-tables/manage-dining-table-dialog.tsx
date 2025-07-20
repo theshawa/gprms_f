@@ -1,5 +1,6 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
+import type { DiningArea } from "@/interfaces/dining-area";
 import type { DiningTable } from "@/interfaces/dining-table";
 import { DiningAreasService } from "@/services/dining-areas";
 import { DiningTablesService } from "@/services/dining-tables";
@@ -20,9 +21,10 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { type FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { QKs } from "../../query-keys";
 
 type FormInputs = {
   name: string;
@@ -34,17 +36,19 @@ type FormInputs = {
 export const ManageDiningTableDialog: FC<{
   open: boolean;
   handleClose: () => void;
-  rereshParent: (v: Partial<DiningTable>) => void;
   editingDiningTable?: DiningTable;
-}> = ({ handleClose, open, rereshParent, editingDiningTable }) => {
+}> = ({ handleClose, open, editingDiningTable }) => {
+  const queryClient = useQueryClient();
+
   const {
     data: diningAreas,
     isPending: isDiningAreasLoading,
     error: diningAreasLoadingError,
   } = useQuery({
-    queryKey: ["admin_manageDiningTablesDialog"],
+    queryKey: QKs.admin_diningAreas,
     queryFn: () => DiningAreasService.getAll(),
     enabled: open,
+    initialData: queryClient.getQueryData<DiningArea[]>(QKs.admin_diningAreas),
   });
 
   const {
@@ -56,10 +60,7 @@ export const ManageDiningTableDialog: FC<{
     setValue,
   } = useForm<FormInputs>({
     defaultValues: {
-      diningAreaId: 0,
       isReservable: true,
-      maxSeats: 4,
-      name: "",
     },
   });
 
@@ -91,11 +92,10 @@ export const ManageDiningTableDialog: FC<{
 
   const onSubmit = async (data: FormInputs) => {
     try {
-      let res: Partial<DiningTable>;
       if (editingDiningTable) {
-        res = await DiningTablesService.update(editingDiningTable.id, data);
+        await DiningTablesService.update(editingDiningTable.id, data);
       } else {
-        res = await DiningTablesService.create(data);
+        await DiningTablesService.create(data);
         reset();
       }
       showSuccess(
@@ -103,7 +103,7 @@ export const ManageDiningTableDialog: FC<{
           editingDiningTable ? "updated" : "created"
         } successfully!`
       );
-      rereshParent(res);
+      queryClient.invalidateQueries({ queryKey: QKs.admin_diningTables });
       handleClose();
     } catch (error) {
       showError(
@@ -113,12 +113,7 @@ export const ManageDiningTableDialog: FC<{
   };
 
   return (
-    <Dialog
-      open={open}
-      maxWidth="xs"
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <Dialog open={open} component="form" onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle>
         {editingDiningTable ? "Update" : "New"} Dining Table
       </DialogTitle>
@@ -206,6 +201,7 @@ export const ManageDiningTableDialog: FC<{
               error={!!errors.maxSeats}
               helperText={errors.maxSeats?.message}
               margin="dense"
+              placeholder="e.g., 4"
             />
             <Controller
               name="isReservable"
@@ -220,7 +216,7 @@ export const ManageDiningTableDialog: FC<{
                       onChange={(e) => field.onChange(e.target.checked)}
                     />
                   }
-                  label={field.value ? "Is Reserable" : "Not Reservable"}
+                  label={field.value ? "Is Reservable" : "Not Reservable"}
                 />
               )}
             />

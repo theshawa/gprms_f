@@ -16,20 +16,21 @@ import {
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import { QKs } from "../../query-keys";
 import { PageLayout } from "../../shared/page-layout";
 import { AccountRow } from "./account-row";
 import { FilterBar } from "./filter-bar";
 import { ManageAccountDialog } from "./manage-account-dialog";
 
-export const Admin_ManageStaffPage: FC = () => {
-  const { isPending, error, data, refetch } = useQuery({
-    queryKey: ["admin_manageStaff_home"],
-    queryFn: () => StaffService.getStaffAccounts(),
-  });
-
+export const Admin_StaffPage: FC = () => {
   const [showingRows, setShowingRows] = useState<StaffUser[]>([]);
   const [roleFilter, setRoleFilter] = useState<string[]>([]);
   const [searchFilter, setSearchFilter] = useState<string>("");
+
+  const { isPending, error, data } = useQuery({
+    queryKey: QKs.admin_staff,
+    queryFn: () => StaffService.getStaffAccounts(),
+  });
 
   useEffect(() => {
     if (!data) {
@@ -99,7 +100,6 @@ export const Admin_ManageStaffPage: FC = () => {
                 <AccountRow
                   key={account.id}
                   account={account}
-                  onDelete={() => refetch()}
                   setRoleFilter={setRoleFilter}
                 />
               ))}
@@ -119,7 +119,6 @@ export const Admin_ManageStaffPage: FC = () => {
       <ManageAccountDialog
         open={newAccountDialogOpen}
         handleClose={() => setNewAccountDialogOpen(false)}
-        onManageSuccess={() => refetch()}
       />
     </>
   );

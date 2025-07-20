@@ -6,23 +6,25 @@ import { useStaffAuth } from "@/hooks/useStaffAuth";
 import type { StaffUser } from "@/interfaces/staff-user";
 import { StaffService } from "@/services/staff";
 import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { SetStateAction } from "jotai";
 import { type Dispatch, type FC, useState } from "react";
+import { QKs } from "../../query-keys";
 import { ActivityHistoryDialog } from "./activity-history-dialog";
 import { ManageAccountDialog } from "./manage-account-dialog";
 
 export const AccountRow: FC<{
   account: StaffUser;
-  onDelete: () => void;
   setRoleFilter: Dispatch<SetStateAction<string[]>>;
-}> = ({ account: initialAccount, onDelete, setRoleFilter }) => {
-  const [account, setAccount] = useState<StaffUser>(initialAccount);
+}> = ({ account, setRoleFilter }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [activityHistoryDialogOpen, setActivityHistoryDialogOpen] =
     useState(false);
+
   const { auth } = useStaffAuth();
   const { confirm } = useConfirmation();
+
+  const queryClient = useQueryClient();
 
   const { showError, showSuccess } = useAlert();
 
@@ -30,7 +32,7 @@ export const AccountRow: FC<{
     mutationFn: () => StaffService.deleteStaffAccount(account.id),
     mutationKey: ["admin_manageStaff_deleteAccount"],
     onSuccess: () => {
-      onDelete();
+      queryClient.invalidateQueries({ queryKey: QKs.admin_staff });
       showSuccess("Staff account deleted successfully.");
     },
     onError: (err) => {
@@ -102,7 +104,6 @@ export const AccountRow: FC<{
         editingAccount={account}
         open={editDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
-        onManageSuccess={(v) => setAccount((pa) => ({ ...pa, ...v }))}
       />
       <ActivityHistoryDialog
         open={activityHistoryDialogOpen}

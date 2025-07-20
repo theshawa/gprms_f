@@ -1,5 +1,4 @@
 import type { Ingredient } from "@/interfaces/ingredient";
-import type { IngredientStockMovement } from "@/interfaces/ingredient-stock-movement";
 import { formatCurrency } from "@/utils/currency-format";
 import {
   Button,
@@ -15,40 +14,43 @@ import { ManageStocksDialog } from "./manage-stocks-dialog";
 
 export const IngredientRow: FC<{
   ingredient: Ingredient;
-  onStockMovementCreated: (v: IngredientStockMovement) => void;
-}> = ({ ingredient: initialIngredient, onStockMovementCreated }) => {
+}> = ({ ingredient }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [ingredient, setIngredient] = useState<Ingredient>(initialIngredient);
   const [manageStocksDialogOpen, setManageStocksDialogOpen] = useState(false);
+
+  const stockStatusColor = !ingredient.stockQuantity
+    ? "error"
+    : ingredient.stockQuantity <= ingredient.lowStockThreshold
+    ? "warning"
+    : "success";
+
   return (
     <>
       <TableRow>
         <TableCell>{ingredient.name}</TableCell>
         <TableCell>{ingredient.description || "-"}</TableCell>
         <TableCell>
-          <Typography fontWeight="medium" variant="body2">
-            {ingredient.stockQuantity} {ingredient.unit}
-          </Typography>
-        </TableCell>
-        <TableCell>
-          <Chip
-            size="small"
-            sx={{ textTransform: "uppercase" }}
-            color={
-              !ingredient.stockQuantity
-                ? "error"
-                : ingredient.stockQuantity <= ingredient.lowStockThreshold
-                ? "warning"
-                : "success"
-            }
-            label={
-              !ingredient.stockQuantity
-                ? "Out of Stock"
-                : ingredient.stockQuantity <= ingredient.lowStockThreshold
-                ? "Low Stock"
-                : "In Stock"
-            }
-          />
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography
+              fontWeight="600"
+              color={stockStatusColor}
+              variant="body2"
+            >
+              {ingredient.stockQuantity} {ingredient.unit}
+            </Typography>
+            <Chip
+              size="small"
+              sx={{ textTransform: "uppercase" }}
+              color={stockStatusColor}
+              label={
+                !ingredient.stockQuantity
+                  ? "Out of Stock"
+                  : ingredient.stockQuantity <= ingredient.lowStockThreshold
+                  ? "Low Stock"
+                  : "In Stock"
+              }
+            />
+          </Stack>
         </TableCell>
         <TableCell>
           {ingredient.lowStockThreshold} {ingredient.unit}
@@ -72,13 +74,11 @@ export const IngredientRow: FC<{
         editingIngredient={ingredient}
         open={editDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
-        refreshParent={(v) => setIngredient((prev) => ({ ...prev, ...v }))}
       />
       <ManageStocksDialog
         open={manageStocksDialogOpen}
         handleClose={() => setManageStocksDialogOpen(false)}
         ingredient={ingredient}
-        onStockMovementCreated={onStockMovementCreated}
       />
     </>
   );

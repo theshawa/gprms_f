@@ -2,7 +2,6 @@ import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { Ingredient } from "@/interfaces/ingredient";
-import type { IngredientStockMovement } from "@/interfaces/ingredient-stock-movement";
 import { IngredientsService } from "@/services/ingredients";
 import { formatDateTime } from "@/utils/time-format";
 import {
@@ -25,27 +24,28 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type FC, useState } from "react";
 import { NewStockMovementDialog } from "./new-stock-movement-dialog";
+import { QKs } from "./query_keys";
 
 export const ManageStocksDialog: FC<{
   open: boolean;
   handleClose: () => void;
   ingredient: Ingredient;
-  onStockMovementCreated: (v: IngredientStockMovement) => void;
-}> = ({ handleClose, open, ingredient, onStockMovementCreated }) => {
+}> = ({ handleClose, open, ingredient }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [activitiesPerPage, setActivitiesPerPage] = useState(10);
   const [newDialogOpen, setNewDialogOpen] = useState(false);
 
-  const { data, isPending, error, refetch } = useQuery({
-    queryKey: [
-      "manage_ingredient_stock_movements_dialog",
+  const queryClient = useQueryClient();
+
+  const { data, isPending, error } = useQuery({
+    queryKey: QKs.admin_ingredient_stock_movements_dialog(
       ingredient.id,
       currentPage,
-      activitiesPerPage,
-    ],
+      activitiesPerPage
+    ),
     queryFn: async () =>
       IngredientsService.getStockMovements(
         ingredient.id,
@@ -63,7 +63,13 @@ export const ManageStocksDialog: FC<{
     mutationFn: () => IngredientsService.clearStockMovements(ingredient.id),
     onSuccess: () => {
       showSuccess("Stock history cleared successfully.");
-      refetch();
+      queryClient.invalidateQueries({
+        queryKey: QKs.admin_ingredient_stock_movements_dialog(
+          ingredient.id,
+          currentPage,
+          activitiesPerPage
+        ),
+      });
     },
     onError: (err) => {
       showError(
@@ -176,7 +182,7 @@ export const ManageStocksDialog: FC<{
                 clearHistory();
               }
             }}
-            disabled={isClearingHistory}
+            disabled={isClearingHistory || data?.movements.length === 0}
             variant="contained"
             color="error"
           >
@@ -191,10 +197,8 @@ export const ManageStocksDialog: FC<{
         open={newDialogOpen}
         handleClose={() => setNewDialogOpen(false)}
         ingredient={ingredient}
-        onStockMovementCreated={(v) => {
-          refetch();
-          onStockMovementCreated(v);
-        }}
+        currentPage={currentPage}
+        activitiesPerPage={activitiesPerPage}
       />
     </>
   );

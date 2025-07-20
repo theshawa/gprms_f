@@ -14,6 +14,7 @@ import {
   MenuBook,
   People,
   RateReview,
+  ReceiptLong,
   Settings,
   SupervisedUserCircle,
   TableRestaurant,
@@ -59,8 +60,8 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: EggAlt,
         },
         {
-          title: "Meals",
-          link: "/staff/admin/meals",
+          title: "Dishes",
+          link: "/staff/admin/dishes",
           Icon: Fastfood,
         },
         {
@@ -146,6 +147,21 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "My Ratings",
           link: "/staff/waiter/ratings",
           Icon: RateReview,
+        }
+      );
+      break;
+    case StaffRole.Cashier:
+      links.push(
+        {
+          title: "Invoices",
+          link: "/staff/cashier",
+          Icon: ReceiptLong,
+          exactLinkMatch: true,
+        },
+        {
+          title: "Reservations",
+          link: "/staff/cashier/reservations",
+          Icon: EventSeat,
         }
       );
       break;

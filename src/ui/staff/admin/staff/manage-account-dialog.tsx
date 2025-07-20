@@ -16,8 +16,10 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { type FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { QKs } from "../../query-keys";
 
 type FormInputs = {
   role: string;
@@ -30,8 +32,7 @@ export const ManageAccountDialog: FC<{
   open: boolean;
   handleClose: () => void;
   editingAccount?: StaffUser;
-  onManageSuccess: (v: Partial<StaffUser>) => void;
-}> = ({ handleClose, open, editingAccount, onManageSuccess }) => {
+}> = ({ handleClose, open, editingAccount }) => {
   const {
     handleSubmit,
     register,
@@ -46,6 +47,8 @@ export const ManageAccountDialog: FC<{
       password: "",
     },
   });
+
+  const queryClient = useQueryClient();
 
   const { showError, showSuccess } = useAlert();
 
@@ -64,21 +67,22 @@ export const ManageAccountDialog: FC<{
 
   const onSubmit = async (data: FormInputs) => {
     try {
-      let res: Partial<StaffUser>;
       if (editingAccount) {
-        res = await StaffService.updateStaffAccount({
+        await StaffService.updateStaffAccount({
           ...editingAccount,
           ...data,
           role: data.role as StaffRole,
         });
       } else {
-        res = await StaffService.createStaffAccount({
+        await StaffService.createStaffAccount({
           ...data,
           role: data.role as StaffRole,
         });
         reset();
       }
-      onManageSuccess(res);
+
+      queryClient.invalidateQueries({ queryKey: QKs.admin_staff });
+
       showSuccess(
         `Account ${editingAccount ? "updated" : "created"} successfully`
       );

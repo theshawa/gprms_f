@@ -1,3 +1,6 @@
+import type { DishIngredient } from "./dish-ingredient";
+import type { IngredientStockMovement } from "./ingredient-stock-movement";
+
 export interface Ingredient {
   id: number;
   name: string;
@@ -7,4 +10,6 @@ export interface Ingredient {
   stockQuantity: number;
   lowStockThreshold: number;
   createdAt: string;
+  stockMovements: IngredientStockMovement[];
+  dishIngredients: DishIngredient[];
 }
