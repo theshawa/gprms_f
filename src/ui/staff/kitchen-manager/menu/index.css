@@ -1,0 +1,17 @@
+.customer-menu-content {
+  padding: 2rem;
+}
+
+.customer-menu-header {
+  margin-bottom: 2rem;
+}
+
+.customer-menu-category {
+  margin-bottom: 2rem;
+}
+
+.customer-menu-meal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}

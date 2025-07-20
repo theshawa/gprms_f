@@ -2,6 +2,7 @@ import { StaffAuthGuard } from "@/components/staff-auth-guard";
 import { StaffRole } from "@/enums/staff-role";
 import { Customer_HomePage } from "@/ui/customer/home";
 import { Customer_Layout } from "@/ui/customer/layout";
+import { Customer_MenuPage } from "@/ui/staff/kitchen-manager/menu";
 import { ErrorPage } from "@/ui/error";
 import { NotFoundPage } from "@/ui/not-found";
 import { Admin_HomePage } from "@/ui/staff/admin/home";
@@ -27,6 +28,12 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Customer_HomePage />,
+      },
+
+      // need to remove the below section after the initial setup
+      {
+        path: "menu",
+        element: <Customer_MenuPage />,
       },
     ],
   },
@@ -66,6 +73,14 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
                 <Admin_ManageLocationsPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "menus",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Customer_MenuPage />
               </StaffAuthGuard>
             ),
           },
