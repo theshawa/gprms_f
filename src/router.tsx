@@ -48,6 +48,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  // Staff routes
   {
     path: "/staff",
     element: <Staff_Layout />,
@@ -156,6 +157,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      // Waiter routes
       {
         path: "waiter",
         element: <Waiter_Root />,
@@ -168,8 +170,25 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
+          {
+            path: "customer-feedbacks",
+            element: (
+              <StaffAuthGuard role={StaffRole.Waiter}>
+                <Waiter_CustomerFeedbacksPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "customer-reservations",
+            element: (
+              <StaffAuthGuard role={StaffRole.Waiter}>
+                <Waiter_CustomerReservationsPage />
+              </StaffAuthGuard>
+            ),
+          },
         ],
       },
+      // Cashier routes
       {
         path: "cashier",
         children: [
@@ -181,32 +200,9 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
-          {
-            path: "customer-feedbacks",
-            element: (
-              <StaffAuthGuard role={StaffRole.Waiter}>
-                <Waiter_CustomerFeedbacksPage />
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "reservations",
-            element: (
-              <StaffAuthGuard role={StaffRole.Waiter}>
-                <Waiter_CustomerReservationsPage />
-              </StaffAuthGuard>
-            ),
-          },
-          // {
-          //   path: "table/:tableId",
-          //   element: (
-          //     <StaffAuthGuard role={StaffRole.Waiter}>
-          //       <Waiter_TableDetailsPage />
-          //     </StaffAuthGuard>
-          //   ),
-          // },
         ],
       },
+      // Kitchen Manager routes
       {
         path: "kitchen-manager",
         children: [

@@ -14,6 +14,7 @@ import {
   MenuBook,
   People,
   RateReview,
+  Receipt,
   ReceiptLong,
   Settings,
   SupervisedUserCircle,
@@ -140,7 +141,7 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
         },
         {
           title: "Reservations",
-          link: "/staff/waiter/reservations",
+          link: "/staff/waiter/customer-reservations",
           Icon: EventSeat,
         },
         {
