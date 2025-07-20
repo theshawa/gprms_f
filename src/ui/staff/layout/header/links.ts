@@ -144,8 +144,8 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: EventSeat,
         },
         {
-          title: "My Ratings",
-          link: "/staff/waiter/ratings",
+          title: "Customer Feedbacks",
+          link: "/staff/waiter/customer-feedbacks",
           Icon: RateReview,
         }
       );
@@ -162,6 +162,22 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Reservations",
           link: "/staff/cashier/reservations",
           Icon: EventSeat,
+        },
+        {
+          title: "Home",
+          link: "/staff/cashier",
+          Icon: Home,
+          exactLinkMatch: true,
+        },
+        {
+          title: "Orders",
+          link: "/staff/cashier/orders",
+          Icon: AttachMoney,
+        },
+        {
+          title: "Invoices",
+          link: "/staff/cashier/invoices",
+          Icon: Receipt,
         }
       );
       break;

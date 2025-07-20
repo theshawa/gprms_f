@@ -69,9 +69,13 @@ export const Staff_LoginPage: FC = () => {
     >
       <Card className="w-full max-w-sm m-auto">
         <CardContent>
-          <Typography gutterBottom variant="h6">
-            Login
-          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <Typography variant="h6">
+              Login
+            </Typography>
+            <img src="/public/logo.png" alt="" className="h-7" />
+          </Box>
+          
           <TextField
             {...register("username", {
               required: {
