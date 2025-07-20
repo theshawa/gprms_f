@@ -31,6 +31,7 @@ import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
+import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
 
 export const router = createBrowserRouter([
   {
@@ -188,20 +189,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // Cashier routes
-      {
-        path: "cashier",
-        children: [
-          {
-            index: true,
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_InvoicesPage />
-              </StaffAuthGuard>
-            ),
-          },
-        ],
-      },
+      
       // Kitchen Manager routes
       {
         path: "kitchen-manager",
@@ -269,6 +257,14 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
                 <Cashier_InvoicesPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "orders",
+            element: (
+              <StaffAuthGuard role={StaffRole.Cashier}>
+                <Cashier_OrdersPage />
               </StaffAuthGuard>
             ),
           },
