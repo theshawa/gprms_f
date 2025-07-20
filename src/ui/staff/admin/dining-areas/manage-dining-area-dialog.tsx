@@ -10,8 +10,10 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { type FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { QKs } from "../../query-keys";
 
 type FormInputs = {
   name: string;
@@ -21,22 +23,18 @@ type FormInputs = {
 export const ManageDiningAreaDialog: FC<{
   open: boolean;
   handleClose: () => void;
-  refreshParent: (v: Partial<DiningArea>) => void;
   editingDiningArea?: DiningArea;
-}> = ({ handleClose, open, refreshParent, editingDiningArea }) => {
+}> = ({ handleClose, open, editingDiningArea }) => {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormInputs>({
-    defaultValues: {
-      description: "",
-      name: "",
-    },
-  });
+  } = useForm<FormInputs>({});
 
   const { showSuccess, showError } = useAlert();
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     reset(editingDiningArea);
@@ -44,21 +42,22 @@ export const ManageDiningAreaDialog: FC<{
 
   const onSubmit = async (data: FormInputs) => {
     try {
-      let res: Partial<DiningArea>;
       if (editingDiningArea) {
-        res = await DiningAreasService.update(
+        await DiningAreasService.update(
           editingDiningArea.id,
           data.name,
           data.description
         );
       } else {
-        res = await DiningAreasService.create(data.name, data.description);
+        await DiningAreasService.create(data.name, data.description);
         reset();
       }
       showSuccess(
         `Dining area ${editingDiningArea ? "updated" : "created"} successfully!`
       );
-      refreshParent(res);
+      queryClient.invalidateQueries({
+        queryKey: QKs.admin_diningAreas,
+      });
       handleClose();
     } catch (error) {
       showError(
@@ -68,12 +67,7 @@ export const ManageDiningAreaDialog: FC<{
   };
 
   return (
-    <Dialog
-      open={open}
-      maxWidth="xs"
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <Dialog open={open} component="form" onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle>
         {editingDiningArea ? "Update" : "New"} Dining Area
       </DialogTitle>

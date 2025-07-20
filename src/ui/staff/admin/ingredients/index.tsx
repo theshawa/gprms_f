@@ -11,8 +11,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { type FC, useEffect, useState } from "react";
+import { QKs } from "../../query-keys";
 import { PageError } from "../../shared/page-error";
 import { PageLayout } from "../../shared/page-layout";
 import { PageLoader } from "../../shared/page-loader";
@@ -20,22 +21,18 @@ import { FilterBar } from "./filter-bar";
 import { IngredientRow } from "./ingredient-row";
 import { ManageIngredientDialog } from "./manage-ingredient-dialog";
 
-export const Admin_ManangeIngredientsHomePage: FC = () => {
+export const Admin_IngredientsPage: FC = () => {
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [stockLevelFilter, setStockLevelFilter] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
   const [showingRows, setShowingRows] = useState<Ingredient[]>([]);
 
-  const queryClient = useQueryClient();
-
   const {
     data: ingredients,
-    refetch,
     isPending,
     error,
-    isRefetching,
   } = useQuery({
-    queryKey: ["admin_manageIngredients_home"],
+    queryKey: QKs.admin_ingredients,
     queryFn: () => IngredientsService.getAll(),
   });
 
@@ -74,7 +71,7 @@ export const Admin_ManangeIngredientsHomePage: FC = () => {
     setShowingRows(list);
   }, [ingredients, stockLevelFilter, searchFilter]);
 
-  if (isPending || isRefetching) {
+  if (isPending) {
     return <PageLoader />;
   }
 
@@ -105,8 +102,7 @@ export const Admin_ManangeIngredientsHomePage: FC = () => {
               <TableRow>
                 <TableCell width="20%">Name</TableCell>
                 <TableCell width="15%">Description</TableCell>
-                <TableCell width="10%">Stocks</TableCell>
-                <TableCell width="10%">Stock Level</TableCell>
+                <TableCell width="15%">Stocks</TableCell>
                 <TableCell width="10%">Low Stock Treshold</TableCell>
                 <TableCell width="10%">Cost per Unit</TableCell>
                 <TableCell align="right">Actions</TableCell>
@@ -114,28 +110,7 @@ export const Admin_ManangeIngredientsHomePage: FC = () => {
             </TableHead>
             <TableBody>
               {showingRows.map((i) => (
-                <IngredientRow
-                  ingredient={i}
-                  key={i.id}
-                  onStockMovementCreated={(v) => {
-                    queryClient.setQueryData(
-                      ["admin_manageIngredients_home"],
-                      (od: Ingredient[]) => {
-                        if (!od) return od;
-                        return od.map((i) => {
-                          if (i.id === v.ingredientId) {
-                            return {
-                              ...i,
-                              stockQuantity: i.stockQuantity + v.quantity,
-                            };
-                          }
-                          return i;
-                        });
-                      }
-                    );
-                    refetch();
-                  }}
-                />
+                <IngredientRow ingredient={i} key={i.id} />
               ))}
               {!showingRows.length && (
                 <TableRow>
@@ -153,9 +128,6 @@ export const Admin_ManangeIngredientsHomePage: FC = () => {
       <ManageIngredientDialog
         open={newDialogOpen}
         handleClose={() => setNewDialogOpen(false)}
-        refreshParent={() => {
-          refetch();
-        }}
       />
     </>
   );

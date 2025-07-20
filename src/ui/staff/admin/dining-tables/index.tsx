@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { type FC, useEffect, useState } from "react";
+import { QKs } from "../../query-keys";
 import { PageError } from "../../shared/page-error";
 import { PageLayout } from "../../shared/page-layout";
 import { PageLoader } from "../../shared/page-loader";
@@ -20,7 +21,7 @@ import { DiningTableRow } from "./dining-table-row";
 import { FilterBar } from "./filter-bar";
 import { ManageDiningTableDialog } from "./manage-dining-table-dialog";
 
-export const Admin_ManageDiningTablesPage: FC = () => {
+export const Admin_DiningTablesPage: FC = () => {
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [diningAreaFilter, setDiningAreaFilter] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
@@ -28,12 +29,10 @@ export const Admin_ManageDiningTablesPage: FC = () => {
 
   const {
     data: diningTables,
-    refetch,
     isPending,
-    isRefetching,
     error,
   } = useQuery({
-    queryKey: ["admin_manageDiningTables_home"],
+    queryKey: QKs.admin_diningTables,
     queryFn: () => DiningTablesService.getAll(),
   });
 
@@ -62,7 +61,7 @@ export const Admin_ManageDiningTablesPage: FC = () => {
     setShowingRows(filteredData);
   }, [diningTables, diningAreaFilter, searchFilter]);
 
-  if (isPending || isRefetching) {
+  if (isPending) {
     return <PageLoader />;
   }
 
@@ -104,7 +103,6 @@ export const Admin_ManageDiningTablesPage: FC = () => {
                   diningTable={dt}
                   key={dt.id}
                   setDiningAreaFilter={setDiningAreaFilter}
-                  onDelete={() => refetch()}
                 />
               ))}
               {!showingRows.length && (
@@ -123,7 +121,6 @@ export const Admin_ManageDiningTablesPage: FC = () => {
       <ManageDiningTableDialog
         handleClose={() => setNewDialogOpen(false)}
         open={newDialogOpen}
-        rereshParent={() => refetch()}
       />
     </>
   );

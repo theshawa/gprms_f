@@ -12,32 +12,29 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type FC, useState } from "react";
+import { QKs } from "../../query-keys";
 import { AssignWaitersDialog } from "./assign-waiters-dialog";
 import { ManageDiningAreaDialog } from "./manage-dining-area-dialog";
 
 export const DiningAreaCard: FC<{
   diningArea: DiningArea;
-  onDelete: () => void;
-}> = ({ diningArea: initialDiningArea, onDelete }) => {
-  const [diningArea, seDiningArea] = useState<DiningArea>(initialDiningArea);
+}> = ({ diningArea }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [assignWaitersDialogOpen, setAssignWaitersDialogOpen] = useState(false);
-
-  const [assignedWaitersCount, setAssignedWaitersCount] = useState(
-    diningArea.assignedWaiters.length
-  );
 
   const { showError, showSuccess } = useAlert();
 
   const { confirm } = useConfirmation();
 
+  const queryClient = useQueryClient();
+
   const { mutate: deleteDiningArea, isPending: isDeleting } = useMutation({
     mutationFn: () => DiningAreasService.delete(diningArea.id),
     mutationKey: ["admin_manageDiningArea_deleteDiningArea"],
     onSuccess: () => {
-      onDelete();
+      queryClient.invalidateQueries({ queryKey: QKs.admin_diningAreas });
       showSuccess("Dining area deleted successfully.");
     },
     onError: (err) => {
@@ -74,11 +71,11 @@ export const DiningAreaCard: FC<{
             />
             <Chip
               size="small"
-              disabled={!assignedWaitersCount}
+              disabled={!diningArea.assignedWaiters.length}
               label={
-                assignedWaitersCount
-                  ? `${assignedWaitersCount} Waiter${
-                      assignedWaitersCount === 1 ? "" : "s"
+                diningArea.assignedWaiters.length
+                  ? `${diningArea.assignedWaiters.length} Waiter${
+                      diningArea.assignedWaiters.length === 1 ? "" : "s"
                     } Assigned`
                   : "No waiters"
               }
@@ -129,15 +126,11 @@ export const DiningAreaCard: FC<{
         open={editDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
         editingDiningArea={diningArea}
-        refreshParent={(v) => seDiningArea((pda) => ({ ...pda, ...v }))}
       />
       <AssignWaitersDialog
         open={assignWaitersDialogOpen}
         handleClose={() => setAssignWaitersDialogOpen(false)}
         diningArea={diningArea}
-        onWaiterAssigned={(v) => {
-          setAssignedWaitersCount((prev) => (v.assigned ? prev + 1 : prev - 1));
-        }}
       />
     </>
   );

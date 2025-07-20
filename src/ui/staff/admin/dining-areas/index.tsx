@@ -3,27 +3,26 @@ import { AddLocationAlt } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { type FC, useState } from "react";
+import { QKs } from "../../query-keys";
 import { PageError } from "../../shared/page-error";
 import { PageLayout } from "../../shared/page-layout";
 import { PageLoader } from "../../shared/page-loader";
 import { DiningAreaCard } from "./dining-area-card";
 import { ManageDiningAreaDialog } from "./manage-dining-area-dialog";
 
-export const Admin_ManageDiningAreasPage: FC = () => {
+export const Admin_DiningAreasPage: FC = () => {
   const [newDialogOpen, setNewDialogOpen] = useState(false);
 
   const {
     data: diningAreas,
-    refetch,
     isPending,
     error,
-    isRefetching,
   } = useQuery({
-    queryKey: ["admin_manageDiningAreas_home"],
+    queryKey: QKs.admin_diningAreas,
     queryFn: () => DiningAreasService.getAll(),
   });
 
-  if (isPending || isRefetching) {
+  if (isPending) {
     return <PageLoader />;
   }
 
@@ -45,12 +44,7 @@ export const Admin_ManageDiningAreasPage: FC = () => {
         <Grid container spacing={2} columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
           {diningAreas.map((da) => (
             <Grid size={1} key={da.id}>
-              <DiningAreaCard
-                onDelete={() => {
-                  refetch();
-                }}
-                diningArea={da}
-              />
+              <DiningAreaCard diningArea={da} />
             </Grid>
           ))}
         </Grid>
@@ -63,7 +57,6 @@ export const Admin_ManageDiningAreasPage: FC = () => {
       <ManageDiningAreaDialog
         handleClose={() => setNewDialogOpen(false)}
         open={newDialogOpen}
-        refreshParent={() => refetch()}
       />
     </>
   );

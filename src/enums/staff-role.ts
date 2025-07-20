@@ -16,7 +16,7 @@ export const getEndpointForRole = (role: StaffRole): string => {
     case StaffRole.Cashier:
       return "cashier";
     default:
-      throw new Error(`Unknown role for getEndpointForRole function: ${role}`);
+      return "";
   }
 };
 
@@ -31,6 +31,6 @@ export const getNameForRole = (role: StaffRole): string => {
     case StaffRole.Cashier:
       return "Cashier";
     default:
-      throw new Error(`Unknown role for getNameForRole function: ${role}`);
+      return "Unknown Role";
   }
 };

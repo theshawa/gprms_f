@@ -16,8 +16,10 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { type FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { QKs } from "../../query-keys";
 
 type FormInputs = {
   name: string;
@@ -31,9 +33,8 @@ type FormInputs = {
 export const ManageIngredientDialog: FC<{
   open: boolean;
   handleClose: () => void;
-  refreshParent: (v: Partial<Ingredient>) => void;
   editingIngredient?: Ingredient;
-}> = ({ handleClose, open, refreshParent, editingIngredient }) => {
+}> = ({ handleClose, open, editingIngredient }) => {
   const {
     handleSubmit,
     register,
@@ -43,14 +44,11 @@ export const ManageIngredientDialog: FC<{
     watch,
   } = useForm<FormInputs>({
     defaultValues: {
-      description: "",
-      name: "",
-      costPerUnit: 0,
-      lowStockThreshold: 0,
-      initialQuantity: 0,
       unit: "kg",
     },
   });
+
+  const queryClient = useQueryClient();
 
   const { showSuccess, showError } = useAlert();
 
@@ -60,20 +58,19 @@ export const ManageIngredientDialog: FC<{
 
   const onSubmit = async (data: FormInputs) => {
     try {
-      let res: Partial<Ingredient>;
       if (editingIngredient) {
-        res = await IngredientsService.update(editingIngredient.id, {
-          ...data,
-          stockQuantity: 0,
-        });
+        await IngredientsService.update(editingIngredient.id, data);
       } else {
-        res = await IngredientsService.create({ ...data, stockQuantity: 0 });
+        await IngredientsService.create(data);
         reset();
       }
+
+      queryClient.invalidateQueries({ queryKey: QKs.admin_ingredients });
+
       showSuccess(
         `Ingredient ${editingIngredient ? "updated" : "created"} successfully!`
       );
-      refreshParent(res);
+
       handleClose();
     } catch (error) {
       showError(
@@ -85,12 +82,7 @@ export const ManageIngredientDialog: FC<{
   const unit = watch("unit");
 
   return (
-    <Dialog
-      open={open}
-      maxWidth="xs"
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <Dialog open={open} component="form" onSubmit={handleSubmit(onSubmit)}>
       <DialogTitle>
         {editingIngredient ? "Update" : "New"} Ingredient
       </DialogTitle>
