@@ -2,7 +2,7 @@ import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { DiningTable } from "@/interfaces/dining-table";
-import { DiningTablesService } from "@/services/dining-tables";
+import { DiningTablesService } from "@/services/staff/dining-tables";
 import { Button, Stack, TableCell, TableRow } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { SetStateAction } from "jotai";

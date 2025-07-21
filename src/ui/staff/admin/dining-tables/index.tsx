@@ -1,5 +1,5 @@
 import type { DiningTable } from "@/interfaces/dining-table";
-import { DiningTablesService } from "@/services/dining-tables";
+import { DiningTablesService } from "@/services/staff/dining-tables";
 import { TableRestaurant } from "@mui/icons-material";
 import {
   Paper,

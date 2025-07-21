@@ -1,7 +1,7 @@
 import { getBackendErrorMessage } from "@/backend";
 import { Meal } from "@/enums/meal";
 import { useAlert } from "@/hooks/useAlert";
-import { MenusService } from "@/services/menus";
+import { MenusService } from "@/services/staff/menus";
 import { MenuBook } from "@mui/icons-material";
 import { Grid, Paper, Stack, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

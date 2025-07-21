@@ -1,52 +1,124 @@
-import type { FC } from "react";
-import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { customerBackend } from "@/backend";
+import { useAlert } from "@/hooks/useAlert";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { useCustomerLoginDialogOpen } from "@/hooks/useCustomerLoginDialogOpen";
+import { CustomerAuthService } from "@/services/customer/customer-auth";
 import {
+  Close,
   ExpandMore,
   Menu as MenuIcon,
-  Close,
   Person,
 } from "@mui/icons-material";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-} from "@mui/material";
-import axios from "axios";
+import { Box, Button, CircularProgress, Menu, MenuItem } from "@mui/material";
+import type { FC } from "react";
+import { useLayoutEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { LoginDialog } from "./login-dialog";
 
 export const Customer_Layout: FC = () => {
-  const [isOurStoryOpen, setIsOurStoryOpen] = useState(false);
+  const [aboutUsMenuAnchorEl, setAboutUsMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [signupOpen, setSignupOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [error, setError] = useState("");
 
-  const handleSignupSubmit = async () => {
+  const { openDialog: openCustomerLoginDialog } = useCustomerLoginDialogOpen();
+
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const { auth, setAuth } = useCustomerAuth();
+  const [authLoading, setAuthLoading] = useState(true);
+  const { showError } = useAlert();
+
+  const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
+
+  const logout = async () => {
+    setIsLoggingOut(true);
     try {
-      const response = await axios.post("/api/customers/signup", {
-        name,
-        mobile,
-      });
-
-      console.log("Signup success", response.data);
-      setSignupOpen(false);
-      setIsLoggedIn(true);
-      setName("");
-      setMobile("");
-      setError("");
-      alert("Signup successful!");
-    } catch (err: any) {
-      console.error("Signup failed", err);
-      const msg =
-        err.response?.data?.error || "Something went wrong. Try again.";
-      setError(msg);
+      await CustomerAuthService.logout();
+      setAuth(null);
+    } catch (error) {
+      showError("Failed to log out. Please try again later.");
+    } finally {
+      setProfileAnchorEl(null);
+      setIsLoggingOut(false);
     }
   };
+
+  // intialize authentication
+  useLayoutEffect(() => {
+    const loadAuth = async () => {
+      try {
+        const state = await CustomerAuthService.refreshAuth();
+
+        if (state) {
+          setAuth(state);
+        }
+      } catch (error) {
+        showError("Failed to load authentication. Please refresh the page.");
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    if (auth) {
+      setAuthLoading(false);
+      return;
+    }
+
+    loadAuth();
+
+    const refreshInterceptor = customerBackend.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+        if (error.response?.status === 401) {
+          try {
+            const res = await customerBackend.post("/refresh-auth");
+            setAuth(res.data);
+
+            originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+            originalRequest._retry = true;
+            console.log("Customer access token refreshed!");
+
+            return customerBackend(originalRequest);
+          } catch (error) {
+            showError(
+              "Your login session expired. Please login again to continue."
+            );
+            setAuth(null);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      customerBackend.interceptors.response.eject(refreshInterceptor);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const authInjector = customerBackend.interceptors.request.use((config) => {
+      if (auth && !(config as any)._retry) {
+        config.headers.Authorization = `Bearer ${auth.accessToken}`;
+      }
+      return config;
+    });
+
+    return () => {
+      customerBackend.interceptors.request.eject(authInjector);
+    };
+  }, [auth]);
+
+  if (authLoading) {
+    return (
+      <Box className="w-full h-screen flex items-center justify-center text-center">
+        <CircularProgress size={20} />
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -81,51 +153,63 @@ export const Customer_Layout: FC = () => {
 
                 <div className="relative">
                   <button
-                    onClick={() => setIsOurStoryOpen(!isOurStoryOpen)}
+                    onClick={(e) => setAboutUsMenuAnchorEl(e.currentTarget)}
                     className="flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium"
                   >
-                    Our Story
+                    About us
                     <ExpandMore className="ml-1" fontSize="small" />
                   </button>
-                  {isOurStoryOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg border py-2 z-50">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        About Us
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        Our Heritage
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        Locations
-                      </a>
-                    </div>
-                  )}
+                  <Menu
+                    anchorEl={aboutUsMenuAnchorEl}
+                    open={!!aboutUsMenuAnchorEl}
+                    onClose={() => setAboutUsMenuAnchorEl(null)}
+                  >
+                    <MenuItem>
+                      <Link to="/our-story" className="w-full">
+                        Our Story
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <Link to="/dining-areas" className="w-full">
+                        Dining Areas
+                      </Link>
+                    </MenuItem>
+                  </Menu>
                 </div>
               </nav>
             </div>
 
             {/* Right: User & Mobile Toggle */}
             <div className="flex items-center space-x-4">
-              {isLoggedIn ? (
-                <button className="p-2 rounded-full hover:bg-gray-100">
-                  <Person className="text-gray-600" fontSize="small" />
-                </button>
+              {auth ? (
+                <>
+                  <Button
+                    disabled={isLoggingOut}
+                    onClick={(e) => setProfileAnchorEl(e.currentTarget)}
+                    startIcon={<Person />}
+                    variant="text"
+                    color="inherit"
+                  >
+                    {auth.user.name || "Profile"}
+                  </Button>
+                  <Menu
+                    anchorEl={profileAnchorEl}
+                    open={!!profileAnchorEl}
+                    onClose={() => setProfileAnchorEl(null)}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                  >
+                    <MenuItem disabled={isLoggingOut} onClick={logout}>
+                      {isLoggingOut ? <CircularProgress size={20} /> : "Logout"}
+                    </MenuItem>
+                  </Menu>
+                </>
               ) : (
-                <button
-                  onClick={() => setSignupOpen(true)}
-                  className="text-white px-4 py-2 rounded-md bg-green-900 hover:bg-green-800 text-sm font-medium"
-                >
-                  Login / Sign Up
-                </button>
+                <Button color="inherit" onClick={openCustomerLoginDialog}>
+                  Login
+                </Button>
               )}
 
               {/* Mobile Menu Toggle */}
@@ -167,34 +251,12 @@ export const Customer_Layout: FC = () => {
               </a>
               <div>
                 <button
-                  onClick={() => setIsOurStoryOpen(!isOurStoryOpen)}
+                  onClick={(e) => setAboutUsMenuAnchorEl(e.currentTarget)}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex justify-between"
                 >
-                  Our Story
+                  About Us
                   <ExpandMore fontSize="small" />
                 </button>
-                {isOurStoryOpen && (
-                  <div className="pl-4">
-                    <a
-                      href="#"
-                      className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      About Us
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Our Heritage
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Locations
-                    </a>
-                  </div>
-                )}
               </div>
             </div>
           )}
@@ -202,13 +264,9 @@ export const Customer_Layout: FC = () => {
       </header>
 
       {/* SIGNUP POPUP */}
-      <Dialog
-        open={signupOpen}
-        onClose={() => setSignupOpen(false)}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>Sign Up</DialogTitle>
+      <LoginDialog />
+      {/* <Dialog open={signupOpen} maxWidth="xs" fullWidth>
+        <DialogTitle>Login to Your Account</DialogTitle>
         <DialogContent>
           <TextField
             label="Name"
@@ -217,6 +275,7 @@ export const Customer_Layout: FC = () => {
             onChange={(e) => setName(e.target.value)}
             margin="dense"
             fullWidth
+            variant="filled"
           />
           <TextField
             label="Mobile Number"
@@ -226,11 +285,10 @@ export const Customer_Layout: FC = () => {
             fullWidth
             placeholder="eg: 07XXXXXXXX"
             type="tel"
-            inputProps={{ maxLength: 10 }}
+            variant="filled"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSignupOpen(false)}>Cancel</Button>
           <Button
             onClick={handleSignupSubmit}
             variant="contained"
@@ -238,8 +296,9 @@ export const Customer_Layout: FC = () => {
           >
             Sign Up
           </Button>
+          <Button onClick={() => setSignupOpen(false)}>Cancel</Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       <main>
         <Outlet />

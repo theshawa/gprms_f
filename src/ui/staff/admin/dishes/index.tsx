@@ -1,5 +1,5 @@
 import type { Dish } from "@/interfaces/dish";
-import { DishesService } from "@/services/dishes";
+import { DishesService } from "@/services/staff/dishes";
 import { Fastfood } from "@mui/icons-material";
 import {
   Paper,

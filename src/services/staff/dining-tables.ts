@@ -18,6 +18,13 @@ export class DiningTablesService {
     return data;
   }
 
+  static async getById(id: number) {
+    const { data } = await staffBackend.get<DiningTable | undefined>(
+      `/admin/dining-tables/${id}`
+    );
+    return data;
+  }
+
   static async update(id: number, payload: Partial<DiningTable>) {
     const { data } = await staffBackend.put<DiningArea>(
       `/admin/dining-tables/${id}`,

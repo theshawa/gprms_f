@@ -1,7 +1,7 @@
 import { type FC, useEffect, useState } from "react";
 
 import type { StaffUser } from "@/interfaces/staff-user";
-import { StaffService } from "@/services/staff";
+import { StaffService } from "@/services/staff/staff";
 import { PageError } from "@/ui/staff/shared/page-error";
 import { PageLoader } from "@/ui/staff/shared/page-loader";
 import { PersonAdd } from "@mui/icons-material";
