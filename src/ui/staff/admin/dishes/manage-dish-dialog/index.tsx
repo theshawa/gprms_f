@@ -3,8 +3,8 @@ import { Currency } from "@/constants";
 import { useAlert } from "@/hooks/useAlert";
 import type { Dish } from "@/interfaces/dish";
 import type { Ingredient } from "@/interfaces/ingredient";
-import { DishesService } from "@/services/dishes";
-import { IngredientsService } from "@/services/ingredients";
+import { DishesService } from "@/services/staff/dishes";
+import { IngredientsService } from "@/services/staff/ingredients";
 import { QKs } from "@/ui/staff/query-keys";
 import { ImageInput } from "@/ui/staff/shared/image-input";
 import {

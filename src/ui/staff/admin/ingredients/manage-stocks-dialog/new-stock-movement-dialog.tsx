@@ -1,7 +1,7 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import type { Ingredient } from "@/interfaces/ingredient";
-import { IngredientsService } from "@/services/ingredients";
+import { IngredientsService } from "@/services/staff/ingredients";
 import { QKs } from "@/ui/staff/query-keys";
 import {
   Button,

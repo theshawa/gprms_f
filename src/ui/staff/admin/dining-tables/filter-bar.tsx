@@ -1,5 +1,5 @@
 import { getBackendErrorMessage } from "@/backend";
-import { DiningAreasService } from "@/services/dining-areas";
+import { DiningAreasService } from "@/services/staff/dining-areas";
 import { Close } from "@mui/icons-material";
 import {
   Alert,

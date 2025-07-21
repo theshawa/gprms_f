@@ -2,7 +2,7 @@ import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { Ingredient } from "@/interfaces/ingredient";
-import { IngredientsService } from "@/services/ingredients";
+import { IngredientsService } from "@/services/staff/ingredients";
 import { formatDateTime } from "@/utils/time-format";
 import {
   Alert,

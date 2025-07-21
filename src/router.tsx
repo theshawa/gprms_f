@@ -14,7 +14,12 @@ import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { Customer_DineInPage } from "./ui/customer/dine-in";
+import { Customer_MenuViewOnly } from "./ui/customer/menu";
+import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_Reservations } from "./ui/customer/reservations";
+import { Admin_CalenderPage } from "./ui/staff/admin/calender";
+import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_DiningAreasPage } from "./ui/staff/admin/dining-areas";
 import { Admin_DiningTablesPage } from "./ui/staff/admin/dining-tables";
 import { Admin_DishesPage } from "./ui/staff/admin/dishes";
@@ -27,6 +32,7 @@ import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-or
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
+import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -46,8 +52,21 @@ export const router = createBrowserRouter([
         path: "reservations",
         element: <Customer_Reservations />,
       },
+      {
+        path: "menu",
+        element: <Customer_MenuViewOnly />,
+      },
+      {
+        path: "place-order",
+        element: <Customer_Menu />,
+      },
+      {
+        path: "dine-in/:tableId",
+        element: <Customer_DineInPage />,
+      },
     ],
   },
+  // Staff routes
   {
     path: "/staff",
     element: <Staff_Layout />,
@@ -154,8 +173,25 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
+          {
+            path: "customers",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_CustomerPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "calendar",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_CalenderPage />
+              </StaffAuthGuard>
+            ),
+          },
         ],
       },
+      // Waiter routes
       {
         path: "waiter",
         element: <Waiter_Root />,
@@ -168,19 +204,6 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
-        ],
-      },
-      {
-        path: "cashier",
-        children: [
-          {
-            index: true,
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_InvoicesPage />
-              </StaffAuthGuard>
-            ),
-          },
           {
             path: "customer-feedbacks",
             element: (
@@ -190,23 +213,17 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "reservations",
+            path: "customer-reservations",
             element: (
               <StaffAuthGuard role={StaffRole.Waiter}>
                 <Waiter_CustomerReservationsPage />
               </StaffAuthGuard>
             ),
           },
-          // {
-          //   path: "table/:tableId",
-          //   element: (
-          //     <StaffAuthGuard role={StaffRole.Waiter}>
-          //       <Waiter_TableDetailsPage />
-          //     </StaffAuthGuard>
-          //   ),
-          // },
         ],
       },
+
+      // Kitchen Manager routes
       {
         path: "kitchen-manager",
         children: [
@@ -273,6 +290,14 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
                 <Cashier_InvoicesPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "orders",
+            element: (
+              <StaffAuthGuard role={StaffRole.Cashier}>
+                <Cashier_OrdersPage />
               </StaffAuthGuard>
             ),
           },

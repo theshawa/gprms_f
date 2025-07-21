@@ -1,5 +1,5 @@
 import type { Ingredient } from "@/interfaces/ingredient";
-import { IngredientsService } from "@/services/ingredients";
+import { IngredientsService } from "@/services/staff/ingredients";
 import { EggAlt } from "@mui/icons-material";
 import {
   Paper,

@@ -140,7 +140,7 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
         },
         {
           title: "Reservations",
-          link: "/staff/waiter/reservations",
+          link: "/staff/waiter/customer-reservations",
           Icon: EventSeat,
         },
         {
@@ -153,31 +153,21 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
     case StaffRole.Cashier:
       links.push(
         {
-          title: "Invoices",
-          link: "/staff/cashier",
-          Icon: ReceiptLong,
-          exactLinkMatch: true,
-        },
-        {
-          title: "Reservations",
-          link: "/staff/cashier/reservations",
-          Icon: EventSeat,
-        },
-        {
           title: "Home",
           link: "/staff/cashier",
           Icon: Home,
           exactLinkMatch: true,
         },
         {
+          title: "Invoices",
+          link: "/staff/cashier/invoices",
+          Icon: ReceiptLong,
+          exactLinkMatch: true,
+        },
+        {
           title: "Orders",
           link: "/staff/cashier/orders",
           Icon: AttachMoney,
-        },
-        {
-          title: "Invoices",
-          link: "/staff/cashier/invoices",
-          Icon: Receipt,
         }
       );
       break;

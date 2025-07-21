@@ -1,7 +1,7 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import type { DiningArea } from "@/interfaces/dining-area";
-import { DiningAreasService } from "@/services/dining-areas";
+import { DiningAreasService } from "@/services/staff/dining-areas";
 import {
   Button,
   Dialog,
