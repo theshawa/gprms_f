@@ -32,6 +32,8 @@ import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbac
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
 import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
+import { Admin_CustomerPage } from "./ui/staff/admin/customers";
+import { Admin_CalenderPage } from "./ui/staff/admin/calender";
 import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 
@@ -166,6 +168,23 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
+          {
+            path: "customers",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_CustomerPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "calendar",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_CalenderPage />
+              </StaffAuthGuard>
+            ),
+          },
+
         ],
       },
       // Waiter routes
