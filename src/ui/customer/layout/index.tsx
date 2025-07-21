@@ -122,7 +122,7 @@ export const Customer_Layout: FC = () => {
               ) : (
                 <button
                   onClick={() => setSignupOpen(true)}
-                  className="text-white px-4 py-2 rounded-2xl bg-green-900 hover:bg-green-800 text-sm font-medium"
+                  className="text-white px-4 py-2 rounded-md bg-green-900 hover:bg-green-800 text-sm font-medium"
                 >
                   Login / Sign Up
                 </button>
