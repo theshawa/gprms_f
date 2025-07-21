@@ -1,3 +1,4 @@
+import { getCloudinaryImageUrl } from "@/cloudinary";
 import type { Menu } from "@/interfaces/menu";
 import { formatCurrency } from "@/utils/currency-format";
 import {
@@ -9,6 +10,7 @@ import {
   Divider,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemText,
   Stack,
   Typography,
@@ -39,6 +41,13 @@ export const MenuViewDialog: FC<{
               <List disablePadding>
                 {section.menuItems.map((mi) => (
                   <ListItem disableGutters key={mi.id} sx={{ ml: 2 }}>
+                    <ListItemAvatar>
+                      <img
+                        src={getCloudinaryImageUrl(mi.dish.image)}
+                        alt={mi.dish.name}
+                        className="size-16 object-cover mr-5"
+                      />
+                    </ListItemAvatar>
                     <ListItemText
                       primary={mi.dish.name}
                       secondary={formatCurrency(mi.dish.price)}

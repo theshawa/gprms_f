@@ -66,6 +66,7 @@ export const Admin_DishesPage: FC = () => {
           <Table sx={{ minWidth: 1600 }}>
             <TableHead>
               <TableRow>
+                <TableCell width="10%">Image</TableCell>
                 <TableCell width="20%">Name</TableCell>
                 <TableCell width="20%">Description</TableCell>
                 <TableCell width="15%">Price</TableCell>
