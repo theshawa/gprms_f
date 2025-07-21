@@ -55,11 +55,13 @@ export const MenuCard: FC<{ menu: Menu }> = ({ menu }) => {
         />
         <CardContent>
           <Chip
+            size="small"
             label={`${menu.menuSections.length} section${
               menu.menuSections.length !== 1 ? "s" : ""
             }`}
           />
           <Chip
+            size="small"
             label={`${mealsCount} dish${mealsCount !== 1 ? "es" : ""}`}
             sx={{ ml: 1 }}
           />

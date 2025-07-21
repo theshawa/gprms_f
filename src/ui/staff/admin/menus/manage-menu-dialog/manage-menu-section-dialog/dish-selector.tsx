@@ -1,3 +1,4 @@
+import { getCloudinaryImageUrl } from "@/cloudinary";
 import type { Dish } from "@/interfaces/dish";
 import {
   ArrowDownward,
@@ -12,6 +13,7 @@ import {
   InputAdornment,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -118,6 +120,13 @@ export const DishSelector: FC<{ allDishes: Dish[] }> = ({ allDishes }) => {
               {menuItems.length > 0 ? (
                 menuItems.map((item, index) => (
                   <ListItem key={item.id}>
+                    <ListItemAvatar>
+                      <img
+                        src={getCloudinaryImageUrl(item.image)}
+                        alt={item.name}
+                        className="size-10 object-cover mr-5"
+                      />
+                    </ListItemAvatar>
                     <ListItemText
                       primary={item.name}
                       secondary={item.description || "No description available"}
@@ -194,6 +203,13 @@ export const DishSelector: FC<{ allDishes: Dish[] }> = ({ allDishes }) => {
               showingDishes.map((dish) => (
                 <ListItem key={dish.id} disablePadding>
                   <ListItemButton onClick={() => addRemoveDish(dish)}>
+                    <ListItemAvatar>
+                      <img
+                        src={getCloudinaryImageUrl(dish.image)}
+                        alt={dish.name}
+                        className="size-10 object-cover mr-5"
+                      />
+                    </ListItemAvatar>
                     <ListItemText
                       primary={dish.name}
                       secondary={dish.description || "No description available"}

@@ -12,12 +12,14 @@ import {
 } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { type FC, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { QKs } from "../../query-keys";
+import { ImageInput } from "../../shared/image-input";
 
 type FormInputs = {
   name: string;
   description: string;
+  imageFile: File;
 };
 
 export const ManageDiningAreaDialog: FC<{
@@ -30,6 +32,7 @@ export const ManageDiningAreaDialog: FC<{
     register,
     formState: { errors, isSubmitting },
     reset,
+    control,
   } = useForm<FormInputs>({});
 
   const { showSuccess, showError } = useAlert();
@@ -46,10 +49,15 @@ export const ManageDiningAreaDialog: FC<{
         await DiningAreasService.update(
           editingDiningArea.id,
           data.name,
-          data.description
+          data.description,
+          data.imageFile
         );
       } else {
-        await DiningAreasService.create(data.name, data.description);
+        await DiningAreasService.create(
+          data.name,
+          data.description,
+          data.imageFile
+        );
         reset();
       }
       showSuccess(
@@ -67,7 +75,13 @@ export const ManageDiningAreaDialog: FC<{
   };
 
   return (
-    <Dialog open={open} component="form" onSubmit={handleSubmit(onSubmit)}>
+    <Dialog
+      open={open}
+      fullWidth
+      maxWidth="sm"
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <DialogTitle>
         {editingDiningArea ? "Update" : "New"} Dining Area
       </DialogTitle>
@@ -86,6 +100,25 @@ export const ManageDiningAreaDialog: FC<{
           helperText={errors.name?.message}
           margin="dense"
           placeholder="e.g., Main Dining Area, Outdoor Patio"
+        />
+        <Controller
+          control={control}
+          name="imageFile"
+          render={({ field: { onChange, value } }) => (
+            <ImageInput
+              value={value}
+              onChange={onChange}
+              label="Dining Area Image"
+              error={errors.imageFile?.message}
+              helperText={
+                editingDiningArea
+                  ? "Upload a new image to replace the existing one."
+                  : "Upload an image for this dining area."
+              }
+              defaultImageUrl={editingDiningArea?.image}
+              cloudinary
+            />
+          )}
         />
         <TextField
           {...register("description", {

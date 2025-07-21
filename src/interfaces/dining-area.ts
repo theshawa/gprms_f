@@ -7,4 +7,5 @@ export interface DiningArea {
   description: string;
   diningTables: DiningTable[];
   assignedWaiters: StaffUser[];
+  image: string;
 }
