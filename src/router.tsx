@@ -34,6 +34,8 @@ import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations"
 import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
 import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_CalenderPage } from "./ui/staff/admin/calender";
+import { Customer_Menu } from "./ui/customer/place-order";
+import { Customer_MenuViewOnly } from "./ui/customer/menu";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +50,14 @@ export const router = createBrowserRouter([
       {
         path: "reservations",
         element: <Customer_Reservations />,
+      },
+      {
+        path: "menu",
+        element: <Customer_MenuViewOnly />,
+      },
+      {
+        path: "place-order",
+        element: <Customer_Menu />,
       },
     ],
   },
