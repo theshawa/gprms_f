@@ -18,7 +18,7 @@ export interface RestaurantClosure {
   id: number;
   date: string;
   startTime?: string; // For partial closures
-  endTime?: string;   // For partial closures
+  endTime?: string; // For partial closures
   isFullDay: boolean;
   reason: string;
   description?: string;
@@ -33,7 +33,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T05",
     diningAreaName: "Main Hall",
     guestCount: 4,
-    reservationTime: "2025-01-17T19:00:00Z",
+    reservationTime: "2025-07-17T19:00:00Z",
     buffetType: "Dinner",
     status: "Confirmed",
     specialRequests: "Birthday celebration",
@@ -48,7 +48,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T12",
     diningAreaName: "Terrace",
     guestCount: 2,
-    reservationTime: "2025-01-17T12:30:00Z",
+    reservationTime: "2025-07-17T12:30:00Z",
     buffetType: "Lunch",
     status: "Confirmed",
     specialRequests: "Vegetarian options",
@@ -63,7 +63,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T08",
     diningAreaName: "Garden Area",
     guestCount: 6,
-    reservationTime: "2025-01-18T10:00:00Z",
+    reservationTime: "2025-07-18T10:00:00Z",
     buffetType: "Brunch",
     status: "Pending",
     specialRequests: "High chairs needed for children",
@@ -78,7 +78,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T03",
     diningAreaName: "Private Dining",
     guestCount: 8,
-    reservationTime: "2025-01-18T20:00:00Z",
+    reservationTime: "2025-07-18T20:00:00Z",
     buffetType: "Dinner",
     status: "Confirmed",
     specialRequests: "Corporate dinner, need quiet space",
@@ -93,7 +93,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T15",
     diningAreaName: "Rooftop",
     guestCount: 3,
-    reservationTime: "2025-01-19T15:30:00Z",
+    reservationTime: "2025-07-19T15:30:00Z",
     buffetType: "High Tea",
     status: "Confirmed",
     specialRequests: "Celebrating promotion",
@@ -108,7 +108,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T20",
     diningAreaName: "Main Hall",
     guestCount: 5,
-    reservationTime: "2025-01-19T18:30:00Z",
+    reservationTime: "2025-07-19T18:30:00Z",
     buffetType: "Dinner",
     status: "Cancelled",
     specialRequests: "No seafood allergies",
@@ -123,7 +123,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T07",
     diningAreaName: "Terrace",
     guestCount: 2,
-    reservationTime: "2025-01-20T13:00:00Z",
+    reservationTime: "2025-07-20T13:00:00Z",
     buffetType: "Lunch",
     status: "Confirmed",
     specialRequests: "Quiet atmosphere for proposal",
@@ -138,7 +138,7 @@ export const sampleReservations: CalendarReservation[] = [
     tableNumber: "T11",
     diningAreaName: "Garden Area",
     guestCount: 12,
-    reservationTime: "2025-01-21T11:00:00Z",
+    reservationTime: "2025-07-21T11:00:00Z",
     buffetType: "Brunch",
     status: "Pending",
     specialRequests: "Large group, need connecting tables",
@@ -157,7 +157,7 @@ export const sampleClosures: RestaurantClosure[] = [
     isFullDay: false,
     reason: "Staff Training",
     description: "Mandatory customer service training for all staff",
-    createdAt: "2025-01-15T09:00:00Z",
+    createdAt: "2025-07-15T09:00:00Z",
   },
   {
     id: 2,
@@ -165,7 +165,7 @@ export const sampleClosures: RestaurantClosure[] = [
     isFullDay: true,
     reason: "Deep Cleaning",
     description: "Annual deep cleaning and maintenance of kitchen equipment",
-    createdAt: "2025-01-10T14:30:00Z",
+    createdAt: "2025-07-10T14:30:00Z",
   },
   {
     id: 3,
@@ -175,14 +175,15 @@ export const sampleClosures: RestaurantClosure[] = [
     isFullDay: false,
     reason: "Equipment Maintenance",
     description: "HVAC system maintenance and inspection",
-    createdAt: "2025-01-20T11:20:00Z",
+    createdAt: "2025-07-20T11:20:00Z",
   },
   {
     id: 4,
     date: "2025-02-14",
     isFullDay: true,
     reason: "Public Holiday",
-    description: "Valentine's Day - Restaurant closed for special private events only",
-    createdAt: "2025-01-05T08:00:00Z",
+    description:
+      "Valentine's Day - Restaurant closed for special private events only",
+    createdAt: "2025-07-05T08:00:00Z",
   },
 ];
