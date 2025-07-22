@@ -1,97 +1,218 @@
-import type { FC } from "react";
-import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { customerBackend } from "@/backend";
+import { useAlert } from "@/hooks/useAlert";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { useCustomerLoginDialogOpen } from "@/hooks/useCustomerLoginDialogOpen";
+import { CustomerAuthService } from "@/services/customer/customer-auth";
 import {
+  Close,
   ExpandMore,
   Menu as MenuIcon,
-  Close,
   Person,
 } from "@mui/icons-material";
+import { Box, Button, CircularProgress, Menu, MenuItem } from "@mui/material";
+import type { FC } from "react";
+import { useLayoutEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { LoginDialog } from "./login-dialog";
 
 export const Customer_Layout: FC = () => {
-  const [isOurStoryOpen, setIsOurStoryOpen] = useState(false);
+  const [aboutUsMenuAnchorEl, setAboutUsMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { openDialog: openCustomerLoginDialog } = useCustomerLoginDialogOpen();
+
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const { auth, setAuth } = useCustomerAuth();
+  const [authLoading, setAuthLoading] = useState(true);
+  const { showError } = useAlert();
+
+  const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
+
+  const logout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await CustomerAuthService.logout();
+      setAuth(null);
+    } catch (error) {
+      showError("Failed to log out. Please try again later.");
+    } finally {
+      setProfileAnchorEl(null);
+      setIsLoggingOut(false);
+    }
+  };
+
+  // intialize authentication
+  useLayoutEffect(() => {
+    const loadAuth = async () => {
+      try {
+        const state = await CustomerAuthService.refreshAuth();
+
+        if (state) {
+          setAuth(state);
+        }
+      } catch (error) {
+        showError("Failed to load authentication. Please refresh the page.");
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    if (auth) {
+      setAuthLoading(false);
+      return;
+    }
+
+    loadAuth();
+
+    const refreshInterceptor = customerBackend.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+        if (error.response?.status === 401) {
+          try {
+            const res = await customerBackend.post("/refresh-auth");
+            setAuth(res.data);
+
+            originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+            originalRequest._retry = true;
+            console.log("Customer access token refreshed!");
+
+            return customerBackend(originalRequest);
+          } catch (error) {
+            showError(
+              "Your login session expired. Please login again to continue."
+            );
+            setAuth(null);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      customerBackend.interceptors.response.eject(refreshInterceptor);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const authInjector = customerBackend.interceptors.request.use((config) => {
+      if (auth && !(config as any)._retry) {
+        config.headers.Authorization = `Bearer ${auth.accessToken}`;
+      }
+      return config;
+    });
+
+    return () => {
+      customerBackend.interceptors.request.eject(authInjector);
+    };
+  }, [auth]);
+
+  if (authLoading) {
+    return (
+      <Box className="w-full h-screen flex items-center justify-center text-center">
+        <CircularProgress size={20} />
+      </Box>
+    );
+  }
+
   return (
     <>
       <header className="bg-white border-b border-gray-100 sticky top-0 z-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-[54px]">
-            {/* Left: Logo + Desktop Nav */}
+            {/* Left Nav */}
             <div className="flex items-center space-x-8">
-              {/* Logo */}
               <a href="/">
-                <img
-                  src="/logo.png"
-                  alt="Company Logo"
-                  className="h-7 w-auto"
-                />
+                <img src="/logo.png" alt="Logo" className="h-7 w-auto" />
               </a>
 
-              {/* Desktop Nav */}
               <nav className="hidden md:flex items-center space-x-6">
                 <a
                   href="menu"
-                  className="text-gray-700 hover:text-gray-900 text-sm font-medium"
+                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
                 >
                   Menu
                 </a>
                 <a
                   href="reservations"
-                  className="text-gray-700 hover:text-gray-900 text-sm font-medium"
+                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
                 >
                   Reservations
                 </a>
                 <a
-                  href="#"
-                  className="text-gray-700 hover:text-gray-900 text-sm font-medium"
+                  href="contact"
+                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
                 >
                   Contact
                 </a>
 
-                {/* Our Story Dropdown */}
                 <div className="relative">
                   <button
-                    onClick={() => setIsOurStoryOpen(!isOurStoryOpen)}
-                    className="flex items-center text-gray-700 hover:text-gray-900 text-sm font-medium"
+                    onClick={(e) => setAboutUsMenuAnchorEl(e.currentTarget)}
+                    className="flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium"
                   >
-                    Our Story
-                    <ExpandMore className="ml-1 text-sm" fontSize="small" />
+                    About us
+                    <ExpandMore className="ml-1" fontSize="small" />
                   </button>
-
-                  {isOurStoryOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-2 z-50">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        About Us
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        Our Heritage
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        Locations
-                      </a>
-                    </div>
-                  )}
+                  <Menu
+                    anchorEl={aboutUsMenuAnchorEl}
+                    open={!!aboutUsMenuAnchorEl}
+                    onClose={() => setAboutUsMenuAnchorEl(null)}
+                  >
+                    <MenuItem>
+                      <Link to="/our-story" className="w-full">
+                        Our Story
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <Link to="/dining-areas" className="w-full">
+                        Dining Areas
+                      </Link>
+                    </MenuItem>
+                  </Menu>
                 </div>
               </nav>
             </div>
 
-            {/* Right: User Icon & Mobile Toggle */}
+            {/* Right: User & Mobile Toggle */}
             <div className="flex items-center space-x-4">
-              {/* User Icon */}
-              <button className="p-2 rounded-full hover:bg-gray-100">
-                <Person className="text-gray-600" fontSize="small" />
-              </button>
+              {auth ? (
+                <>
+                  <Button
+                    disabled={isLoggingOut}
+                    onClick={(e) => setProfileAnchorEl(e.currentTarget)}
+                    startIcon={<Person />}
+                    variant="text"
+                    color="inherit"
+                  >
+                    {auth.user.name || "Profile"}
+                  </Button>
+                  <Menu
+                    anchorEl={profileAnchorEl}
+                    open={!!profileAnchorEl}
+                    onClose={() => setProfileAnchorEl(null)}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                  >
+                    <MenuItem disabled={isLoggingOut} onClick={logout}>
+                      {isLoggingOut ? <CircularProgress size={20} /> : "Logout"}
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Button color="inherit" onClick={openCustomerLoginDialog}>
+                  Login
+                </Button>
+              )}
 
-              {/* Mobile Menu Button */}
+              {/* Mobile Menu Toggle */}
               <div className="md:hidden">
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -123,55 +244,87 @@ export const Customer_Layout: FC = () => {
                 Reservations
               </a>
               <a
-                href="#"
+                href="contact"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               >
                 Contact
               </a>
-              {/* Our Story Dropdown in mobile */}
               <div>
                 <button
-                  onClick={() => setIsOurStoryOpen(!isOurStoryOpen)}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between"
+                  onClick={(e) => setAboutUsMenuAnchorEl(e.currentTarget)}
+                  className="flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium"
                 >
-                  Our Story
-                  <ExpandMore fontSize="small" />
+                  About us
+                  <ExpandMore className="ml-1" fontSize="small" />
                 </button>
-                {isOurStoryOpen && (
-                  <div className="pl-4">
-                    <a
-                      href="#"
-                      className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      About Us
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Our Heritage
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Locations
-                    </a>
-                  </div>
-                )}
+                <Menu
+                  anchorEl={aboutUsMenuAnchorEl}
+                  open={!!aboutUsMenuAnchorEl}
+                  onClose={() => setAboutUsMenuAnchorEl(null)}
+                >
+                  <MenuItem>
+                    <Link to="/our-story" className="w-full">
+                      Our Story
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link to="/dining-areas" className="w-full">
+                      Dining Areas
+                    </Link>
+                  </MenuItem>
+                </Menu>
               </div>
             </div>
           )}
         </div>
       </header>
+
+      {/* SIGNUP POPUP */}
+      <LoginDialog />
+      {/* <Dialog open={signupOpen} maxWidth="xs" fullWidth>
+        <DialogTitle>Login to Your Account</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            placeholder="eg: James Phillips"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            margin="dense"
+            fullWidth
+            variant="filled"
+          />
+          <TextField
+            label="Mobile Number"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
+            margin="dense"
+            fullWidth
+            placeholder="eg: 07XXXXXXXX"
+            type="tel"
+            variant="filled"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleSignupSubmit}
+            variant="contained"
+            disabled={!name || !/^\d{10}$/.test(mobile)}
+          >
+            Sign Up
+          </Button>
+          <Button onClick={() => setSignupOpen(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog> */}
+
       <main>
         <Outlet />
       </main>
+
+      {/* Footer (unchanged) */}
       <footer className="bg-[#003d2d] text-white px-6 py-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-8">
-          {/* Left Side - Logo and Links */}
           <div>
-            <img src="/logo.png" alt="Thon Hotels Logo" className="h-8 mb-4" />
+            <img src="/logo.png" alt="Logo" className="h-8 mb-4" />
             <ul className="flex flex-wrap gap-6 text-sm">
               <li>
                 <a href="#">About Us</a>
@@ -187,8 +340,6 @@ export const Customer_Layout: FC = () => {
               </li>
             </ul>
           </div>
-
-          {/* Right Side - Newsletter */}
           <div className="text-sm">
             <p className="mb-2 font-semibold">To receive latest offers</p>
             <div className="flex gap-2">
@@ -203,11 +354,7 @@ export const Customer_Layout: FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Divider */}
-        <div className="my-6 border-t border-gray-400"></div>
-
-        {/* Bottom Row */}
+        <div className="my-6 border-t border-gray-400" />
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between text-xs gap-4">
           <div className="flex gap-4">
             <a href="#">Privacy Policy</a>

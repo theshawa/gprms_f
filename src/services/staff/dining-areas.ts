@@ -4,14 +4,21 @@ import type { StaffUser } from "@/interfaces/staff-user";
 import type { WaiterAssignment } from "@/interfaces/waiter-assignment";
 
 export class DiningAreasService {
-  static async create(name: string, description: string) {
+  static async create(name: string, description: string, imageFile: File) {
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ name, description }));
+    formData.append("image", imageFile);
+
     const { data } = await staffBackend.post<DiningArea>(
       "/admin/dining-areas",
+      formData,
       {
-        name,
-        description,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
+
     return data;
   }
 
@@ -22,12 +29,26 @@ export class DiningAreasService {
     return data;
   }
 
-  static async update(id: number, name: string, description: string) {
+  static async update(
+    id: number,
+    name: string,
+    description: string,
+    imageFile: File | null
+  ) {
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ name, description }));
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
     const { data } = await staffBackend.put<DiningArea>(
       `/admin/dining-areas/${id}`,
+      formData,
       {
-        name,
-        description,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
     return data;

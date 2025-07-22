@@ -2,7 +2,7 @@ import { getBackendErrorMessage } from "@/backend";
 import { getEndpointForRole } from "@/enums/staff-role";
 import { useAlert } from "@/hooks/useAlert";
 import { useStaffAuth } from "@/hooks/useStaffAuth";
-import { StaffService } from "@/services/staff";
+import { StaffService } from "@/services/staff/staff";
 import {
   Box,
   Button,
@@ -69,13 +69,16 @@ export const Staff_LoginPage: FC = () => {
     >
       <Card className="w-full max-w-sm m-auto">
         <CardContent>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-            <Typography variant="h6">
-              Login
-            </Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={2}
+          >
+            <Typography variant="h6">Login</Typography>
             <img src="/public/logo.png" alt="" className="h-7" />
           </Box>
-          
+
           <TextField
             {...register("username", {
               required: {

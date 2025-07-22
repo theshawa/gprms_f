@@ -16,7 +16,12 @@ import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { Customer_DineInPage } from "./ui/customer/dine-in";
+import { Customer_MenuViewOnly } from "./ui/customer/menu";
+import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_Reservations } from "./ui/customer/reservations";
+import { Admin_CalenderPage } from "./ui/staff/admin/calender";
+import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_DiningAreasPage } from "./ui/staff/admin/dining-areas";
 import { Admin_DiningTablesPage } from "./ui/staff/admin/dining-tables";
 import { Admin_DishesPage } from "./ui/staff/admin/dishes";
@@ -29,13 +34,14 @@ import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-or
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
+import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
-import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
-import { Customer_Menu } from "./ui/customer/place-order";
-import { Customer_MenuViewOnly } from "./ui/customer/menu";
+import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
+import { Customer_AboutPage } from "./ui/customer/about-us";
+import { Customer_ContactPage } from "./ui/customer/contact";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +64,22 @@ export const router = createBrowserRouter([
       {
         path: "place-order",
         element: <Customer_Menu />,
+      },
+      {
+        path: "dine-in/:tableId",
+        element: <Customer_DineInPage />,
+      },
+      {
+        path: "our-story",
+        element: <Customer_AboutPage />,
+      },
+      {
+        path: "dining-areas",
+        element: <Customer_DiningAreasPage />,
+      },
+      {
+        path: "contact",
+        element: <Customer_ContactPage />,
       },
     ],
   },
@@ -173,6 +195,14 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
                 <Admin_AnalyticsPage />
+                </StaffAuthGuard>
+             ),
+          },
+          {
+            path: "customers",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_CustomerPage />
               </StaffAuthGuard>
             ),
           },
@@ -181,6 +211,14 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
                 <Admin_FeedbackPage />
+              </StaffAuthGuard>
+            )
+          },
+          {
+            path: "calendar",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_CalenderPage />
               </StaffAuthGuard>
             ),
           },
@@ -217,7 +255,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      
+
       // Kitchen Manager routes
       {
         path: "kitchen-manager",

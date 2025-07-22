@@ -1,3 +1,4 @@
+import { getCloudinaryImageUrl } from "@/cloudinary";
 import type { Dish } from "@/interfaces/dish";
 import {
   Button,
@@ -8,6 +9,7 @@ import {
   Divider,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemText,
 } from "@mui/material";
 import { type FC, Fragment } from "react";
@@ -26,6 +28,13 @@ export const MenuItemsListViewDialog: FC<{
           {menuItems.map((dish) => (
             <Fragment key={dish.id}>
               <ListItem>
+                <ListItemAvatar>
+                  <img
+                    src={getCloudinaryImageUrl(dish.image)}
+                    alt={dish.name}
+                    className="size-12 object-cover mr-5"
+                  />
+                </ListItemAvatar>
                 <ListItemText
                   primary={dish.name}
                   secondary={dish.description}

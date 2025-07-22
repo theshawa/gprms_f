@@ -1,13 +1,15 @@
 import { getBackendErrorMessage } from "@/backend";
+import { getCloudinaryImageUrl } from "@/cloudinary";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { DiningArea } from "@/interfaces/dining-area";
-import { DiningAreasService } from "@/services/dining-areas";
+import { DiningAreasService } from "@/services/staff/dining-areas";
 import {
   Button,
   Card,
   CardActions,
   CardContent,
+  CardMedia,
   Chip,
   Stack,
   Typography,
@@ -45,11 +47,11 @@ export const DiningAreaCard: FC<{
   return (
     <>
       <Card>
-        {/* <CardMedia
+        <CardMedia
           sx={{ height: 140 }}
-          image="/dining-area-example.jpg"
+          image={getCloudinaryImageUrl(diningArea.image)}
           title={`${diningArea.name} image`}
-        /> */}
+        />
         <CardContent>
           <Typography gutterBottom variant="h6">
             {diningArea.name}

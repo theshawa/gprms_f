@@ -111,7 +111,7 @@ export const Customer_MenuViewOnly: FC = () => {
     return matchMeal && matchCategory && matchSearch;
   });
   return (
-    <Box sx={{ bgcolor: "background.paper", py: 4 }}>
+    <div className="min-h-screen bg-white py-4">
       <Box sx={{ maxWidth: 1200, mx: "auto", px: 2 }}>
         <Typography
           sx={{ fontFamily: "serif" }}
@@ -287,6 +287,6 @@ export const Customer_MenuViewOnly: FC = () => {
           )}
         </Box>
       </Box>
-    </Box>
+    </div>
   );
 };

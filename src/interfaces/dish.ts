@@ -6,4 +6,5 @@ export interface Dish {
   description: string;
   price: number;
   ingredients: DishIngredient[];
+  image: string;
 }

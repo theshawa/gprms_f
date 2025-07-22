@@ -3,9 +3,10 @@ import { Currency } from "@/constants";
 import { useAlert } from "@/hooks/useAlert";
 import type { Dish } from "@/interfaces/dish";
 import type { Ingredient } from "@/interfaces/ingredient";
-import { DishesService } from "@/services/dishes";
-import { IngredientsService } from "@/services/ingredients";
+import { DishesService } from "@/services/staff/dishes";
+import { IngredientsService } from "@/services/staff/ingredients";
 import { QKs } from "@/ui/staff/query-keys";
+import { ImageInput } from "@/ui/staff/shared/image-input";
 import {
   Alert,
   Button,
@@ -18,7 +19,7 @@ import {
 } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { type FC, useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { IngredientsSelector } from "./ingredients-selector";
 
 type FormInputs = {
@@ -26,6 +27,7 @@ type FormInputs = {
   description: string;
   price: number;
   ingredients: { ingredient: Ingredient; quantity: number }[];
+  imageFile: File;
 };
 
 export const ManageDishDialog: FC<{
@@ -141,6 +143,34 @@ export const ManageDishDialog: FC<{
                 helperText={errors.name?.message}
                 margin="dense"
                 placeholder="Enter dish name, e.g., 'Spaghetti Bolognese'"
+              />
+              <Controller
+                name="imageFile"
+                control={formMethods.control}
+                rules={{
+                  validate: (value) => {
+                    if (!value && !editingDish?.image)
+                      return "Image is required";
+                  },
+                }}
+                render={({
+                  fieldState: { error },
+                  field: { onChange, value },
+                }) => (
+                  <ImageInput
+                    value={value}
+                    onChange={onChange}
+                    label="Dish Image"
+                    error={error?.message}
+                    defaultImageUrl={editingDish?.image}
+                    cloudinary
+                    helperText={
+                      editingDish
+                        ? "Upload a new image to replace the existing one."
+                        : "Upload a dish image. Recommended size: 500x500px."
+                    }
+                  />
+                )}
               />
               <TextField
                 {...register("description", {

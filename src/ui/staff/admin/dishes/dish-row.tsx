@@ -1,8 +1,9 @@
 import { getBackendErrorMessage } from "@/backend";
+import { getCloudinaryImageUrl } from "@/cloudinary";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { Dish } from "@/interfaces/dish";
-import { DishesService } from "@/services/dishes";
+import { DishesService } from "@/services/staff/dishes";
 import { formatCurrency } from "@/utils/currency-format";
 import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -70,7 +71,21 @@ export const DishRow: FC<{ dish: Dish }> = ({ dish }) => {
   return (
     <>
       <TableRow>
-        <TableCell>{dish.name}</TableCell>
+        <TableCell>
+          {dish.image ? (
+            <img
+              src={getCloudinaryImageUrl(dish.image)}
+              width={100}
+              height={100}
+              className="aspect-square object-cover"
+            />
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No Image
+            </Typography>
+          )}
+        </TableCell>
+        <TableCell sx={{ textTransform: "capitalize" }}>{dish.name}</TableCell>
         <TableCell>{dish.description}</TableCell>
         <TableCell>{formatCurrency(dish.price)}</TableCell>
         <TableCell>

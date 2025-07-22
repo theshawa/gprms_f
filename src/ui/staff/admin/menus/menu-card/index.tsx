@@ -3,7 +3,7 @@ import { getNameForMeal } from "@/enums/meal";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { Menu } from "@/interfaces/menu";
-import { MenusService } from "@/services/menus";
+import { MenusService } from "@/services/staff/menus";
 import { QKs } from "@/ui/staff/query-keys";
 import {
   Button,
@@ -55,11 +55,13 @@ export const MenuCard: FC<{ menu: Menu }> = ({ menu }) => {
         />
         <CardContent>
           <Chip
+            size="small"
             label={`${menu.menuSections.length} section${
               menu.menuSections.length !== 1 ? "s" : ""
             }`}
           />
           <Chip
+            size="small"
             label={`${mealsCount} dish${mealsCount !== 1 ? "es" : ""}`}
             sx={{ ml: 1 }}
           />
