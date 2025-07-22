@@ -37,6 +37,9 @@ import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
+import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
+import { Customer_AboutPage } from "./ui/customer/about-us";
+import { Customer_ContactPage } from "./ui/customer/contact";
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +66,18 @@ export const router = createBrowserRouter([
       {
         path: "dine-in/:tableId",
         element: <Customer_DineInPage />,
+      },
+      {
+        path: "our-story",
+        element: <Customer_AboutPage />,
+      },
+      {
+        path: "dining-areas",
+        element: <Customer_DiningAreasPage />,
+      },
+      {
+        path: "contact",
+        element: <Customer_ContactPage />,
       },
     ],
   },

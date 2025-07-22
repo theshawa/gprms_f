@@ -145,7 +145,7 @@ export const Customer_Layout: FC = () => {
                   Reservations
                 </a>
                 <a
-                  href="#"
+                  href="contact"
                   className="text-sm text-gray-700 hover:text-gray-900 font-medium"
                 >
                   Contact
@@ -244,7 +244,7 @@ export const Customer_Layout: FC = () => {
                 Reservations
               </a>
               <a
-                href="#"
+                href="contact"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               >
                 Contact
@@ -252,11 +252,27 @@ export const Customer_Layout: FC = () => {
               <div>
                 <button
                   onClick={(e) => setAboutUsMenuAnchorEl(e.currentTarget)}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex justify-between"
+                  className="flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium"
                 >
-                  About Us
-                  <ExpandMore fontSize="small" />
+                  About us
+                  <ExpandMore className="ml-1" fontSize="small" />
                 </button>
+                <Menu
+                  anchorEl={aboutUsMenuAnchorEl}
+                  open={!!aboutUsMenuAnchorEl}
+                  onClose={() => setAboutUsMenuAnchorEl(null)}
+                >
+                  <MenuItem>
+                    <Link to="/our-story" className="w-full">
+                      Our Story
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link to="/dining-areas" className="w-full">
+                      Dining Areas
+                    </Link>
+                  </MenuItem>
+                </Menu>
               </div>
             </div>
           )}
