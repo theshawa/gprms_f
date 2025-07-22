@@ -43,9 +43,9 @@ import { useNavigate } from "react-router-dom";
 // Mock analytics data
 const mockAnalyticsData = {
   overview: {
-    totalRevenue: 125000,
+    totalRevenue: 16250000,
     totalOrders: 1840,
-    avgOrderValue: 67.93,
+    avgOrderValue: 8831,
     customerSatisfaction: 4.6,
     revenueGrowth: 12.5,
     orderGrowth: 8.3,
@@ -53,47 +53,47 @@ const mockAnalyticsData = {
     returningCustomers: 68,
   },
   bestSellingItems: [
-    { name: "Grilled Salmon", orders: 234, revenue: 5850, trend: 15 },
-    { name: "Beef Burger", orders: 189, revenue: 4725, trend: -3 },
-    { name: "Caesar Salad", orders: 167, revenue: 2505, trend: 22 },
-    { name: "Pasta Carbonara", orders: 145, revenue: 2175, trend: 7 },
-    { name: "Chocolate Cake", orders: 112, revenue: 1680, trend: -8 },
+    { name: "Grilled Salmon", orders: 234, revenue: 760500, trend: 15 },
+    { name: "Beef Burger", orders: 189, revenue: 614250, trend: -3 },
+    { name: "Caesar Salad", orders: 167, revenue: 325650, trend: 22 },
+    { name: "Pasta Carbonara", orders: 145, revenue: 282750, trend: 7 },
+    { name: "Chocolate Cake", orders: 112, revenue: 218400, trend: -8 },
   ],
   hourlyData: [
-    { hour: "09:00", orders: 12, revenue: 580 },
-    { hour: "10:00", orders: 18, revenue: 920 },
-    { hour: "11:00", orders: 25, revenue: 1250 },
-    { hour: "12:00", orders: 45, revenue: 2850 },
-    { hour: "13:00", orders: 52, revenue: 3400 },
-    { hour: "14:00", orders: 38, revenue: 2650 },
-    { hour: "15:00", orders: 22, revenue: 1580 },
-    { hour: "16:00", orders: 15, revenue: 890 },
-    { hour: "17:00", orders: 28, revenue: 1680 },
-    { hour: "18:00", orders: 42, revenue: 2940 },
-    { hour: "19:00", orders: 56, revenue: 4200 },
-    { hour: "20:00", orders: 48, revenue: 3680 },
-    { hour: "21:00", orders: 35, revenue: 2450 },
+    { hour: "09:00", orders: 12, revenue: 75400 },
+    { hour: "10:00", orders: 18, revenue: 119600 },
+    { hour: "11:00", orders: 25, revenue: 162500 },
+    { hour: "12:00", orders: 45, revenue: 370500 },
+    { hour: "13:00", orders: 52, revenue: 442000 },
+    { hour: "14:00", orders: 38, revenue: 344500 },
+    { hour: "15:00", orders: 22, revenue: 205400 },
+    { hour: "16:00", orders: 15, revenue: 115700 },
+    { hour: "17:00", orders: 28, revenue: 218400 },
+    { hour: "18:00", orders: 42, revenue: 382200 },
+    { hour: "19:00", orders: 56, revenue: 546000 },
+    { hour: "20:00", orders: 48, revenue: 478400 },
+    { hour: "21:00", orders: 35, revenue: 318500 },
   ],
   weeklyRevenue: [
-    { day: "Mon", amount: 15400 },
-    { day: "Tue", amount: 18200 },
-    { day: "Wed", amount: 16800 },
-    { day: "Thu", amount: 19500 },
-    { day: "Fri", amount: 23400 },
-    { day: "Sat", amount: 28900 },
-    { day: "Sun", amount: 22800 },
+    { day: "Mon", amount: 2002000 },
+    { day: "Tue", amount: 2366000 },
+    { day: "Wed", amount: 2184000 },
+    { day: "Thu", amount: 2535000 },
+    { day: "Fri", amount: 3042000 },
+    { day: "Sat", amount: 3757000 },
+    { day: "Sun", amount: 2964000 },
   ],
   tableUtilization: [
-    { area: "Main Dining", tables: 20, utilized: 85, revenue: 45000 },
-    { area: "Terrace", tables: 12, utilized: 72, revenue: 28000 },
-    { area: "Private Rooms", tables: 6, utilized: 95, revenue: 35000 },
-    { area: "Bar Area", tables: 8, utilized: 68, revenue: 17000 },
+    { area: "Main Dining", tables: 20, utilized: 85, revenue: 5850000 },
+    { area: "Terrace", tables: 12, utilized: 72, revenue: 3640000 },
+    { area: "Private Rooms", tables: 6, utilized: 95, revenue: 4550000 },
+    { area: "Bar Area", tables: 8, utilized: 68, revenue: 2210000 },
   ],
   staffPerformance: [
-    { name: "Sarah Johnson", orders: 156, revenue: 12400, rating: 4.8 },
-    { name: "Mike Chen", orders: 142, revenue: 11200, rating: 4.6 },
-    { name: "Lisa Garcia", orders: 138, revenue: 10800, rating: 4.7 },
-    { name: "David Park", orders: 125, revenue: 9800, rating: 4.5 },
+    { name: "Tharaka Perera", orders: 156, revenue: 1612000, rating: 4.8 },
+    { name: "Nuwan Silva", orders: 142, revenue: 1456000, rating: 4.6 },
+    { name: "Sanduni Fernando", orders: 138, revenue: 1404000, rating: 4.7 },
+    { name: "Kasun Rajapaksa", orders: 125, revenue: 1274000, rating: 4.5 },
   ],
 };
 
@@ -200,7 +200,7 @@ export const Admin_AnalyticsPage: FC = () => {
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <MetricCard
                 title="Total Revenue"
-                value={`$${data.overview.totalRevenue.toLocaleString()}`}
+                value={`LKR ${data.overview.totalRevenue.toLocaleString()}`}
                 icon={<AttachMoney />}
                 trend={data.overview.revenueGrowth}
               />
@@ -216,7 +216,7 @@ export const Admin_AnalyticsPage: FC = () => {
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <MetricCard
                 title="Avg Order Value"
-                value={`$${data.overview.avgOrderValue}`}
+                value={`LKR ${data.overview.avgOrderValue}`}
                 icon={<TrendingUp />}
                 subtitle="Per transaction"
               />
@@ -263,7 +263,7 @@ export const Admin_AnalyticsPage: FC = () => {
                             {hour.orders} orders
                           </Typography>
                           <Typography variant="body2" sx={{ minWidth: 80 }}>
-                            ${hour.revenue}
+                            LKR {hour.revenue}
                           </Typography>
                         </Stack>
                       ))}
@@ -289,7 +289,7 @@ export const Admin_AnalyticsPage: FC = () => {
                               {item.name}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              {item.orders} orders • ${item.revenue}
+                                                             {item.orders} orders • LKR {item.revenue}
                             </Typography>
                           </Box>
                           <Chip
@@ -338,7 +338,7 @@ export const Admin_AnalyticsPage: FC = () => {
                           />
                         </Box>
                         <Typography variant="body1" fontWeight="medium" sx={{ minWidth: 100 }}>
-                          ${day.amount.toLocaleString()}
+                                                     LKR {day.amount.toLocaleString()}
                         </Typography>
                       </Stack>
                     ))}
@@ -438,7 +438,7 @@ export const Admin_AnalyticsPage: FC = () => {
                           </TableCell>
                           <TableCell align="center">
                             <Typography variant="body1" fontWeight="medium">
-                              ${area.revenue.toLocaleString()}
+                                                             LKR {area.revenue.toLocaleString()}
                             </Typography>
                           </TableCell>
                           <TableCell align="center">
@@ -499,7 +499,7 @@ export const Admin_AnalyticsPage: FC = () => {
                           </TableCell>
                           <TableCell align="center">
                             <Typography variant="body1" fontWeight="medium">
-                              ${staff.revenue.toLocaleString()}
+                                                             LKR {staff.revenue.toLocaleString()}
                             </Typography>
                           </TableCell>
                           <TableCell align="center">

@@ -1,17 +1,9 @@
 import {
   TrendingUp,
-  Restaurant,
-  People,
-  TableRestaurant,
   AttachMoney,
   ShoppingCart,
-  Assessment,
-  Notifications,
-  Schedule,
   Star,
-  Warning,
-  CheckCircle,
-  Feedback,
+  TableRestaurant,
 } from "@mui/icons-material";
 import {
   Box,
@@ -42,35 +34,30 @@ import { useNavigate } from "react-router-dom";
 const mockDashboardData = {
   todayStats: {
     totalOrders: 142,
-    revenue: 12500,
+    revenue: 1625000,
     activeOrders: 18,
     activeTables: 24,
     totalTables: 32,
-    avgOrderValue: 88.03,
-    tips: 1250,
+    avgOrderValue: 11444,
+    tips: 162500,
     customerSatisfaction: 4.7,
   },
   recentOrders: [
-    { id: "#12453", table: "A-12", status: "preparing", time: "12:30 PM", total: 125.50 },
-    { id: "#12454", table: "B-05", status: "served", time: "12:45 PM", total: 89.25 },
-    { id: "#12455", table: "C-08", status: "pending", time: "1:00 PM", total: 156.75 },
-    { id: "#12456", table: "A-03", status: "preparing", time: "1:15 PM", total: 92.00 },
+    { id: "#12453", table: "A-12", status: "preparing", time: "12:30 PM", total: 16315 },
+    { id: "#12454", table: "B-05", status: "served", time: "12:45 PM", total: 11603 },
+    { id: "#12455", table: "C-08", status: "pending", time: "1:00 PM", total: 20378 },
+    { id: "#12456", table: "A-03", status: "preparing", time: "1:15 PM", total: 11960 },
   ],
   topDishes: [
-    { name: "Grilled Salmon", orders: 23, revenue: 575 },
-    { name: "Beef Burger", orders: 31, revenue: 465 },
-    { name: "Caesar Salad", orders: 18, revenue: 270 },
-    { name: "Pasta Carbonara", orders: 15, revenue: 225 },
-  ],
-  alerts: [
-    { type: "warning", message: "Table 12 has been waiting for 25 minutes", priority: "high" },
-    { type: "info", message: "Kitchen reports low stock on salmon", priority: "medium" },
-    { type: "success", message: "Daily revenue target achieved", priority: "low" },
+    { name: "Grilled Salmon", orders: 23, revenue: 74750 },
+    { name: "Beef Burger", orders: 31, revenue: 60450 },
+    { name: "Caesar Salad", orders: 18, revenue: 35100 },
+    { name: "Pasta Carbonara", orders: 15, revenue: 29250 },
   ],
   staffPerformance: [
-    { name: "Sarah Johnson", role: "Waiter", tables: 8, rating: 4.9, orders: 24 },
-    { name: "Mike Chen", role: "Waiter", tables: 6, rating: 4.7, orders: 18 },
-    { name: "Lisa Garcia", role: "Kitchen", rating: 4.8, orders: 42 },
+    { name: "Tharaka Perera", role: "Waiter", tables: 8, rating: 4.9, orders: 24 },
+    { name: "Nuwan Silva", role: "Waiter", tables: 6, rating: 4.7, orders: 18 },
+    { name: "Sanduni Fernando", role: "Kitchen", rating: 4.8, orders: 42 },
   ],
   hourlyData: [
     { hour: "11:00", orders: 8, revenue: 450 },
@@ -131,14 +118,7 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const getAlertIcon = (type: string) => {
-  switch (type) {
-    case "warning": return <Warning color="warning" />;
-    case "info": return <Notifications color="info" />;
-    case "success": return <CheckCircle color="success" />;
-    default: return <Notifications />;
-  }
-};
+
 
 export const Admin_HomePage: FC = () => {
   const navigate = useNavigate();
@@ -193,10 +173,10 @@ export const Admin_HomePage: FC = () => {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title="Today's Revenue"
-            value={`$${data.todayStats.revenue.toLocaleString()}`}
+            value={`LKR ${data.todayStats.revenue.toLocaleString()}`}
             icon={<AttachMoney />}
             color="success.main"
-            subtitle={`Avg: $${data.todayStats.avgOrderValue}/order`}
+            subtitle={`Avg: LKR ${data.todayStats.avgOrderValue.toLocaleString()}/order`}
             trend={8}
           />
         </Grid>
@@ -223,7 +203,7 @@ export const Admin_HomePage: FC = () => {
 
       <Grid container spacing={3}>
         {/* Recent Orders */}
-        <Grid size={{ xs: 12, lg: 8 }}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent>
               <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
@@ -258,7 +238,7 @@ export const Admin_HomePage: FC = () => {
                             size="small"
                           />
                         </TableCell>
-                        <TableCell align="right">${order.total}</TableCell>
+                        <TableCell align="right">LKR {order.total.toLocaleString()}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -268,37 +248,8 @@ export const Admin_HomePage: FC = () => {
           </Card>
         </Grid>
 
-        {/* Alerts & Notifications */}
-        <Grid size={{ xs: 12, lg: 4 }}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Alerts & Notifications
-              </Typography>
-              <Stack spacing={2}>
-                {data.alerts.map((alert, index) => (
-                  <Box key={index}>
-                    <Stack direction="row" spacing={2} alignItems="flex-start">
-                      {getAlertIcon(alert.type)}
-                      <Box flex={1}>
-                        <Typography variant="body2" color="text.primary">
-                          {alert.message}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Priority: {alert.priority}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                    {index < data.alerts.length - 1 && <Divider sx={{ mt: 2 }} />}
-                  </Box>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
         {/* Top Dishes */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
               <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
@@ -322,7 +273,7 @@ export const Admin_HomePage: FC = () => {
                         </Typography>
                       </Box>
                       <Typography variant="body1" fontWeight="bold">
-                        ${dish.revenue}
+                        LKR {dish.revenue.toLocaleString()}
                       </Typography>
                     </Stack>
                     <LinearProgress 
@@ -338,7 +289,7 @@ export const Admin_HomePage: FC = () => {
         </Grid>
 
         {/* Staff Performance */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
               <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
@@ -385,100 +336,7 @@ export const Admin_HomePage: FC = () => {
           </Card>
         </Grid>
 
-        {/* Quick Actions */}
-        <Grid size={{ xs: 12 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Quick Actions
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    startIcon={<People />}
-                    onClick={() => navigate("/staff/admin/staff")}
-                  >
-                    Manage Staff
-                  </Button>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    startIcon={<Restaurant />}
-                    onClick={() => navigate("/staff/admin/menus")}
-                  >
-                    Update Menu
-                  </Button>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    startIcon={<TableRestaurant />}
-                    onClick={() => navigate("/staff/admin/dining-tables")}
-                  >
-                    Table Layout
-                  </Button>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    startIcon={<Assessment />}
-                    onClick={() => navigate("/staff/admin/analytics")}
-                  >
-                    View Analytics
-                  </Button>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2} mt={2}>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    startIcon={<Feedback />}
-                    onClick={() => navigate("/staff/admin/feedback")}
-                  >
-                    Customer Feedback
-                  </Button>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    startIcon={<Notifications />}
-                    onClick={() => navigate("/staff/admin/promotions")}
-                  >
-                    Promotions & SMS
-                  </Button>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    disabled
-                    startIcon={<Schedule />}
-                  >
-                    Kitchen Coordination
-                  </Button>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <Button 
-                    variant="outlined" 
-                    fullWidth 
-                    disabled
-                    startIcon={<Star />}
-                  >
-                    Loyalty Settings
-                  </Button>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
+
       </Grid>
     </Box>
   );
