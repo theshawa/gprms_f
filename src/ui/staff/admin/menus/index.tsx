@@ -58,6 +58,7 @@ import {
 import type { FC } from "react";
 import { useState, useMemo } from "react";
 import { PageLayout } from "../../shared/page-layout";
+import { avatarColors } from "../../../../muitheme";
 
 // Mock data for menus
 const mockMenus = [
@@ -385,9 +386,13 @@ export const Admin_MenusPage: FC = () => {
             {Object.entries(mealCounts).map(([meal, count]) => (
               <Grid size={{ xs: 6, sm: 4, md: 3 }} key={meal}>
                 <Stack direction="row" alignItems="center" spacing={2}>
-                  <Avatar sx={{ bgcolor: "primary.main" }}>
-                    {getMealIcon(meal)}
-                  </Avatar>
+                                     <Avatar sx={{ 
+                     bgcolor: avatarColors.info.bg, 
+                     color: avatarColors.info.color,
+                     border: `1px solid ${avatarColors.info.border}`,
+                   }}>
+                     {getMealIcon(meal)}
+                   </Avatar>
                   <Stack>
                     <Typography variant="h6" fontWeight="bold">
                       {count}
@@ -487,9 +492,15 @@ export const Admin_MenusPage: FC = () => {
                 {/* Header */}
                 <Stack direction="row" justifyContent="space-between" alignItems="start" mb={2}>
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <Avatar sx={{ bgcolor: "primary.main", width: 40, height: 40 }}>
-                      {getMealIcon(menu.meal)}
-                    </Avatar>
+                                         <Avatar sx={{ 
+                       bgcolor: avatarColors.secondary.bg, 
+                       color: avatarColors.secondary.color,
+                       border: `1px solid ${avatarColors.secondary.border}`,
+                       width: 40, 
+                       height: 40 
+                     }}>
+                       {getMealIcon(menu.meal)}
+                     </Avatar>
                     <Stack>
                       <Typography variant="h6" fontWeight="bold">
                         {menu.name}
@@ -644,9 +655,15 @@ export const Admin_MenusPage: FC = () => {
             <DialogTitle>
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Stack direction="row" alignItems="center" spacing={2}>
-                  <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
-                    {getMealIcon(selectedMenu.meal)}
-                  </Avatar>
+                                     <Avatar sx={{ 
+                     bgcolor: avatarColors.warning.bg, 
+                     color: avatarColors.warning.color,
+                     border: `1px solid ${avatarColors.warning.border}`,
+                     width: 48, 
+                     height: 48 
+                   }}>
+                     {getMealIcon(selectedMenu.meal)}
+                   </Avatar>
                   <Stack>
                     <Typography variant="h6">
                       {selectedMenu.name}

@@ -1,7 +1,6 @@
 import {
   People,
   Person,
-  Add,
   Search,
   FilterList,
   Star,
@@ -60,6 +59,7 @@ import {
 import type { FC } from "react";
 import { useState, useMemo } from "react";
 import { PageLayout } from "../../shared/page-layout";
+import { avatarColors } from "../../../../muitheme";
 
 // Mock data for customers
 const mockCustomers = [
@@ -299,11 +299,6 @@ export const Admin_CustomerPage: FC = () => {
     <PageLayout
       title="Customer Management"
       subtitle="Manage customer profiles, loyalty programs, and relationships"
-      button={{
-        text: "Add Customer",
-        icon: <Add />,
-        onClick: () => console.log("Add customer"),
-      }}
     >
       {/* Stats Overview */}
       <Grid container spacing={2} mb={3}>
@@ -493,7 +488,11 @@ export const Admin_CustomerPage: FC = () => {
               <TableRow key={customer.id} hover>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar sx={{ bgcolor: "primary.main" }}>
+                    <Avatar sx={{ 
+                      bgcolor: avatarColors.secondary.bg, 
+                      color: avatarColors.secondary.color,
+                      border: `1px solid ${avatarColors.secondary.border}`,
+                    }}>
                       {customer.name.split(' ').map(n => n[0]).join('')}
                     </Avatar>
                     <Stack>
@@ -662,7 +661,13 @@ export const Admin_CustomerPage: FC = () => {
             <DialogTitle>
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Stack direction="row" alignItems="center" spacing={2}>
-                  <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
+                  <Avatar sx={{ 
+                    bgcolor: avatarColors.warning.bg, 
+                    color: avatarColors.warning.color,
+                    border: `1px solid ${avatarColors.warning.border}`,
+                    width: 48, 
+                    height: 48 
+                  }}>
                     {selectedCustomer.name.split(' ').map((n: string) => n[0]).join('')}
                   </Avatar>
                   <Stack>
