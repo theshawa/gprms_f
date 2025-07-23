@@ -3,7 +3,7 @@ import { getCloudinaryImageUrl } from "@/cloudinary";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { DiningArea } from "@/interfaces/dining-area";
-import { DiningAreasService } from "@/services/staff/dining-areas";
+import { DiningAreasService } from "@/services/staff/admin/dining-areas";
 import {
   Button,
   Card,

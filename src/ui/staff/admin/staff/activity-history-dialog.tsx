@@ -3,7 +3,7 @@ import { getNameForRole } from "@/enums/staff-role";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { StaffUser } from "@/interfaces/staff-user";
-import { StaffService } from "@/services/staff/staff";
+import { StaffService } from "@/services/staff/admin/staff";
 import { formatDateTime } from "@/utils/time-format";
 import {
   Alert,

@@ -1,4 +1,4 @@
-import { DiningAreasService } from "@/services/staff/dining-areas";
+import { DiningAreasService } from "@/services/staff/admin/dining-areas";
 import { AddLocationAlt } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";

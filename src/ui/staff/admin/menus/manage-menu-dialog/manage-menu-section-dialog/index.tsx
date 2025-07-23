@@ -1,6 +1,6 @@
 import { getBackendErrorMessage } from "@/backend";
 import type { Dish } from "@/interfaces/dish";
-import { DishesService } from "@/services/staff/dishes";
+import { DishesService } from "@/services/staff/admin/dishes";
 import { QKs } from "@/ui/staff/query-keys";
 import {
   Alert,

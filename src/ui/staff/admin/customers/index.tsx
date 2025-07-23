@@ -1,63 +1,53 @@
 import {
-  People,
-  Person,
-  Search,
-  FilterList,
-  Star,
-  StarBorder,
-  Phone,
-  Email,
   Cake,
-  TrendingUp,
-  AttachMoney,
-  ShoppingCart,
-  Visibility,
-  MoreVert,
-  Edit,
-  Delete,
+  CardGiftcard,
   Close,
+  Delete,
+  Edit,
+  Email,
+  FilterList,
   History,
   LocalOffer,
-  CardGiftcard,
+  MoreVert,
+  Phone,
+  Search,
+  Visibility,
 } from "@mui/icons-material";
 import {
-  Box,
+  Avatar,
+  Button,
   Card,
   CardContent,
-  Typography,
-  Grid,
   Chip,
-  Stack,
-  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
+  Grid,
+  IconButton,
   InputLabel,
-  Select,
+  ListItemIcon,
+  ListItemText,
+  Menu,
   MenuItem,
-  Button,
+  Paper,
+  Rating,
+  Select,
+  Stack,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Avatar,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Divider,
-  Rating,
-  LinearProgress,
-  Menu,
-  ListItemText,
-  ListItemIcon,
-  Tab,
   Tabs,
+  TextField,
+  Typography,
 } from "@mui/material";
 import type { FC } from "react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { PageLayout } from "../../shared/page-layout";
 import { avatarColors } from "../../../../muitheme";
 
@@ -187,20 +177,29 @@ const mockCustomers = [
 
 const getTierColor = (tier: string) => {
   switch (tier) {
-    case "platinum": return "error";
-    case "gold": return "warning";
-    case "silver": return "info";
-    case "bronze": return "default";
-    default: return "default";
+    case "platinum":
+      return "error";
+    case "gold":
+      return "warning";
+    case "silver":
+      return "info";
+    case "bronze":
+      return "default";
+    default:
+      return "default";
   }
 };
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "active": return "success";
-    case "vip": return "error";
-    case "inactive": return "default";
-    default: return "default";
+    case "active":
+      return "success";
+    case "vip":
+      return "error";
+    case "inactive":
+      return "default";
+    default:
+      return "default";
   }
 };
 
@@ -221,7 +220,10 @@ const getCustomerAge = (birthday: string) => {
   const birthDate = new Date(birthday);
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
     age--;
   }
   return age;
@@ -239,13 +241,14 @@ export const Admin_CustomerPage: FC = () => {
 
   const filteredCustomers = useMemo(() => {
     return mockCustomers.filter((customer) => {
-      const matchesSearch = 
+      const matchesSearch =
         customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.phone.includes(searchTerm) ||
         customer.id.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = statusFilter === "all" || customer.status === statusFilter;
+
+      const matchesStatus =
+        statusFilter === "all" || customer.status === statusFilter;
       const matchesTier = tierFilter === "all" || customer.tier === tierFilter;
 
       return matchesSearch && matchesStatus && matchesTier;
@@ -255,18 +258,21 @@ export const Admin_CustomerPage: FC = () => {
   const customerStats = useMemo(() => {
     const stats = {
       total: mockCustomers.length,
-      active: mockCustomers.filter(c => c.status === "active").length,
-      vip: mockCustomers.filter(c => c.status === "vip").length,
-      inactive: mockCustomers.filter(c => c.status === "inactive").length,
+      active: mockCustomers.filter((c) => c.status === "active").length,
+      vip: mockCustomers.filter((c) => c.status === "vip").length,
+      inactive: mockCustomers.filter((c) => c.status === "inactive").length,
       totalRevenue: mockCustomers.reduce((sum, c) => sum + c.totalSpent, 0),
-      avgOrderValue: Math.round(mockCustomers.reduce((sum, c) => sum + c.averageOrderValue, 0) / mockCustomers.length),
+      avgOrderValue: Math.round(
+        mockCustomers.reduce((sum, c) => sum + c.averageOrderValue, 0) /
+          mockCustomers.length
+      ),
     };
     return stats;
   }, []);
 
   const tierCounts = useMemo(() => {
     const counts = { platinum: 0, gold: 0, silver: 0, bronze: 0 };
-    mockCustomers.forEach(customer => {
+    mockCustomers.forEach((customer) => {
       counts[customer.tier as keyof typeof counts]++;
     });
     return counts;
@@ -277,7 +283,10 @@ export const Admin_CustomerPage: FC = () => {
     setDetailsOpen(true);
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, customerId: string) => {
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    customerId: string
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedCustomerId(customerId);
   };
@@ -295,7 +304,7 @@ export const Admin_CustomerPage: FC = () => {
     window.open(`mailto:${email}`);
   };
 
-    return (
+  return (
     <PageLayout
       title="Customer Management"
       subtitle="Manage customer profiles, loyalty programs, and relationships"
@@ -330,7 +339,7 @@ export const Admin_CustomerPage: FC = () => {
           <Card>
             <CardContent sx={{ textAlign: "center", py: 2 }}>
               <Typography variant="h4" color="warning.main" fontWeight="bold">
-                {formatCurrency(customerStats.totalRevenue).replace('LKR ', '')}
+                {formatCurrency(customerStats.totalRevenue).replace("LKR ", "")}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Total Revenue
@@ -342,7 +351,10 @@ export const Admin_CustomerPage: FC = () => {
           <Card>
             <CardContent sx={{ textAlign: "center", py: 2 }}>
               <Typography variant="h4" color="info.main" fontWeight="bold">
-                {formatCurrency(customerStats.avgOrderValue).replace('LKR ', '')}
+                {formatCurrency(customerStats.avgOrderValue).replace(
+                  "LKR ",
+                  ""
+                )}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Avg Order Value
@@ -391,7 +403,11 @@ export const Admin_CustomerPage: FC = () => {
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Stack alignItems="center">
-                <Typography variant="h5" color="text.secondary" fontWeight="bold">
+                <Typography
+                  variant="h5"
+                  color="text.secondary"
+                  fontWeight="bold"
+                >
                   {tierCounts.bronze}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -415,7 +431,9 @@ export const Admin_CustomerPage: FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 InputProps={{
-                  startAdornment: <Search sx={{ mr: 1, color: "text.secondary" }} />,
+                  startAdornment: (
+                    <Search sx={{ mr: 1, color: "text.secondary" }} />
+                  ),
                 }}
               />
             </Grid>
@@ -488,12 +506,12 @@ export const Admin_CustomerPage: FC = () => {
               <TableRow key={customer.id} hover>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar sx={{ 
-                      bgcolor: avatarColors.secondary.bg, 
-                      color: avatarColors.secondary.color,
-                      border: `1px solid ${avatarColors.secondary.border}`,
-                    }}>
-                      {customer.name.split(' ').map(n => n[0]).join('')}
+
+                    <Avatar sx={{ bgcolor: "primary.main" }}>
+                      {customer.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </Avatar>
                     <Stack>
                       <Typography variant="body1" fontWeight="medium">
@@ -509,9 +527,7 @@ export const Admin_CustomerPage: FC = () => {
                   <Stack spacing={0.5}>
                     <Stack direction="row" alignItems="center" spacing={1}>
                       <Phone sx={{ fontSize: 14, color: "text.secondary" }} />
-                      <Typography variant="body2">
-                        {customer.phone}
-                      </Typography>
+                      <Typography variant="body2">{customer.phone}</Typography>
                     </Stack>
                     <Stack direction="row" alignItems="center" spacing={1}>
                       <Email sx={{ fontSize: 14, color: "text.secondary" }} />
@@ -524,12 +540,18 @@ export const Admin_CustomerPage: FC = () => {
                 <TableCell>
                   <Stack spacing={1}>
                     <Chip
-                      label={customer.tier.charAt(0).toUpperCase() + customer.tier.slice(1)}
+                      label={
+                        customer.tier.charAt(0).toUpperCase() +
+                        customer.tier.slice(1)
+                      }
                       color={getTierColor(customer.tier)}
                       size="small"
                     />
                     <Chip
-                      label={customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                      label={
+                        customer.status.charAt(0).toUpperCase() +
+                        customer.status.slice(1)
+                      }
                       color={getStatusColor(customer.status)}
                       size="small"
                       variant="outlined"
@@ -541,7 +563,11 @@ export const Admin_CustomerPage: FC = () => {
                     <Typography variant="body1" fontWeight="medium">
                       {customer.totalOrders} orders
                     </Typography>
-                    <Typography variant="body2" color="success.main" fontWeight="medium">
+                    <Typography
+                      variant="body2"
+                      color="success.main"
+                      fontWeight="medium"
+                    >
                       {formatCurrency(customer.totalSpent)}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
@@ -551,7 +577,9 @@ export const Admin_CustomerPage: FC = () => {
                 </TableCell>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <CardGiftcard sx={{ fontSize: 16, color: "warning.main" }} />
+                    <CardGiftcard
+                      sx={{ fontSize: 16, color: "warning.main" }}
+                    />
                     <Typography variant="body1" fontWeight="medium">
                       {customer.loyaltyPoints.toLocaleString()}
                     </Typography>
@@ -564,7 +592,12 @@ export const Admin_CustomerPage: FC = () => {
                 </TableCell>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <Rating value={customer.rating} precision={0.1} size="small" readOnly />
+                    <Rating
+                      value={customer.rating}
+                      precision={0.1}
+                      size="small"
+                      readOnly
+                    />
                     <Typography variant="caption" color="text.secondary">
                       {customer.rating}
                     </Typography>
@@ -650,8 +683,8 @@ export const Admin_CustomerPage: FC = () => {
       </Menu>
 
       {/* Customer Details Dialog */}
-      <Dialog 
-        open={detailsOpen} 
+      <Dialog
+        open={detailsOpen}
         onClose={() => setDetailsOpen(false)}
         maxWidth="lg"
         fullWidth
@@ -659,16 +692,19 @@ export const Admin_CustomerPage: FC = () => {
         {selectedCustomer && (
           <>
             <DialogTitle>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Stack direction="row" alignItems="center" spacing={2}>
-                  <Avatar sx={{ 
-                    bgcolor: avatarColors.warning.bg, 
-                    color: avatarColors.warning.color,
-                    border: `1px solid ${avatarColors.warning.border}`,
-                    width: 48, 
-                    height: 48 
-                  }}>
-                    {selectedCustomer.name.split(' ').map((n: string) => n[0]).join('')}
+                  <Avatar
+                    sx={{ bgcolor: "primary.main", width: 48, height: 48 }}
+                  >
+                    {selectedCustomer.name
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")}
                   </Avatar>
                   <Stack>
                     <Typography variant="h6">
@@ -686,7 +722,11 @@ export const Admin_CustomerPage: FC = () => {
             </DialogTitle>
             <DialogContent>
               {/* Tabs */}
-              <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} sx={{ mb: 3 }}>
+              <Tabs
+                value={activeTab}
+                onChange={(_, newValue) => setActiveTab(newValue)}
+                sx={{ mb: 3 }}
+              >
                 <Tab label="Profile" />
                 <Tab label="Order History" />
                 <Tab label="Loyalty & Rewards" />
@@ -731,10 +771,18 @@ export const Admin_CustomerPage: FC = () => {
                             <Typography variant="body2" color="text.secondary">
                               Birthday:
                             </Typography>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                              <Cake sx={{ fontSize: 16, color: "warning.main" }} />
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={1}
+                            >
+                              <Cake
+                                sx={{ fontSize: 16, color: "warning.main" }}
+                              />
                               <Typography variant="body2" fontWeight="medium">
-                                {formatDate(selectedCustomer.birthday)} ({getCustomerAge(selectedCustomer.birthday)} years)
+                                {formatDate(selectedCustomer.birthday)} (
+                                {getCustomerAge(selectedCustomer.birthday)}{" "}
+                                years)
                               </Typography>
                             </Stack>
                           </Stack>
@@ -759,22 +807,38 @@ export const Admin_CustomerPage: FC = () => {
                           Status & Tier
                         </Typography>
                         <Stack spacing={2}>
-                          <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
                             <Typography variant="body2" color="text.secondary">
                               Status:
                             </Typography>
                             <Chip
-                              label={selectedCustomer.status.charAt(0).toUpperCase() + selectedCustomer.status.slice(1)}
+                              label={
+                                selectedCustomer.status
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                selectedCustomer.status.slice(1)
+                              }
                               color={getStatusColor(selectedCustomer.status)}
                               size="small"
                             />
                           </Stack>
-                          <Stack direction="row" justifyContent="space-between" alignItems="center">
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
                             <Typography variant="body2" color="text.secondary">
                               Tier:
                             </Typography>
                             <Chip
-                              label={selectedCustomer.tier.charAt(0).toUpperCase() + selectedCustomer.tier.slice(1)}
+                              label={
+                                selectedCustomer.tier.charAt(0).toUpperCase() +
+                                selectedCustomer.tier.slice(1)
+                              }
                               color={getTierColor(selectedCustomer.tier)}
                               size="small"
                             />
@@ -783,8 +847,17 @@ export const Admin_CustomerPage: FC = () => {
                             <Typography variant="body2" color="text.secondary">
                               Rating:
                             </Typography>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                              <Rating value={selectedCustomer.rating} precision={0.1} size="small" readOnly />
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={1}
+                            >
+                              <Rating
+                                value={selectedCustomer.rating}
+                                precision={0.1}
+                                size="small"
+                                readOnly
+                              />
                               <Typography variant="body2" fontWeight="medium">
                                 {selectedCustomer.rating}
                               </Typography>
@@ -823,7 +896,11 @@ export const Admin_CustomerPage: FC = () => {
                             <Typography variant="body2" color="text.secondary">
                               Total Spent:
                             </Typography>
-                            <Typography variant="body2" fontWeight="medium" color="success.main">
+                            <Typography
+                              variant="body2"
+                              fontWeight="medium"
+                              color="success.main"
+                            >
                               {formatCurrency(selectedCustomer.totalSpent)}
                             </Typography>
                           </Stack>
@@ -832,7 +909,9 @@ export const Admin_CustomerPage: FC = () => {
                               Average Order:
                             </Typography>
                             <Typography variant="body2" fontWeight="medium">
-                              {formatCurrency(selectedCustomer.averageOrderValue)}
+                              {formatCurrency(
+                                selectedCustomer.averageOrderValue
+                              )}
                             </Typography>
                           </Stack>
                           <Stack direction="row" justifyContent="space-between">
@@ -857,27 +936,53 @@ export const Admin_CustomerPage: FC = () => {
                         </Typography>
                         <Stack spacing={2}>
                           <Stack>
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              gutterBottom
+                            >
                               Favorite Items:
                             </Typography>
                             <Stack direction="row" spacing={1} flexWrap="wrap">
-                              {selectedCustomer.favoriteItems.map((item: string, index: number) => (
-                                <Chip key={index} label={item} size="small" variant="outlined" />
-                              ))}
+                              {selectedCustomer.favoriteItems.map(
+                                (item: string, index: number) => (
+                                  <Chip
+                                    key={index}
+                                    label={item}
+                                    size="small"
+                                    variant="outlined"
+                                  />
+                                )
+                              )}
                             </Stack>
                           </Stack>
                           <Stack>
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              gutterBottom
+                            >
                               Preferences:
                             </Typography>
                             <Stack direction="row" spacing={1} flexWrap="wrap">
-                              {selectedCustomer.preferences.map((pref: string, index: number) => (
-                                <Chip key={index} label={pref.replace('_', ' ')} size="small" color="primary" />
-                              ))}
+                              {selectedCustomer.preferences.map(
+                                (pref: string, index: number) => (
+                                  <Chip
+                                    key={index}
+                                    label={pref.replace("_", " ")}
+                                    size="small"
+                                    color="primary"
+                                  />
+                                )
+                              )}
                             </Stack>
                           </Stack>
                           <Stack>
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              gutterBottom
+                            >
                               Notes:
                             </Typography>
                             <Typography variant="body2">
@@ -902,11 +1007,21 @@ export const Admin_CustomerPage: FC = () => {
                       Order history table would be implemented here showing:
                     </Typography>
                     <Stack spacing={1} mt={2}>
-                      <Typography variant="body2">• Order date and time</Typography>
-                      <Typography variant="body2">• Order items and quantities</Typography>
-                      <Typography variant="body2">• Order total and payment method</Typography>
-                      <Typography variant="body2">• Order status and delivery details</Typography>
-                      <Typography variant="body2">• Customer feedback and ratings</Typography>
+                      <Typography variant="body2">
+                        • Order date and time
+                      </Typography>
+                      <Typography variant="body2">
+                        • Order items and quantities
+                      </Typography>
+                      <Typography variant="body2">
+                        • Order total and payment method
+                      </Typography>
+                      <Typography variant="body2">
+                        • Order status and delivery details
+                      </Typography>
+                      <Typography variant="body2">
+                        • Customer feedback and ratings
+                      </Typography>
                     </Stack>
                   </CardContent>
                 </Card>
@@ -922,13 +1037,20 @@ export const Admin_CustomerPage: FC = () => {
                           Loyalty Points
                         </Typography>
                         <Stack alignItems="center" spacing={2}>
-                          <Typography variant="h3" color="warning.main" fontWeight="bold">
+                          <Typography
+                            variant="h3"
+                            color="warning.main"
+                            fontWeight="bold"
+                          >
                             {selectedCustomer.loyaltyPoints.toLocaleString()}
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
                             Available Points
                           </Typography>
-                          <Button variant="outlined" startIcon={<CardGiftcard />}>
+                          <Button
+                            variant="outlined"
+                            startIcon={<CardGiftcard />}
+                          >
                             Redeem Points
                           </Button>
                         </Stack>
@@ -945,10 +1067,26 @@ export const Admin_CustomerPage: FC = () => {
                           Based on {selectedCustomer.tier} tier membership:
                         </Typography>
                         <Stack spacing={1} mt={2}>
-                          <Typography variant="body2">• {selectedCustomer.tier === "platinum" ? "20%" : selectedCustomer.tier === "gold" ? "15%" : selectedCustomer.tier === "silver" ? "10%" : "5%"} discount on all orders</Typography>
-                          <Typography variant="body2">• Priority reservations</Typography>
-                          <Typography variant="body2">• Birthday special offers</Typography>
-                          <Typography variant="body2">• Exclusive event invitations</Typography>
+                          <Typography variant="body2">
+                            •{" "}
+                            {selectedCustomer.tier === "platinum"
+                              ? "20%"
+                              : selectedCustomer.tier === "gold"
+                              ? "15%"
+                              : selectedCustomer.tier === "silver"
+                              ? "10%"
+                              : "5%"}{" "}
+                            discount on all orders
+                          </Typography>
+                          <Typography variant="body2">
+                            • Priority reservations
+                          </Typography>
+                          <Typography variant="body2">
+                            • Birthday special offers
+                          </Typography>
+                          <Typography variant="body2">
+                            • Exclusive event invitations
+                          </Typography>
                         </Stack>
                       </CardContent>
                     </Card>
@@ -957,13 +1095,17 @@ export const Admin_CustomerPage: FC = () => {
               )}
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setDetailsOpen(false)}>
-                Close
-              </Button>
-              <Button startIcon={<Phone />} onClick={() => handleCallCustomer(selectedCustomer.phone)}>
+              <Button onClick={() => setDetailsOpen(false)}>Close</Button>
+              <Button
+                startIcon={<Phone />}
+                onClick={() => handleCallCustomer(selectedCustomer.phone)}
+              >
                 Call
               </Button>
-              <Button startIcon={<Email />} onClick={() => handleEmailCustomer(selectedCustomer.email)}>
+              <Button
+                startIcon={<Email />}
+                onClick={() => handleEmailCustomer(selectedCustomer.email)}
+              >
                 Email
               </Button>
               <Button variant="contained" startIcon={<Edit />}>

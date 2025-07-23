@@ -3,7 +3,7 @@ import { getCloudinaryImageUrl } from "@/cloudinary";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { Dish } from "@/interfaces/dish";
-import { DishesService } from "@/services/staff/dishes";
+import { DishesService } from "@/services/staff/admin/dishes";
 import { formatCurrency } from "@/utils/currency-format";
 import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

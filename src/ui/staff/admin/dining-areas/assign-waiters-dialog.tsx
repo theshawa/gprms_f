@@ -4,8 +4,8 @@ import { useAlert } from "@/hooks/useAlert";
 import type { DiningArea } from "@/interfaces/dining-area";
 import type { StaffUser } from "@/interfaces/staff-user";
 import type { WaiterAssignment } from "@/interfaces/waiter-assignment";
-import { DiningAreasService } from "@/services/staff/dining-areas";
-import { StaffService } from "@/services/staff/staff";
+import { DiningAreasService } from "@/services/staff/admin/dining-areas";
+import { StaffService } from "@/services/staff/admin/staff";
 import { Add, Close, Person, Remove, Search } from "@mui/icons-material";
 import {
   Alert,

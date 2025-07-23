@@ -14,6 +14,7 @@ export const DineInStatus = () => {
     if (!socket) return;
 
     socket.on("waiterAccepted", (status: boolean) => {
+      console.log("Waiter accepted status:", status);
       setOngoing(status);
     });
 

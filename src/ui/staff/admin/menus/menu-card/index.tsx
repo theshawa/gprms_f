@@ -3,7 +3,7 @@ import { getNameForMeal } from "@/enums/meal";
 import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import type { Menu } from "@/interfaces/menu";
-import { MenusService } from "@/services/staff/menus";
+import { MenusService } from "@/services/staff/admin/menus";
 import { QKs } from "@/ui/staff/query-keys";
 import {
   Button,
