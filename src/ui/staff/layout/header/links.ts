@@ -93,12 +93,12 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Offers",
           link: "/staff/admin/offers",
           Icon: LocalOfferSharp,
-        },
-        {
-          title: "Settings",
-          link: "/staff/admin/settings",
-          Icon: Settings,
         }
+        // {
+        //   title: "Settings",
+        //   link: "/staff/admin/settings",
+        //   Icon: Settings,
+        // }
       );
       break;
     case StaffRole.KitchenManager:
@@ -138,11 +138,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: TableRestaurant,
           exactLinkMatch: true,
         },
-        {
-          title: "Reservations",
-          link: "/staff/waiter/customer-reservations",
-          Icon: EventSeat,
-        },
+        // {
+        //   title: "Reservations",
+        //   link: "/staff/waiter/customer-reservations",
+        //   Icon: EventSeat,
+        // },
         {
           title: "Customer Feedbacks",
           link: "/staff/waiter/customer-feedbacks",
