@@ -4,11 +4,19 @@ import type { FC, ReactNode } from "react";
 export const PageLayout: FC<{
   title: string;
   subtitle: string;
-  button?: {
-    text: string;
-    icon: ReactNode;
-    onClick: () => void;
-  };
+  button?:
+    | {
+        text: string;
+        icon: ReactNode;
+        onClick: () => void;
+        variant?: "contained" | "outlined" | "text";
+      }
+    | {
+        text: string;
+        icon: ReactNode;
+        onClick: () => void;
+        variant?: "contained" | "outlined" | "text";
+      }[];
   children: ReactNode;
   noMargin?: boolean;
 }> = ({ button, children, subtitle, title, noMargin }) => {
@@ -34,14 +42,30 @@ export const PageLayout: FC<{
             {subtitle}
           </Typography>
         </Stack>
+
         {button && (
-          <Button
-            variant="contained"
-            startIcon={button.icon}
-            onClick={button.onClick}
-          >
-            {button.text}
-          </Button>
+          <Stack direction="row" spacing={1}>
+            {Array.isArray(button) ? (
+              button.map((b, i) => (
+                <Button
+                  key={i}
+                  startIcon={b.icon}
+                  onClick={b.onClick}
+                  variant={b.variant || "contained"}
+                >
+                  {b.text}
+                </Button>
+              ))
+            ) : (
+              <Button
+                startIcon={button.icon}
+                onClick={button.onClick}
+                variant={button.variant || "contained"}
+              >
+                {button.text}
+              </Button>
+            )}
+          </Stack>
         )}
       </Stack>
       {children}

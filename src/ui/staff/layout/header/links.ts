@@ -7,7 +7,6 @@ import {
   Fastfood,
   Home,
   Kitchen,
-  LocalOfferSharp,
   LocalPizza,
   LocationPin,
   Login,
@@ -83,22 +82,22 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Orders",
           link: "/staff/admin/orders",
           Icon: AttachMoney,
-        },
-        {
-          title: "Reservations",
-          link: "/staff/admin/reservations",
-          Icon: EventSeat,
-        },
-        {
-          title: "Offers",
-          link: "/staff/admin/offers",
-          Icon: LocalOfferSharp,
-        },
-        {
-          title: "Settings",
-          link: "/staff/admin/settings",
-          Icon: Settings,
         }
+        // {
+        //   title: "Reservations",
+        //   link: "/staff/admin/reservations",
+        //   Icon: EventSeat,
+        // },
+        // {
+        //   title: "Offers",
+        //   link: "/staff/admin/offers",
+        //   Icon: LocalOfferSharp,
+        // },
+        // {
+        //   title: "Settings",
+        //   link: "/staff/admin/settings",
+        //   Icon: Settings,
+        // }
       );
       break;
     case StaffRole.KitchenManager:
