@@ -5,6 +5,8 @@ import { Customer_Layout } from "@/ui/customer/layout";
 import { ErrorPage } from "@/ui/error";
 import { NotFoundPage } from "@/ui/not-found";
 import { Admin_HomePage } from "@/ui/staff/admin/home";
+import { Admin_AnalyticsPage } from "@/ui/staff/admin/analytics";
+import { Admin_FeedbackPage } from "@/ui/staff/admin/feedback";
 import { Admin_StaffPage } from "@/ui/staff/admin/staff";
 import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
 import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
@@ -40,6 +42,9 @@ import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
+import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
+import { Customer_AboutPage } from "./ui/customer/about-us";
+import { Customer_ContactPage } from "./ui/customer/contact";
 
 export const router = createBrowserRouter([
   {
@@ -80,6 +85,18 @@ export const router = createBrowserRouter([
             element: <Customer_DineInStatusPage />,
           },
         ],
+      },
+      {
+        path: "our-story",
+        element: <Customer_AboutPage />,
+      },
+      {
+        path: "dining-areas",
+        element: <Customer_DiningAreasPage />,
+      },
+      {
+        path: "contact",
+        element: <Customer_ContactPage />,
       },
     ],
   },
@@ -191,12 +208,28 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: "analytics",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_AnalyticsPage />
+                </StaffAuthGuard>
+             ),
+          },
+          {
             path: "customers",
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
                 <Admin_CustomerPage />
               </StaffAuthGuard>
             ),
+          },
+          {
+            path: "feedback",
+            element: (
+              <StaffAuthGuard role={StaffRole.Admin}>
+                <Admin_FeedbackPage />
+              </StaffAuthGuard>
+            )
           },
           {
             path: "calendar",
