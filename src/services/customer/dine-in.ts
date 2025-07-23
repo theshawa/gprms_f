@@ -1,8 +1,14 @@
 import { customerBackend } from "@/backend";
 import type { DiningTable } from "@/interfaces/dining-table";
+import type { Menu } from "@/interfaces/menu";
 
 export class DineInService {
-  static getDiningTableById(id: number) {
-    return customerBackend.get<DiningTable>(`/dine-in/dining-table/${id}`);
+  static async startOrder(tableId: number) {
+    const { data } = await customerBackend.post<{
+      diningTable: DiningTable;
+      menu: Menu;
+    }>(`/dine-in/start-order/${tableId}/${Date.now()}`);
+
+    return data;
   }
 }

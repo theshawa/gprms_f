@@ -175,29 +175,6 @@ export const ManageIngredientDialog: FC<{
           />
           <FormHelperText>{errors.unit?.message}</FormHelperText>
         </FormControl>
-        {!editingIngredient && (
-          <TextField
-            {...register("initialQuantity", {
-              required: {
-                message: "Field is required",
-                value: true,
-              },
-              valueAsNumber: true,
-              min: {
-                value: 0,
-                message: "Initial quantity must be a positive number",
-              },
-            })}
-            label={`Initial Quantity (${unit})`}
-            variant="filled"
-            fullWidth
-            type="number"
-            error={!!errors.initialQuantity}
-            helperText={errors.initialQuantity?.message}
-            margin="dense"
-            placeholder="e.g., 450"
-          />
-        )}
 
         <TextField
           {...register("lowStockThreshold", {
@@ -220,6 +197,33 @@ export const ManageIngredientDialog: FC<{
           margin="dense"
           placeholder="e.g., 200"
         />
+
+        {!editingIngredient && (
+          <TextField
+            {...register("initialQuantity", {
+              required: {
+                message: "Field is required",
+                value: true,
+              },
+              valueAsNumber: true,
+              min: {
+                value: 0,
+                message: "Initial quantity must be a positive number",
+              },
+            })}
+            label={`Initial Quantity (${unit})`}
+            variant="filled"
+            fullWidth
+            type="number"
+            error={!!errors.initialQuantity}
+            helperText={
+              errors.initialQuantity?.message ||
+              "You can add or remove stock later with the stock management feature."
+            }
+            margin="dense"
+            placeholder="e.g., 450"
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button variant="contained" type="submit" disabled={isSubmitting}>

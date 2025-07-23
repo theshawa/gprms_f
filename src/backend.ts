@@ -22,6 +22,10 @@ export const getBackendErrorMessage = (error: any): string => {
   if (error instanceof AxiosError) {
     console.log(error);
 
+    if (typeof error === "string") {
+      return error;
+    }
+
     if (error.response) {
       return (
         error.response.data?.details ||

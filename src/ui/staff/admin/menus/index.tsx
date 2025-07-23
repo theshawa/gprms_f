@@ -273,6 +273,15 @@ export const Admin_MenusPage: FC = () => {
       const matchesMeal = mealFilter === "all" || menu.meal === mealFilter;
       const matchesStatus = statusFilter === "all" || menu.status === statusFilter;
 
+
+  const queryClient = useQueryClient();
+
+  const menusForMeals = useMemo(() => {
+    const values: Record<Meal, number> = {
+      Brunch: 0,
+      Lunch: 0,
+      HighTea: 0,
+      Dinner: 0,
       return matchesSearch && matchesMeal && matchesStatus;
     });
   }, [searchTerm, mealFilter, statusFilter]);
@@ -314,6 +323,33 @@ export const Admin_MenusPage: FC = () => {
   };
 
   return (
+    <>
+      <PageLayout
+        title="Menus"
+        subtitle="Organize your restaurant space with different dining areas."
+        button={{
+          text: "New Menu",
+          icon: <MenuBook />,
+          onClick: () => setNewDialogOpen(true),
+        }}
+      >
+        <Stack component={Paper} spacing={2} mb={5} p={3}>
+          <Typography variant="subtitle1">Set Menus for Meals</Typography>
+          <Grid container spacing={4} columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
+            {Object.values(Meal).map((meal) => (
+              <SetMenuForMeal
+                key={meal}
+                meal={meal}
+                menus={menus.filter((m) => m.meal === meal)}
+                value={menusForMeals[meal]}
+                disabled={isSettingMenu}
+                onChange={(menuId) =>
+                  setMenuForMeal({
+                    meal,
+                    menuId,
+                  })
+                }
+              />
     <PageLayout
       title="Menu Management"
       subtitle="Create and manage restaurant menus with sections, items, and pricing"

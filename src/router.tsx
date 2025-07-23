@@ -16,7 +16,10 @@ import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { Customer_DineInPage } from "./ui/customer/dine-in";
+import { Customer_DineInLayout } from "./ui/customer/dine-in";
+import { Customer_DineInConfirm } from "./ui/customer/dine-in/confirm";
+import { Customer_DineInMenuPage } from "./ui/customer/dine-in/menu";
+import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_Reservations } from "./ui/customer/reservations";
@@ -67,7 +70,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "dine-in/:tableId",
-        element: <Customer_DineInPage />,
+        element: <Customer_DineInLayout />,
+        children: [
+          {
+            index: true,
+            element: <Customer_DineInMenuPage />,
+          },
+          {
+            path: "confirm",
+            element: <Customer_DineInConfirm />,
+          },
+          {
+            path: "status",
+            element: <Customer_DineInStatusPage />,
+          },
+        ],
       },
       {
         path: "our-story",

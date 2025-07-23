@@ -20,8 +20,12 @@ export const SetMenuForMeal: FC<{
 }> = ({ meal, menus, disabled, onChange, value }) => {
   return (
     <Grid size={1}>
-      <Stack spacing={0.1}>
-        <Typography color="primary" variant="overline">
+      <Stack spacing={0.5}>
+        <Typography
+          color="primary"
+          sx={{ textTransform: "uppercase" }}
+          variant="subtitle2"
+        >
           {getNameForMeal(meal)}
         </Typography>
         {menus.length ? (
