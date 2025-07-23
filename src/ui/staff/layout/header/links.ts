@@ -137,11 +137,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: TableRestaurant,
           exactLinkMatch: true,
         },
-        {
-          title: "Reservations",
-          link: "/staff/waiter/customer-reservations",
-          Icon: EventSeat,
-        },
+        // {
+        //   title: "Reservations",
+        //   link: "/staff/waiter/customer-reservations",
+        //   Icon: EventSeat,
+        // },
         {
           title: "Customer Feedbacks",
           link: "/staff/waiter/customer-feedbacks",

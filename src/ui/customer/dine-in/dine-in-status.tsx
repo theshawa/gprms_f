@@ -3,10 +3,12 @@ import { useSocketConnection } from "@/ui/staff/waiter/socket-context";
 import { Info } from "@mui/icons-material";
 import { Alert } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export const DineInStatus = () => {
   const socket = useSocketConnection();
   const [ongoing, setOngoing] = useState(false);
+  const location = useLocation();
 
   const { showError } = useAlert();
 
@@ -28,7 +30,11 @@ export const DineInStatus = () => {
     };
   }, [socket]);
 
-  if (ongoing) {
+  if (
+    ongoing ||
+    location.pathname.endsWith("/status") ||
+    location.pathname.endsWith("/confirm")
+  ) {
     return null;
   }
 

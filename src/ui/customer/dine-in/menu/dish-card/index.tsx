@@ -2,6 +2,7 @@ import { getCloudinaryImageUrl } from "@/cloudinary";
 import type { Dish } from "@/interfaces/dish";
 import { formatCurrency } from "@/utils/currency-format";
 import {
+  Box,
   Button,
   Card,
   CardActions,
@@ -39,9 +40,11 @@ export const DishCard: FC<{ dish: Dish }> = ({ dish }) => {
             {formatCurrency(dish.price)}
           </Typography>
 
-          <Typography variant="body2" mt={3} color="textSecondary">
-            {dish.description || "No description available."}
-          </Typography>
+          <Box height={40}>
+            <Typography variant="body2" mt={3} color="textSecondary">
+              {dish.description || "No description available."}
+            </Typography>
+          </Box>
         </CardContent>
         <CardActions>
           <Button

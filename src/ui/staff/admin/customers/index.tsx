@@ -5,12 +5,10 @@ import {
   Delete,
   Edit,
   Email,
-  FilterList,
   History,
   LocalOffer,
   MoreVert,
   Phone,
-  Search,
   Visibility,
 } from "@mui/icons-material";
 import {
@@ -23,17 +21,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
   Grid,
   IconButton,
-  InputLabel,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
   Paper,
   Rating,
-  Select,
   Stack,
   Tab,
   Table,
@@ -43,7 +38,6 @@ import {
   TableHead,
   TableRow,
   Tabs,
-  TextField,
   Typography,
 } from "@mui/material";
 import type { FC } from "react";
@@ -365,7 +359,7 @@ export const Admin_CustomerPage: FC = () => {
       </Grid>
 
       {/* Tier Distribution */}
-      <Card sx={{ mb: 3 }}>
+      {/* <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             Customer Tier Distribution
@@ -417,10 +411,10 @@ export const Admin_CustomerPage: FC = () => {
             </Grid>
           </Grid>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Filters */}
-      <Card sx={{ mb: 3 }}>
+      {/* <Card sx={{ mb: 3 }}>
         <CardContent>
           <Grid container spacing={2} alignItems="center">
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -484,7 +478,7 @@ export const Admin_CustomerPage: FC = () => {
             </Grid>
           </Grid>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Customers Table */}
       <TableContainer component={Paper}>

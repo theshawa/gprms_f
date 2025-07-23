@@ -70,7 +70,7 @@ export const Customer_DineInMenuPage: FC = () => {
         next={
           cartItems.length > 0
             ? {
-                name: "Confirm Order",
+                name: "Place Order",
                 link: `/dine-in/${tableId}/confirm`,
               }
             : undefined

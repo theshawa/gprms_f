@@ -119,7 +119,7 @@ export const Customer_DineInConfirm: FC = () => {
           link: `/dine-in/${tableId}`,
         }}
         next={{
-          name: "Place Order",
+          name: "Confirm Order",
           link: `/dine-in/${tableId}/status`,
         }}
       />

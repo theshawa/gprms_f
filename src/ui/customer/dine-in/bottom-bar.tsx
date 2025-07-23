@@ -24,12 +24,7 @@ export const BottomBar: FC<{
         {previous && <Link to={previous.link}>{previous.name}</Link>}
       </Button>
       {next && (
-        <Button
-          disabled={!next}
-          size="large"
-          color="primary"
-          variant="contained"
-        >
+        <Button disabled={!next} size="large" color="info" variant="contained">
           {next && <Link to={next.link}>{next.name}</Link>}
         </Button>
       )}

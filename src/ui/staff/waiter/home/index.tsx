@@ -60,9 +60,7 @@ export const Waiter_HomePage: FC = () => {
         <Stack direction="row" ml="auto" spacing={1}>
           <Chip
             color="success"
-            label={`${ongoingOrdersCount || "No"} Ongoing Order${
-              ongoingOrdersCount === 1 ? "" : "s"
-            } `}
+            label={`${diningTables.length} Tables Assigned`}
           />
         </Stack>
       </Stack>
