@@ -104,7 +104,7 @@ export const ManageMenuDialog: FC<{
             })),
           }
         : {
-            meal: Meal.Breakfast,
+            meal: Meal.Brunch,
           }
     );
   }, [editingMenu]);

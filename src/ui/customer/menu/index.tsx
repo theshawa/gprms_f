@@ -1,18 +1,18 @@
 import { type FC, useState } from "react";
 
+import StarIcon from "@mui/icons-material/Star";
 import {
+  Badge,
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Chip,
-  Card,
-  CardMedia,
-  CardContent,
   Typography,
-  Box,
-  Badge,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
 
 // Sample data with better images and descriptions
 const sampleMenu = [
@@ -111,8 +111,8 @@ export const Customer_MenuViewOnly: FC = () => {
     return matchMeal && matchCategory && matchSearch;
   });
   return (
-    <div className="min-h-screen bg-white py-4">
-      <Box sx={{ maxWidth: 1200, mx: "auto", px: 2 }}>
+    <main className="min-h-screen bg-white py-4  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Box sx={{ maxWidth: 1200, mx: "auto" }}>
         <Typography
           sx={{ fontFamily: "serif" }}
           variant="h3"
@@ -287,6 +287,6 @@ export const Customer_MenuViewOnly: FC = () => {
           )}
         </Box>
       </Box>
-    </div>
+    </main>
   );
 };

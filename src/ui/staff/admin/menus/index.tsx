@@ -30,14 +30,10 @@ export const Admin_MenusPage: FC = () => {
 
   const menusForMeals = useMemo(() => {
     const values: Record<Meal, number> = {
-      Breakfast: 0,
       Brunch: 0,
-      Dinner: 0,
-      HighTea: 0,
-      LateNight: 0,
       Lunch: 0,
-      Snack: 0,
-      Supper: 0,
+      HighTea: 0,
+      Dinner: 0,
     };
     Object.values(Meal).forEach((meal) => {
       values[meal] = menus?.find((m) => m.isActive && m.meal === meal)?.id || 0;
@@ -81,11 +77,7 @@ export const Admin_MenusPage: FC = () => {
       >
         <Stack component={Paper} spacing={2} mb={5} p={3}>
           <Typography variant="subtitle1">Set Menus for Meals</Typography>
-          <Grid
-            container
-            spacing={4}
-            columns={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
-          >
+          <Grid container spacing={4} columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
             {Object.values(Meal).map((meal) => (
               <SetMenuForMeal
                 key={meal}

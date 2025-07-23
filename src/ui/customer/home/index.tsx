@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export const Customer_HomePage: FC = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center">
         <div className="absolute inset-0 z-0">
@@ -37,8 +37,8 @@ export const Customer_HomePage: FC = () => {
       </section>
 
       {/* Offers Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 lg:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="py-12 sm:py-16 lg:py-20 bg-gray-50 px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl md:text-4xl text-center mb-12 font-serif">
             Our Best Offers
           </h2>
@@ -118,62 +118,60 @@ export const Customer_HomePage: FC = () => {
       </section>
 
       {/* Signature Selections Section */}
-      <section className="py-12 sm:py-16 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="order-2 lg:order-1 space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-sm sm:text-base text-gray-600 uppercase tracking-wide">
-                  Signature Selections, Handcrafted for You
-                </h3>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-serif">
-                  Taste the Best of <br />
-                  Sri Lankan Culinary Art
-                </h2>
-                <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-                  Enjoy handpicked creations by our chefs, inspired by the rich
-                  flavors of Sri Lanka and crafted to offer you an unforgettable
-                  dining experience.
-                </p>
-              </div>
-
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <p className="text-yellow-600 font-semibold mb-2">
-                  ✨ Seasonal Crab Curry with Pol Sambol
-                </p>
-                <p className="text-sm text-gray-600">
-                  Fresh local crab tossed in a zesty coconut curry, served with
-                  vibrant pol sambol.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="border border-black text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
-                  Add to favourites
-                </button>
-                <Link
-                  to="menu"
-                  className="bg-green-900 hover:bg-green-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-                >
-                  Explore →
-                </Link>
-              </div>
+      <section className="py-12 sm:py-16 lg:py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="order-2 lg:order-1 space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-sm sm:text-base text-gray-600 uppercase tracking-wide">
+                Signature Selections, Handcrafted for You
+              </h3>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-serif">
+                Taste the Best of <br />
+                Sri Lankan Culinary Art
+              </h2>
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+                Enjoy handpicked creations by our chefs, inspired by the rich
+                flavors of Sri Lanka and crafted to offer you an unforgettable
+                dining experience.
+              </p>
             </div>
 
-            <div className="order-1 lg:order-2">
-              <img
-                src="/chef.png"
-                alt="Chef"
-                className="w-full h-auto max-w-md mx-auto lg:max-w-none"
-              />
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <p className="text-yellow-600 font-semibold mb-2">
+                ✨ Seasonal Crab Curry with Pol Sambol
+              </p>
+              <p className="text-sm text-gray-600">
+                Fresh local crab tossed in a zesty coconut curry, served with
+                vibrant pol sambol.
+              </p>
             </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="border border-black text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
+                Add to favourites
+              </button>
+              <Link
+                to="menu"
+                className="bg-green-900 hover:bg-green-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+              >
+                Explore →
+              </Link>
+            </div>
+          </div>
+
+          <div className="order-1 lg:order-2">
+            <img
+              src="/chef.png"
+              alt="Chef"
+              className="w-full h-auto max-w-md mx-auto lg:max-w-none"
+            />
           </div>
         </div>
       </section>
 
       {/* Experience Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 lg:py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="px-4 sm:px-6 lg:px-8  bg-gray-50 py-12 sm:py-16 lg:py-20 ">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl mb-4 font-serif">
               A Taste for Every Hour
@@ -228,63 +226,61 @@ export const Customer_HomePage: FC = () => {
       </section>
 
       {/* Story Section */}
-      <section className="py-12 sm:py-16 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="order-2 lg:order-1">
-              <img
-                src="/our-story.png"
-                alt="Our Story"
-                className="w-full h-auto rounded-lg shadow-lg"
-              />
+      <section className="py-12 sm:py-16 lg:py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="order-2 lg:order-1">
+            <img
+              src="/our-story.png"
+              alt="Our Story"
+              className="w-full h-auto rounded-lg shadow-lg"
+            />
+          </div>
+
+          <div className="order-1 lg:order-2 space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-sm sm:text-base text-gray-600 uppercase tracking-wide">
+                Our Story
+              </h3>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-serif">
+                Crafted With Heart,
+                <br />
+                Served With Soul
+              </h2>
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+                At THON, we believe dining is more than a meal. It's a story
+                told through warm hospitality, local ingredients and timeless
+                traditions.
+              </p>
             </div>
 
-            <div className="order-1 lg:order-2 space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-sm sm:text-base text-gray-600 uppercase tracking-wide">
-                  Our Story
-                </h3>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-serif">
-                  Crafted With Heart,
-                  <br />
-                  Served With Soul
-                </h2>
-                <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-                  At THON, we believe dining is more than a meal. It's a story
-                  told through warm hospitality, local ingredients and timeless
-                  traditions.
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <h4 className="text-yellow-500 font-semibold mb-2">
+                  Locally Inspired
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Finest ingredients, elevated with local soul.
                 </p>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-yellow-500 font-semibold mb-2">
-                    Locally Inspired
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    Finest ingredients, elevated with local soul.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-yellow-500 font-semibold mb-2">
-                    Signature Service
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    Gracious, refined, and always personal.
-                  </p>
-                </div>
+              <div>
+                <h4 className="text-yellow-500 font-semibold mb-2">
+                  Signature Service
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Gracious, refined, and always personal.
+                </p>
               </div>
-
-              <Link
-                to="our-story"
-                className="bg-green-900 hover:bg-green-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-              >
-                Explore More →
-              </Link>
             </div>
+
+            <Link
+              to="our-story"
+              className="bg-green-900 hover:bg-green-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+            >
+              Explore More →
+            </Link>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 };

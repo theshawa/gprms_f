@@ -14,6 +14,7 @@ export class CustomerAuthService {
     const { data } = await customerBackend.post<{
       accessToken: string;
       user: Customer;
+      customerFound: boolean;
     }>("/verify-login-code", {
       phoneNumber,
       code,

@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { SetStateAction } from "jotai";
 import { type Dispatch, type FC, useState } from "react";
 import { QKs } from "../../query-keys";
+import { DownloadQRDialog } from "./download-qr-dialog";
 import { ManageDiningTableDialog } from "./manage-dining-table-dialog";
 
 export const DiningTableRow: FC<{
@@ -15,6 +16,7 @@ export const DiningTableRow: FC<{
   setDiningAreaFilter: Dispatch<SetStateAction<string>>;
 }> = ({ diningTable, setDiningAreaFilter }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [downloadQrDialogOpen, setDownloadQrDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -52,6 +54,14 @@ export const DiningTableRow: FC<{
           <Stack direction="row" justifyContent="end" spacing={0.5}>
             <Button
               size="small"
+              color="info"
+              onClick={() => setDownloadQrDialogOpen(true)}
+              disabled={isDeleting}
+            >
+              Download QR
+            </Button>
+            <Button
+              size="small"
               onClick={() => setEditDialogOpen(true)}
               disabled={isDeleting}
             >
@@ -83,6 +93,11 @@ export const DiningTableRow: FC<{
         editingDiningTable={diningTable}
         handleClose={() => setEditDialogOpen(false)}
         open={editDialogOpen}
+      />
+      <DownloadQRDialog
+        tableId={diningTable.id}
+        open={downloadQrDialogOpen}
+        handleClose={() => setDownloadQrDialogOpen(false)}
       />
     </>
   );

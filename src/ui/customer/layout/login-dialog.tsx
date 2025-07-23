@@ -9,7 +9,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  InputAdornment,
   TextField,
+  Typography,
 } from "@mui/material";
 import { type FC, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,11 +32,14 @@ const LoginForm: FC<{
 
   const onSubmit = async (data: { name: string; phone: string }) => {
     try {
-      const status = await CustomerAuthService.login(data.name, data.phone);
+      const status = await CustomerAuthService.login(
+        data.name,
+        `+94${data.phone}`
+      );
       showSuccess(
         status === "already-sent"
-          ? `A verification code has already been sent to ${data.phone}. Please check your messages.`
-          : `Verification code sent to ${data.phone}. Please check your messages.`
+          ? `A verification code has already been sent to +94${data.phone}. Please check your messages.`
+          : `Verification code sent to +94${data.phone}. Please check your messages.`
       );
       makeReadyToVerify(data.phone);
       reset();
@@ -69,19 +74,32 @@ const LoginForm: FC<{
           {...register("phone", {
             required: "Phone number is required",
             pattern: {
-              value: /^\+94\d{9}$/,
-              message: "Phone number must start with +94 followed by 9 digits",
+              value: /^\d{9}$/,
+              message:
+                "Phone number must be exactly 9 digits. +94 prefix is automatically added.",
             },
           })}
+          sx={{ mb: 3 }}
           label="Mobile Number"
           margin="dense"
           fullWidth
-          placeholder="eg: +94XXXXXXXXX"
+          placeholder="eg: 7123456789"
           type="tel"
           variant="filled"
           error={!!errors.phone}
           helperText={errors.phone?.message}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">+94</InputAdornment>
+              ),
+            },
+          }}
         />
+        <Typography variant="body2" color="textSecondary">
+          Name will be considered only at first login attempt and will not be
+          used for future logins. It is used to personalize your experience.
+        </Typography>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" type="submit" disabled={isSubmitting}>
@@ -113,13 +131,18 @@ const VerificationDialog: FC<{
 
   const onSubmit = async ({ code }: { code: string }) => {
     try {
-      const { accessToken, user } = await CustomerAuthService.verifyLoginCode(
-        phoneNumber,
-        code
-      );
-      showSuccess(
-        `Welcome to Resto Ease, ${user.name}! You have successfully logged in.`
-      );
+      const { accessToken, user, customerFound } =
+        await CustomerAuthService.verifyLoginCode("+94" + phoneNumber, code);
+
+      if (!customerFound) {
+        showSuccess(
+          `Welcome to Resto Ease, ${user.name}! You have successfully registered.`
+        );
+      } else {
+        showSuccess(
+          `Welcome back, ${user.name}! You have successfully logged in.`
+        );
+      }
 
       setAuth({
         accessToken,
