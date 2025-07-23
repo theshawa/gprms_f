@@ -121,12 +121,12 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Ingredients",
           link: "/staff/kitchen-manager/ingredients",
           Icon: Kitchen,
-        },
-        {
-          title: "Settings",
-          link: "/staff/kitchen-manager/settings",
-          Icon: Settings,
         }
+        // {
+        //   title: "Settings",
+        //   link: "/staff/kitchen-manager/settings",
+        //   Icon: Settings,
+        // }
       );
       break;
     case StaffRole.Waiter:
