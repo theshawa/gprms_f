@@ -26,6 +26,7 @@ import {
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { avatarColors } from "../../../../muitheme";
 
 // Mock data - replace with real API calls later
 const mockDashboardData = {
@@ -138,14 +139,23 @@ const StatCard: FC<{
             </Stack>
           )}
         </Box>
-        <Avatar
-          sx={{
-            bgcolor: `white`,
-            color: color,
-            border: 1,
-            borderColor: "divider",
-          }}
-        >
+        <Avatar sx={{ 
+          bgcolor: color === "primary" ? avatarColors.primary.bg :
+                   color === "success" ? avatarColors.success.bg :
+                   color === "warning" ? avatarColors.warning.bg :
+                   color === "error" ? avatarColors.error.bg :
+                   avatarColors.neutral.bg,
+          color: color === "primary" ? avatarColors.primary.color :
+                 color === "success" ? avatarColors.success.color :
+                 color === "warning" ? avatarColors.warning.color :
+                 color === "error" ? avatarColors.error.color :
+                 avatarColors.neutral.color,
+          border: color === "primary" ? `1px solid ${avatarColors.primary.border}` :
+                  color === "success" ? `1px solid ${avatarColors.success.border}` :
+                  color === "warning" ? `1px solid ${avatarColors.warning.border}` :
+                  color === "error" ? `1px solid ${avatarColors.error.border}` :
+                  `1px solid ${avatarColors.neutral.border}`,
+        }}>
           {icon}
         </Avatar>
       </Stack>

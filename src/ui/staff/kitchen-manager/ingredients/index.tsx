@@ -67,7 +67,7 @@ export const KitchenManager_IngredientsPage: FC = () => {
 
       {/* Content */}
       <Box className="tab-content">
-        <Grid container spacing={3}>
+        <Grid container spacing={7}>
           {filtered.map((ing) => (
             <Grid key={ing.id}>
               <IngredientCard

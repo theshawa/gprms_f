@@ -125,7 +125,7 @@ export const ManageDishDialog: FC<{
             </Alert>
           ) : !ingredients.length ? (
             <Alert severity="info">
-              No ingredients found. Create some to continue.
+              No ingredients found. Go to ingredients page to create some.
             </Alert>
           ) : (
             <>
@@ -222,7 +222,7 @@ export const ManageDishDialog: FC<{
           )}
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" type="submit" disabled={isSubmitting}>
+          <Button variant="contained" type="submit" disabled={isSubmitting || !ingredients?.length}>
             {editingDish ? "Update" : "Create"}
           </Button>
           <Button

@@ -1,6 +1,6 @@
 import type { Ingredient } from "@/interfaces/ingredient";
 import { IngredientsService } from "@/services/staff/admin/ingredients";
-import { EggAlt } from "@mui/icons-material";
+import { BackupTable, EggAlt } from "@mui/icons-material";
 import {
   Paper,
   Table,
@@ -84,11 +84,18 @@ export const Admin_IngredientsPage: FC = () => {
       <PageLayout
         title="Ingredients"
         subtitle="View and manage ingredients"
-        button={{
-          text: "New Ingredient",
-          onClick: () => setNewDialogOpen(true),
-          icon: <EggAlt />,
-        }}
+        button={[
+          {
+            text: "Import Ingredients from CSV",
+            onClick: () => {},
+            icon: <BackupTable />,
+          },
+          {
+            text: "New Ingredient",
+            onClick: () => setNewDialogOpen(true),
+            icon: <EggAlt />,
+          },
+        ]}
       >
         <FilterBar
           stockLevelFilter={stockLevelFilter}

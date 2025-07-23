@@ -43,6 +43,7 @@ import {
 import type { FC } from "react";
 import { useMemo, useState } from "react";
 import { PageLayout } from "../../shared/page-layout";
+import { avatarColors } from "../../../../muitheme";
 
 // Mock data for customers
 const mockCustomers = [
@@ -499,6 +500,7 @@ export const Admin_CustomerPage: FC = () => {
               <TableRow key={customer.id} hover>
                 <TableCell>
                   <Stack direction="row" alignItems="center" spacing={2}>
+
                     <Avatar sx={{ bgcolor: "primary.main" }}>
                       {customer.name
                         .split(" ")

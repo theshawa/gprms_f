@@ -90,7 +90,7 @@ const sampleMenu = [
   },
 ];
 
-const mealTypes = ["Breakfast", "Brunch", "Lunch", "High Tea", "Dinner"];
+const mealTypes = ["Brunch", "Lunch", "High Tea", "Dinner"];
 const categories = [
   "All",
   ...Array.from(new Set(sampleMenu.map((item) => item.category))),
