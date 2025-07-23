@@ -44,8 +44,9 @@ import {
   LinearProgress,
 } from "@mui/material";
 import type { FC } from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { avatarColors } from "../../../../muitheme";
 
 // Mock feedback data
 const mockFeedbackData = {
@@ -177,7 +178,11 @@ const FeedbackCard: FC<{
       <CardContent>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar sx={{ bgcolor: "primary.main" }}>
+            <Avatar sx={{ 
+              bgcolor: avatarColors.neutral.bg, 
+              color: avatarColors.neutral.color,
+              border: `1px solid ${avatarColors.neutral.border}`,
+            }}>
               {feedback.customerName.split(" ").map((n: string) => n[0]).join("")}
             </Avatar>
             <Box>
@@ -569,7 +574,11 @@ export const Admin_FeedbackPage: FC = () => {
                         <TableRow key={index} hover>
                           <TableCell>
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar sx={{ bgcolor: "primary.main" }}>
+                              <Avatar sx={{ 
+                                bgcolor: avatarColors.error.bg, 
+                                color: avatarColors.error.color,
+                                border: `1px solid ${avatarColors.error.border}`,
+                              }}>
                                 {staff.name.split(" ").map(n => n[0]).join("")}
                               </Avatar>
                               <Typography variant="body1" fontWeight="medium">

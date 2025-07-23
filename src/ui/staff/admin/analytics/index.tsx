@@ -37,8 +37,9 @@ import {
   Divider,
 } from "@mui/material";
 import type { FC } from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { avatarColors } from "../../../../muitheme";
 
 // Mock analytics data
 const mockAnalyticsData = {
@@ -135,7 +136,11 @@ const MetricCard: FC<{
             </Stack>
           )}
         </Box>
-        <Avatar sx={{ bgcolor: "primary.light", color: "primary.main" }}>
+        <Avatar sx={{ 
+          bgcolor: avatarColors.primary.bg, 
+          color: avatarColors.primary.color,
+          border: `1px solid ${avatarColors.primary.border}`,
+        }}>
           {icon}
         </Avatar>
       </Stack>
@@ -147,7 +152,124 @@ export const Admin_AnalyticsPage: FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
   const [timeRange, setTimeRange] = useState("month");
-  const data = mockAnalyticsData;
+
+  // Filter data based on time range
+  const data = useMemo(() => {
+    const baseData = { ...mockAnalyticsData };
+
+    switch (timeRange) {
+      case "week":
+        return {
+          ...baseData,
+          overview: {
+            ...baseData.overview,
+            totalRevenue: Math.round(baseData.overview.totalRevenue * 0.25), // ~weekly
+            totalOrders: Math.round(baseData.overview.totalOrders * 0.25),
+            avgOrderValue: Math.round(baseData.overview.avgOrderValue * 1.1),
+            revenueGrowth: 8.2,
+            orderGrowth: 5.1,
+            newCustomers: Math.round(baseData.overview.newCustomers * 0.3),
+            returningCustomers: 72,
+          },
+          bestSellingItems: baseData.bestSellingItems.map(item => ({
+            ...item,
+            orders: Math.round(item.orders * 0.25),
+            revenue: Math.round(item.revenue * 0.25),
+            trend: Math.round((item.trend * 0.8) * 10) / 10,
+          })),
+          weeklyRevenue: baseData.weeklyRevenue.map(day => ({
+            ...day,
+            amount: Math.round(day.amount * 0.25),
+          })),
+          tableUtilization: baseData.tableUtilization.map(table => ({
+            ...table,
+            utilized: Math.round(Math.max(45, table.utilized * 0.85)),
+            revenue: Math.round(table.revenue * 0.25),
+          })),
+          staffPerformance: baseData.staffPerformance.map(staff => ({
+            ...staff,
+            orders: Math.round(staff.orders * 0.25),
+            revenue: Math.round(staff.revenue * 0.25),
+            rating: Math.round(Math.max(4.0, staff.rating * 0.95) * 10) / 10,
+          })),
+        };
+
+      case "quarter":
+        return {
+          ...baseData,
+          overview: {
+            ...baseData.overview,
+            totalRevenue: Math.round(baseData.overview.totalRevenue * 3),
+            totalOrders: Math.round(baseData.overview.totalOrders * 3),
+            avgOrderValue: Math.round(baseData.overview.avgOrderValue * 0.95),
+            revenueGrowth: 18.7,
+            orderGrowth: 15.4,
+            newCustomers: Math.round(baseData.overview.newCustomers * 3),
+            returningCustomers: 78,
+          },
+          bestSellingItems: baseData.bestSellingItems.map(item => ({
+            ...item,
+            orders: Math.round(item.orders * 3),
+            revenue: Math.round(item.revenue * 3),
+            trend: Math.round((item.trend * 1.2) * 10) / 10,
+          })),
+          weeklyRevenue: baseData.weeklyRevenue.map(day => ({
+            ...day,
+            amount: Math.round(day.amount * 3),
+          })),
+          tableUtilization: baseData.tableUtilization.map(table => ({
+            ...table,
+            utilized: Math.round(Math.min(98, table.utilized * 1.1)),
+            revenue: Math.round(table.revenue * 3),
+          })),
+          staffPerformance: baseData.staffPerformance.map(staff => ({
+            ...staff,
+            orders: Math.round(staff.orders * 3),
+            revenue: Math.round(staff.revenue * 3),
+            rating: Math.min(5.0, staff.rating + 0.1),
+          })),
+        };
+
+      case "year":
+        return {
+          ...baseData,
+          overview: {
+            ...baseData.overview,
+            totalRevenue: Math.round(baseData.overview.totalRevenue * 12),
+            totalOrders: Math.round(baseData.overview.totalOrders * 12),
+            avgOrderValue: Math.round(baseData.overview.avgOrderValue * 0.9),
+            revenueGrowth: 22.3,
+            orderGrowth: 19.8,
+            newCustomers: Math.round(baseData.overview.newCustomers * 12),
+            returningCustomers: 82,
+          },
+          bestSellingItems: baseData.bestSellingItems.map(item => ({
+            ...item,
+            orders: Math.round(item.orders * 12),
+            revenue: Math.round(item.revenue * 12),
+            trend: Math.round(Math.max(-15, Math.min(25, item.trend * 1.5)) * 10) / 10,
+          })),
+          weeklyRevenue: baseData.weeklyRevenue.map(day => ({
+            ...day,
+            amount: Math.round(day.amount * 12),
+          })),
+          tableUtilization: baseData.tableUtilization.map(table => ({
+            ...table,
+            utilized: Math.round(Math.min(95, table.utilized * 1.15)),
+            revenue: Math.round(table.revenue * 12),
+          })),
+          staffPerformance: baseData.staffPerformance.map(staff => ({
+            ...staff,
+            orders: Math.round(staff.orders * 12),
+            revenue: Math.round(staff.revenue * 12),
+            rating: Math.min(5.0, staff.rating + 0.05),
+          })),
+        };
+
+      default: // month
+        return baseData;
+    }
+  }, [timeRange]);
 
   const maxHourlyOrders = Math.max(...data.hourlyData.map(h => h.orders));
   const maxWeeklyRevenue = Math.max(...data.weeklyRevenue.map(d => d.amount));
@@ -414,7 +536,11 @@ export const Admin_AnalyticsPage: FC = () => {
                         <TableRow key={index} hover>
                           <TableCell>
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar sx={{ bgcolor: "primary.main" }}>
+                              <Avatar sx={{ 
+                                bgcolor: avatarColors.warning.bg, 
+                                color: avatarColors.warning.color,
+                                border: `1px solid ${avatarColors.warning.border}`,
+                              }}>
                                 <TableRestaurant />
                               </Avatar>
                               <Typography variant="body1" fontWeight="medium">
@@ -484,7 +610,11 @@ export const Admin_AnalyticsPage: FC = () => {
                         <TableRow key={index} hover>
                           <TableCell>
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar sx={{ bgcolor: "primary.main" }}>
+                              <Avatar sx={{ 
+                                bgcolor: avatarColors.success.bg, 
+                                color: avatarColors.success.color,
+                                border: `1px solid ${avatarColors.success.border}`,
+                              }}>
                                 {staff.name.split(" ").map(n => n[0]).join("")}
                               </Avatar>
                               <Typography variant="body1" fontWeight="medium">

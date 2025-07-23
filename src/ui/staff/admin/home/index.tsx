@@ -29,6 +29,7 @@ import {
 import type { FC } from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { avatarColors } from "../../../../muitheme";
 
 // Mock data - replace with real API calls later
 const mockDashboardData = {
@@ -100,7 +101,23 @@ const StatCard: FC<{
             </Stack>
           )}
         </Box>
-        <Avatar sx={{ bgcolor: `${color}.10`, color: color }}>
+        <Avatar sx={{ 
+          bgcolor: color === "primary" ? avatarColors.primary.bg :
+                   color === "success" ? avatarColors.success.bg :
+                   color === "warning" ? avatarColors.warning.bg :
+                   color === "error" ? avatarColors.error.bg :
+                   avatarColors.neutral.bg,
+          color: color === "primary" ? avatarColors.primary.color :
+                 color === "success" ? avatarColors.success.color :
+                 color === "warning" ? avatarColors.warning.color :
+                 color === "error" ? avatarColors.error.color :
+                 avatarColors.neutral.color,
+          border: color === "primary" ? `1px solid ${avatarColors.primary.border}` :
+                  color === "success" ? `1px solid ${avatarColors.success.border}` :
+                  color === "warning" ? `1px solid ${avatarColors.warning.border}` :
+                  color === "error" ? `1px solid ${avatarColors.error.border}` :
+                  `1px solid ${avatarColors.neutral.border}`,
+        }}>
           {icon}
         </Avatar>
       </Stack>
@@ -304,7 +321,11 @@ export const Admin_HomePage: FC = () => {
                 {data.staffPerformance.map((staff, index) => (
                   <Stack key={index} direction="row" justifyContent="space-between" alignItems="center">
                     <Stack direction="row" spacing={2} alignItems="center">
-                      <Avatar sx={{ bgcolor: "primary.main" }}>
+                      <Avatar sx={{ 
+                        bgcolor: avatarColors.purple.bg, 
+                        color: avatarColors.purple.color,
+                        border: `1px solid ${avatarColors.purple.border}`,
+                      }}>
                         {staff.name.split(" ").map(n => n[0]).join("")}
                       </Avatar>
                       <Box>
