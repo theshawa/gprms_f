@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { staffBackend } from "../../../backend";
 import { useAlert } from "../../../hooks/useAlert";
 import { useStaffAuth } from "../../../hooks/useStaffAuth";
-import { StaffService } from "../../../services/staff/staff";
+import { StaffService } from "../../../services/staff/admin/staff";
 import { Header } from "./header";
 
 export const Staff_Layout: FC = () => {

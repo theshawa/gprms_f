@@ -2,7 +2,7 @@ import { getBackendErrorMessage } from "@/backend";
 import { Currency, IngredientMeasuringUnits } from "@/constants";
 import { useAlert } from "@/hooks/useAlert";
 import type { Ingredient } from "@/interfaces/ingredient";
-import { IngredientsService } from "@/services/staff/ingredients";
+import { IngredientsService } from "@/services/staff/admin/ingredients";
 import {
   Button,
   Dialog,

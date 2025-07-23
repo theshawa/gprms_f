@@ -1,33 +1,30 @@
 import {
-  TrendingUp,
   AttachMoney,
   ShoppingCart,
   Star,
   TableRestaurant,
+  TrendingUp,
 } from "@mui/icons-material";
 import {
+  Avatar,
   Box,
+  Button,
   Card,
   CardContent,
-  Typography,
-  Grid,
   Chip,
-  IconButton,
+  Grid,
   LinearProgress,
   Stack,
-  Button,
-  Avatar,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Divider,
+  Typography,
 } from "@mui/material";
 import type { FC } from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Mock data - replace with real API calls later
@@ -43,10 +40,34 @@ const mockDashboardData = {
     customerSatisfaction: 4.7,
   },
   recentOrders: [
-    { id: "#12453", table: "A-12", status: "preparing", time: "12:30 PM", total: 16315 },
-    { id: "#12454", table: "B-05", status: "served", time: "12:45 PM", total: 11603 },
-    { id: "#12455", table: "C-08", status: "pending", time: "1:00 PM", total: 20378 },
-    { id: "#12456", table: "A-03", status: "preparing", time: "1:15 PM", total: 11960 },
+    {
+      id: "#12453",
+      table: "A-12",
+      status: "preparing",
+      time: "12:30 PM",
+      total: 16315,
+    },
+    {
+      id: "#12454",
+      table: "B-05",
+      status: "served",
+      time: "12:45 PM",
+      total: 11603,
+    },
+    {
+      id: "#12455",
+      table: "C-08",
+      status: "pending",
+      time: "1:00 PM",
+      total: 20378,
+    },
+    {
+      id: "#12456",
+      table: "A-03",
+      status: "preparing",
+      time: "1:15 PM",
+      total: 11960,
+    },
   ],
   topDishes: [
     { name: "Grilled Salmon", orders: 23, revenue: 74750 },
@@ -55,7 +76,13 @@ const mockDashboardData = {
     { name: "Pasta Carbonara", orders: 15, revenue: 29250 },
   ],
   staffPerformance: [
-    { name: "Tharaka Perera", role: "Waiter", tables: 8, rating: 4.9, orders: 24 },
+    {
+      name: "Tharaka Perera",
+      role: "Waiter",
+      tables: 8,
+      rating: 4.9,
+      orders: 24,
+    },
     { name: "Nuwan Silva", role: "Waiter", tables: 6, rating: 4.7, orders: 18 },
     { name: "Sanduni Fernando", role: "Kitchen", rating: 4.8, orders: 42 },
   ],
@@ -78,7 +105,11 @@ const StatCard: FC<{
 }> = ({ title, value, icon, color, subtitle, trend }) => (
   <Card sx={{ height: "100%" }}>
     <CardContent>
-      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+      >
         <Box>
           <Typography variant="h4" fontWeight="bold" color={color}>
             {value}
@@ -93,14 +124,28 @@ const StatCard: FC<{
           )}
           {trend !== undefined && (
             <Stack direction="row" alignItems="center" spacing={0.5} mt={0.5}>
-              <TrendingUp fontSize="small" color={trend > 0 ? "success" : "error"} />
-              <Typography variant="caption" color={trend > 0 ? "success.main" : "error.main"}>
-                {trend > 0 ? "+" : ""}{trend}% from yesterday
+              <TrendingUp
+                fontSize="small"
+                color={trend > 0 ? "success" : "error"}
+              />
+              <Typography
+                variant="caption"
+                color={trend > 0 ? "success.main" : "error.main"}
+              >
+                {trend > 0 ? "+" : ""}
+                {trend}% from yesterday
               </Typography>
             </Stack>
           )}
         </Box>
-        <Avatar sx={{ bgcolor: `${color}.10`, color: color }}>
+        <Avatar
+          sx={{
+            bgcolor: `white`,
+            color: color,
+            border: 1,
+            borderColor: "divider",
+          }}
+        >
           {icon}
         </Avatar>
       </Stack>
@@ -110,15 +155,18 @@ const StatCard: FC<{
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "pending": return "warning";
-    case "preparing": return "info";
-    case "served": return "success";
-    case "cancelled": return "error";
-    default: return "default";
+    case "pending":
+      return "warning";
+    case "preparing":
+      return "info";
+    case "served":
+      return "success";
+    case "cancelled":
+      return "error";
+    default:
+      return "default";
   }
 };
-
-
 
 export const Admin_HomePage: FC = () => {
   const navigate = useNavigate();
@@ -130,30 +178,44 @@ export const Admin_HomePage: FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const tableOccupancyRate = Math.round((data.todayStats.activeTables / data.todayStats.totalTables) * 100);
+  const tableOccupancyRate = Math.round(
+    (data.todayStats.activeTables / data.todayStats.totalTables) * 100
+  );
 
   return (
     <Box p={3}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
         <Box>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             Restaurant Dashboard
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            {currentTime.toLocaleDateString("en-US", { 
-              weekday: "long", 
-              year: "numeric", 
-              month: "long", 
-              day: "numeric" 
-            })} • {currentTime.toLocaleTimeString()}
+            {currentTime.toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            • {currentTime.toLocaleTimeString()}
           </Typography>
         </Box>
         <Stack direction="row" spacing={2}>
-          <Button variant="outlined" onClick={() => navigate("/staff/admin/analytics")}>
+          <Button
+            variant="outlined"
+            onClick={() => navigate("/staff/admin/analytics")}
+          >
             View Analytics
           </Button>
-          <Button variant="contained" onClick={() => navigate("/staff/admin/orders")}>
+          <Button
+            variant="contained"
+            onClick={() => navigate("/staff/admin/orders")}
+          >
             Manage Orders
           </Button>
         </Stack>
@@ -206,11 +268,19 @@ export const Admin_HomePage: FC = () => {
         <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+              >
                 <Typography variant="h6" fontWeight="bold">
                   Recent Orders
                 </Typography>
-                <Button size="small" onClick={() => navigate("/staff/admin/orders")}>
+                <Button
+                  size="small"
+                  onClick={() => navigate("/staff/admin/orders")}
+                >
                   View All
                 </Button>
               </Stack>
@@ -228,17 +298,21 @@ export const Admin_HomePage: FC = () => {
                   <TableBody>
                     {data.recentOrders.map((order) => (
                       <TableRow key={order.id} hover>
-                        <TableCell sx={{ fontWeight: "medium" }}>{order.id}</TableCell>
+                        <TableCell sx={{ fontWeight: "medium" }}>
+                          {order.id}
+                        </TableCell>
                         <TableCell>{order.table}</TableCell>
                         <TableCell>{order.time}</TableCell>
                         <TableCell>
-                          <Chip 
-                            label={order.status} 
+                          <Chip
+                            label={order.status}
                             color={getStatusColor(order.status) as any}
                             size="small"
                           />
                         </TableCell>
-                        <TableCell align="right">LKR {order.total.toLocaleString()}</TableCell>
+                        <TableCell align="right">
+                          LKR {order.total.toLocaleString()}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -252,18 +326,30 @@ export const Admin_HomePage: FC = () => {
         <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+              >
                 <Typography variant="h6" fontWeight="bold">
                   Top Dishes Today
                 </Typography>
-                <Button size="small" onClick={() => navigate("/staff/admin/dishes")}>
+                <Button
+                  size="small"
+                  onClick={() => navigate("/staff/admin/dishes")}
+                >
                   Manage Menu
                 </Button>
               </Stack>
               <Stack spacing={2}>
                 {data.topDishes.map((dish, index) => (
                   <Box key={index}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
                       <Box>
                         <Typography variant="body1" fontWeight="medium">
                           {dish.name}
@@ -276,9 +362,9 @@ export const Admin_HomePage: FC = () => {
                         LKR {dish.revenue.toLocaleString()}
                       </Typography>
                     </Stack>
-                    <LinearProgress 
-                      variant="determinate" 
-                      value={(dish.orders / 31) * 100} 
+                    <LinearProgress
+                      variant="determinate"
+                      value={(dish.orders / 31) * 100}
                       sx={{ mt: 1 }}
                     />
                   </Box>
@@ -292,20 +378,36 @@ export const Admin_HomePage: FC = () => {
         <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={2}
+              >
                 <Typography variant="h6" fontWeight="bold">
                   Staff Performance
                 </Typography>
-                <Button size="small" onClick={() => navigate("/staff/admin/staff")}>
+                <Button
+                  size="small"
+                  onClick={() => navigate("/staff/admin/staff")}
+                >
                   Manage Staff
                 </Button>
               </Stack>
               <Stack spacing={2}>
                 {data.staffPerformance.map((staff, index) => (
-                  <Stack key={index} direction="row" justifyContent="space-between" alignItems="center">
+                  <Stack
+                    key={index}
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
                     <Stack direction="row" spacing={2} alignItems="center">
                       <Avatar sx={{ bgcolor: "primary.main" }}>
-                        {staff.name.split(" ").map(n => n[0]).join("")}
+                        {staff.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </Avatar>
                       <Box>
                         <Typography variant="body1" fontWeight="medium">
@@ -335,8 +437,6 @@ export const Admin_HomePage: FC = () => {
             </CardContent>
           </Card>
         </Grid>
-
-
       </Grid>
     </Box>
   );

@@ -4,7 +4,7 @@ import { useAlert } from "@/hooks/useAlert";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import { useStaffAuth } from "@/hooks/useStaffAuth";
 import type { StaffUser } from "@/interfaces/staff-user";
-import { StaffService } from "@/services/staff/staff";
+import { StaffService } from "@/services/staff/admin/staff";
 import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { SetStateAction } from "jotai";

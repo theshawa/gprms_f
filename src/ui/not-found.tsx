@@ -1,7 +1,7 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import { useStaffAuth } from "@/hooks/useStaffAuth";
-import { StaffService } from "@/services/staff/staff";
+import { StaffService } from "@/services/staff/admin/staff";
 import { Box, Button, Typography } from "@mui/material";
 import type { FC } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";

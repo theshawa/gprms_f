@@ -102,6 +102,8 @@ export const TableCard: FC<{
         <AcceptTableDialog
           open={acceptDialogOpen}
           handleClose={() => setAcceptDialogOpen(false)}
+          tableId={diningTable.id}
+          updateParentStatus={(s: string) => setStatus(s)}
         />
       )}
     </>

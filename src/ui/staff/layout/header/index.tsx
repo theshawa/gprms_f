@@ -14,7 +14,7 @@ import { getBackendErrorMessage } from "../../../../backend";
 import { getNameForRole } from "../../../../enums/staff-role";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useStaffAuth } from "../../../../hooks/useStaffAuth";
-import { StaffService } from "../../../../services/staff/staff";
+import { StaffService } from "../../../../services/staff/admin/staff";
 import { SideMenu } from "./sidemenu";
 
 export const Header: FC = () => {

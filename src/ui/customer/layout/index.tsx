@@ -96,29 +96,7 @@ export const Customer_Layout: FC = () => {
     <>
       {!inDineInPage && <Header />}
 
-
       <LoginDialog />
-
-              <nav className="hidden md:flex items-center space-x-6">
-                <a
-                  href="menu"
-                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Menu
-                </a>
-                <a
-                  href="reservations"
-                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Reservations
-                </a>
-                <a
-                  href="contact"
-                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Contact
-                </a>
-
 
       <Outlet />
 
@@ -163,57 +141,11 @@ export const Customer_Layout: FC = () => {
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>
               <a href="#">Cookies Settings</a>
-
-
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-2 space-y-1 pb-4 border-t border-gray-200">
-              <a
-                href="menu"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-              >
-                Menu
-              </a>
-              <a
-                href="reservations"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-              >
-                Reservations
-              </a>
-              <a
-                href="contact"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-              >
-                Contact
-              </a>
-              <div>
-                <button
-                  onClick={(e) => setAboutUsMenuAnchorEl(e.currentTarget)}
-                  className="flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  About us
-                  <ExpandMore className="ml-1" fontSize="small" />
-                </button>
-                <Menu
-                  anchorEl={aboutUsMenuAnchorEl}
-                  open={!!aboutUsMenuAnchorEl}
-                  onClose={() => setAboutUsMenuAnchorEl(null)}
-                >
-                  <MenuItem>
-                    <Link to="/our-story" className="w-full">
-                      Our Story
-                    </Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link to="/dining-areas" className="w-full">
-                      Dining Areas
-                    </Link>
-                  </MenuItem>
-                </Menu>
-              </div>
-
             </div>
-            <div>© 2025 THON HOTELS. All rights reserved.</div>
+            <p className="text-gray-400">
+              © {new Date().getFullYear()} Your Restaurant Name. All rights
+              reserved.
+            </p>
           </div>
         </footer>
       )}
