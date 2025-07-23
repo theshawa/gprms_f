@@ -12,18 +12,19 @@ import {
 } from "@mui/material";
 import type { FC } from "react";
 
-// type OrderItem = {
-//   name: string;
-//   quantity: number;
-// };
+type OrderItem = {
+  name: string;
+  quantity: number;
+};
 
 type Order = {
+  id: string;
   orderCode: string;
-  // customerName: string;
-  // createdAt: string;
-  // tableNumber: number;
-  // note?: string;
-  // items: OrderItem[];
+  customerName: string;
+  createdAt: string;
+  tableNumber: number;
+  note?: string;
+  items: OrderItem[];
 };
 
 interface OrderCardProps {
@@ -40,60 +41,49 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
             sx={{ width: 40, height: 40, border: "2px solid #ccc" }}
           />
         }
-        title={<Typography variant="subtitle1">{order?.orderCode}</Typography>}
-        subheader={<Typography variant="caption">John Doe</Typography>}
+        title={<Typography variant="subtitle1">{order.orderCode}</Typography>}
+        subheader={
+          <Typography variant="caption">{order.customerName}</Typography>
+        }
       />
 
       <CardContent>
-        {/* Order Info */}
-        <Box
-          display="flex"
-          justifyContent="space-around"
-          mb={1}
-          className="details"
-        >
+        <Box display="flex" justifyContent="space-around" mb={1} gap={2}>
           <Typography variant="body2" sx={pillStyle}>
-            Table #12
+            Table #{order.tableNumber}
           </Typography>
           <Typography variant="body2" sx={pillStyle}>
-            10:45AM
+            {new Date(order.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </Typography>
         </Box>
 
-        {/* Order Items */}
         <List disablePadding>
-          {/* {order.items.map((item, index) => ( */}
-          <ListItem sx={{ py: 0.5 }}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              width="100%"
-              gap={4}
-              className="order-item"
-            >
-              <Typography>2x</Typography>
-              <Typography>Pizza</Typography>
-            </Box>
-          </ListItem>
-          {/* ))} */}
+          {order.items.map((item, index) => (
+            <ListItem sx={{ py: 0.5 }} key={index}>
+              <Box display="flex" justifyContent="space-between" width="100%">
+                <Typography>{item.quantity}x</Typography>
+                <Typography>{item.name}</Typography>
+              </Box>
+            </ListItem>
+          ))}
         </List>
 
-        {/* Note */}
-        {/* {order.note && ( */}
-        <Typography variant="body2" fontStyle="italic" mt={2} className="note">
-          <strong>Note:</strong> extra cheese
-        </Typography>
-        {/* )} */}
+        {order.note && (
+          <Typography variant="body2" fontStyle="italic" mt={2}>
+            <strong>Note:</strong> {order.note}
+          </Typography>
+        )}
       </CardContent>
 
-      {/* Actions */}
       <CardActions>
         <Button
           fullWidth
           variant="contained"
           color="secondary"
-          //   onClick={() => onOpenDetails?.(order)}
-          sx={{ borderRadius: 2 }}
+          sx={{ borderRadius: 2, background: "teal" }}
         >
           Order Details ↗
         </Button>
