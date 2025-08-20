@@ -63,6 +63,7 @@ export const muiTheme = createTheme({
           fontWeight: 600,
         },
       },
+
     },
     MuiCard: {
       styleOverrides: {
@@ -134,3 +135,4 @@ export const avatarColors = {
     border: purple[200],
   },
 };
+
