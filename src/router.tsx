@@ -38,6 +38,7 @@ import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
 import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
+import { InvoiceProvider } from "./ui/staff/cashier/shared/invoice-context";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -331,7 +332,9 @@ export const router = createBrowserRouter([
             index: true,
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_HomePage />
+                <InvoiceProvider>
+                  <Cashier_HomePage />
+                </InvoiceProvider>
               </StaffAuthGuard>
             ),
           },
@@ -339,7 +342,9 @@ export const router = createBrowserRouter([
             path: "invoices",
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_InvoicesPage />
+                <InvoiceProvider>
+                  <Cashier_InvoicesPage />
+                </InvoiceProvider>
               </StaffAuthGuard>
             ),
           },
@@ -347,7 +352,9 @@ export const router = createBrowserRouter([
             path: "orders",
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_OrdersPage />
+                <InvoiceProvider>
+                  <Cashier_OrdersPage />
+                </InvoiceProvider>
               </StaffAuthGuard>
             ),
           },
