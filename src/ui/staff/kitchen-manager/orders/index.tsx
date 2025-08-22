@@ -1,6 +1,8 @@
 import {
   Box,
   Grid,
+  Tab,
+  Tabs,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
@@ -161,8 +163,8 @@ export const KitchenManager_OrdersPage: FC = () => {
   const ordersList = dummyOrders;
 
   const handleToggle = (
-    _: React.MouseEvent<HTMLElement>,
-    newValue: "current" | "archived" | null
+    _: React.SyntheticEvent,
+    newValue: "current" | "archived"
   ) => {
     if (newValue) setOrderType(newValue);
   };
@@ -170,28 +172,22 @@ export const KitchenManager_OrdersPage: FC = () => {
   return (
     <>
       {/* Toggle Controls */}
-      <Box className="fixed right-20 mt-4 z-[11]">
-        <ToggleButtonGroup
-          value={orderType}
-          exclusive
-          onChange={handleToggle}
-          aria-label="Order Type"
-          size="small"
-        >
-          <ToggleButton value="current">Current</ToggleButton>
-          <ToggleButton value="archived">Archived</ToggleButton>
-        </ToggleButtonGroup>
+      <Box sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}>
+        <Tabs value={orderType} onChange={handleToggle} centered>
+          <Tab value="current" label="Current" />
+          <Tab value="archived" label="Archived" />
+        </Tabs>
       </Box>
 
       {orderType === "current" && (
-        <Box className="grid grid-cols-1 md:grid-cols-2 gap-6" px={3}>
-          {/* New Orders */}
+        <Box className="grid grid-cols-2 md:grid-cols-4 gap-6" px={3}>
+          {/* New Orders dinein */}
           <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto new-orders">
             <Typography
               variant="h5"
-              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+              className="sticky top-0 p-4 bg-green-300/60 backdrop-blur z-10 text-black"
             >
-              New Orders
+              New Dine-In
             </Typography>
             <Grid container spacing={2} ml={6} mr={6}>
               {ordersList
@@ -204,13 +200,51 @@ export const KitchenManager_OrdersPage: FC = () => {
             </Grid>
           </Box>
 
-          {/* In Progress */}
+          {/* In Progress dinein */}
           <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto in-progress-orders">
             <Typography
               variant="h5"
-              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+              className="sticky top-0 p-4 bg-yellow-300/60 backdrop-blur z-10 text-black"
             >
-              In Progress
+              In Progress Dine-In
+            </Typography>
+            <Grid container spacing={2} ml={6} mr={6}>
+              {ordersList
+                .filter((order) => order.status === "in-progress")
+                .map((order) => (
+                  <Grid xs={12} md={6} key={order.id}>
+                    <OrderCard order={order} />
+                  </Grid>
+                ))}
+            </Grid>
+          </Box>
+
+          {/* New takeaway */}
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto new-orders">
+            <Typography
+              variant="h5"
+              className="sticky top-0 p-4 bg-green-300/60 backdrop-blur z-10 text-black"
+            >
+              New Take-Away
+            </Typography>
+            <Grid container spacing={2} ml={6} mr={6}>
+              {ordersList
+                .filter((order) => order.status === "new")
+                .map((order) => (
+                  <Grid xs={12} md={6} key={order.id}>
+                    <OrderCard order={order} />
+                  </Grid>
+                ))}
+            </Grid>
+          </Box>
+
+          {/* In progress takeaway */}
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto in-progress-orders">
+            <Typography
+              variant="h5"
+              className="sticky top-0 p-4 bg-yellow-300/60 backdrop-blur z-10 text-black"
+            >
+              In Progress Take-Away
             </Typography>
             <Grid container spacing={2} ml={6} mr={6}>
               {ordersList
@@ -231,7 +265,7 @@ export const KitchenManager_OrdersPage: FC = () => {
           <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto completed-orders">
             <Typography
               variant="h5"
-              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+              className="sticky top-0 p-4 bg-gray-300/60 backdrop-blur z-10 text-black"
             >
               Completed Orders
             </Typography>
@@ -250,7 +284,7 @@ export const KitchenManager_OrdersPage: FC = () => {
           <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto rejected-orders">
             <Typography
               variant="h5"
-              className="sticky top-0 p-4 bg-white/80 backdrop-blur z-10 text-black"
+              className="sticky top-0 p-4 bg-red-300/60 backdrop-blur z-10 text-black"
             >
               Rejected Orders
             </Typography>
