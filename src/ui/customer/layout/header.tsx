@@ -111,7 +111,7 @@ export const Header: FC = () => {
                 >
                   <span className="sm:hidden">
                     {auth.user.name.length > 10
-                      ? ${auth.user.name.slice(0, 10)}...
+                      ? `${auth.user.name.slice(0, 10)}...`
                       : auth.user.name || "Profile"}
                   </span>
                   <span className="hidden sm:inline">
