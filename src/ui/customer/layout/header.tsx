@@ -51,6 +51,12 @@ export const Header: FC = () => {
                 Menu
               </Link>
               <Link
+                to="/takeaway"
+                className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+              >
+                Takeaway
+              </Link>
+              <Link
                 to="/reservations"
                 className="text-sm text-gray-700 hover:text-gray-900 font-medium"
               >
@@ -105,7 +111,7 @@ export const Header: FC = () => {
                 >
                   <span className="sm:hidden">
                     {auth.user.name.length > 10
-                      ? `${auth.user.name.slice(0, 10)}...`
+                      ? ${auth.user.name.slice(0, 10)}...
                       : auth.user.name || "Profile"}
                   </span>
                   <span className="hidden sm:inline">
@@ -156,6 +162,12 @@ export const Header: FC = () => {
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
             >
               Menu
+            </Link>
+            <Link
+              to="/takeaway"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              Takeaway
             </Link>
             <Link
               to="/reservations"
