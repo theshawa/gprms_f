@@ -4,9 +4,9 @@ import { Customer_HomePage } from "@/ui/customer/home";
 import { Customer_Layout } from "@/ui/customer/layout";
 import { ErrorPage } from "@/ui/error";
 import { NotFoundPage } from "@/ui/not-found";
-import { Admin_HomePage } from "@/ui/staff/admin/home";
 import { Admin_AnalyticsPage } from "@/ui/staff/admin/analytics";
 import { Admin_FeedbackPage } from "@/ui/staff/admin/feedback";
+import { Admin_HomePage } from "@/ui/staff/admin/home";
 import { Admin_StaffPage } from "@/ui/staff/admin/staff";
 import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
 import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
@@ -15,14 +15,18 @@ import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
 import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-item";
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import { Customer_AboutPage } from "./ui/customer/about-us";
+import { Customer_ContactPage } from "./ui/customer/contact";
 import { Customer_DineInLayout } from "./ui/customer/dine-in";
 import { Customer_DineInConfirm } from "./ui/customer/dine-in/confirm";
 import { Customer_DineInMenuPage } from "./ui/customer/dine-in/menu";
 import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
+import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_Reservations } from "./ui/customer/reservations";
+import { Customer_TakeAway } from "./ui/customer/takeaway";
 import { Admin_CalenderPage } from "./ui/staff/admin/calender";
 import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_DiningAreasPage } from "./ui/staff/admin/dining-areas";
@@ -38,14 +42,11 @@ import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
 import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
+import { InvoiceProvider } from "./ui/staff/cashier/shared/invoice-context";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
-import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
-import { Customer_AboutPage } from "./ui/customer/about-us";
-import { Customer_ContactPage } from "./ui/customer/contact";
-import { Customer_TakeAway } from "./ui/customer/takeaway";
 
 export const router = createBrowserRouter([
   {
@@ -331,6 +332,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "cashier",
+        element: (
+          <InvoiceProvider>
+            <Outlet />
+          </InvoiceProvider>
+        ),
         children: [
           {
             index: true,

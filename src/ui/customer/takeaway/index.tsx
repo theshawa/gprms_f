@@ -1,16 +1,6 @@
 import { type FC, useEffect, useState } from "react";
 
-import {
-  Box,
-  Chip,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { LocationPin } from "@mui/icons-material";
+import { Box, Chip, TextField, Typography } from "@mui/material";
 import { DishCard } from "./dish-card";
 
 // Sample data with better images and descriptions
@@ -139,25 +129,6 @@ export const Customer_TakeAway: FC = () => {
         </Typography>
 
         <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 2 }}>
-          <FormControl fullWidth variant="outlined">
-            <InputLabel id="branch-select-label">
-              {" "}
-              <LocationPin /> Select Branch
-            </InputLabel>
-            <Select
-              labelId="branch-select-label"
-              id="branch-select"
-              value={selectedBranch}
-              onChange={(e) => setSelectedBranch(e.target.value)}
-              label="Select Branch"
-            >
-              {branches.map((branch) => (
-                <MenuItem key={branch} value={branch}>
-                  {branch}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <TextField
             label="Search Dishes"
             variant="outlined"
