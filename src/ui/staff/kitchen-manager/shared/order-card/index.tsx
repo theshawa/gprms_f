@@ -9,8 +9,12 @@ import {
   List,
   ListItem,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import type { FC } from "react";
+import { useState, type FC } from "react";
 
 type OrderItem = {
   name: string;
@@ -32,63 +36,127 @@ interface OrderCardProps {
 }
 
 export const OrderCard: FC<OrderCardProps> = ({ order }) => {
-  return (
-    <Card sx={{ color: "black", borderRadius: 2, boxShadow: 4 }}>
-      <CardHeader
-        avatar={
-          <Avatar
-            src="/images/dummy/profile.jpg"
-            sx={{ width: 40, height: 40, border: "2px solid #ccc" }}
-          />
-        }
-        title={<Typography variant="subtitle1">{order.orderCode}</Typography>}
-        subheader={
-          <Typography variant="caption">{order.customerName}</Typography>
-        }
-      />
+  const [open, setOpen] = useState(false);
 
-      <CardContent>
-        <Box display="flex" justifyContent="space-around" mb={1} gap={2}>
-          <Typography variant="body2" sx={pillStyle}>
-            Table #{order.tableNumber}
+  const openModal = () => {
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <Card sx={{ color: "black", borderRadius: 2, boxShadow: 4 }}>
+        <CardHeader
+          avatar={
+            <Avatar
+              src="/images/dummy/profile.jpg"
+              sx={{ width: 40, height: 40, border: "2px solid #ccc" }}
+            />
+          }
+          title={<Typography variant="subtitle1">{order.orderCode}</Typography>}
+          subheader={
+            <Typography variant="caption">{order.customerName}</Typography>
+          }
+        />
+
+        <CardContent>
+          <Box display="flex" justifyContent="space-around" mb={1} gap={2}>
+            <Typography variant="body2" sx={pillStyle}>
+              Table #{order.tableNumber}
+            </Typography>
+            <Typography variant="body2" sx={pillStyle}>
+              {new Date(order.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </Typography>
+          </Box>
+
+          <List disablePadding>
+            {order.items.map((item, index) => (
+              <ListItem sx={{ py: 0.5 }} key={index}>
+                <Box display="flex" justifyContent="space-between" width="100%">
+                  <Typography>{item.quantity}x</Typography>
+                  <Typography>{item.name}</Typography>
+                </Box>
+              </ListItem>
+            ))}
+          </List>
+
+          {order.note && (
+            <Typography variant="body2" fontStyle="italic" mt={2}>
+              <strong>Note:</strong> {order.note}
+            </Typography>
+          )}
+        </CardContent>
+
+        <CardActions>
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            sx={{ borderRadius: 2, background: "teal" }}
+            onClick={openModal} // ✅ FIX: don’t call directly, pass function reference
+          >
+            Order Details ↗
+          </Button>
+        </CardActions>
+      </Card>
+
+      {/* Modal */}
+      <Dialog open={open} onClose={closeModal} fullWidth maxWidth="sm">
+        <DialogTitle>Order Details - {order.orderCode}</DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="subtitle1">
+            Customer: {order.customerName}
           </Typography>
-          <Typography variant="body2" sx={pillStyle}>
-            {new Date(order.createdAt).toLocaleTimeString([], {
+          <Typography variant="subtitle1">
+            Table: #{order.tableNumber}
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary">
+            Placed at:{" "}
+            {new Date(order.createdAt).toLocaleString([], {
               hour: "2-digit",
               minute: "2-digit",
+              day: "numeric",
+              month: "short",
             })}
           </Typography>
-        </Box>
 
-        <List disablePadding>
-          {order.items.map((item, index) => (
-            <ListItem sx={{ py: 0.5 }} key={index}>
-              <Box display="flex" justifyContent="space-between" width="100%">
-                <Typography>{item.quantity}x</Typography>
-                <Typography>{item.name}</Typography>
-              </Box>
-            </ListItem>
-          ))}
-        </List>
+          <Box mt={2}>
+            <Typography variant="h6">Items</Typography>
+            <List>
+              {order.items.map((item, idx) => (
+                <ListItem key={idx} sx={{ py: 0.5 }}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <Typography>{item.quantity}x</Typography>
+                    <Typography>{item.name}</Typography>
+                  </Box>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
 
-        {order.note && (
-          <Typography variant="body2" fontStyle="italic" mt={2}>
-            <strong>Note:</strong> {order.note}
-          </Typography>
-        )}
-      </CardContent>
-
-      <CardActions>
-        <Button
-          fullWidth
-          variant="contained"
-          color="secondary"
-          sx={{ borderRadius: 2, background: "teal" }}
-        >
-          Order Details ↗
-        </Button>
-      </CardActions>
-    </Card>
+          {order.note && (
+            <Typography mt={2} fontStyle="italic">
+              <strong>Note:</strong> {order.note}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
