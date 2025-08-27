@@ -1,12 +1,4 @@
-import {
-  Box,
-  Grid,
-  Tab,
-  Tabs,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { useState } from "react";
 import type { FC } from "react";
 import { OrderCard } from "../shared/order-card";
@@ -182,14 +174,14 @@ export const KitchenManager_OrdersPage: FC = () => {
       {orderType === "current" && (
         <Box className="grid grid-cols-2 md:grid-cols-4 gap-6" px={3}>
           {/* New Orders dinein */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto new-orders">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto new-orders">
             <Typography
               variant="h5"
               className="sticky top-0 p-4 bg-green-300/60 backdrop-blur z-10 text-black"
             >
               New Dine-In
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6}>
+            <Grid container spacing={2} ml={6} mr={6} mb={4}>
               {ordersList
                 .filter((order) => order.status === "new")
                 .map((order) => (
@@ -201,14 +193,14 @@ export const KitchenManager_OrdersPage: FC = () => {
           </Box>
 
           {/* In Progress dinein */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto in-progress-orders">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto in-progress-orders">
             <Typography
               variant="h5"
               className="sticky top-0 p-4 bg-yellow-300/60 backdrop-blur z-10 text-black"
             >
               In Progress Dine-In
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6}>
+            <Grid container spacing={2} ml={6} mr={6} mb={4}>
               {ordersList
                 .filter((order) => order.status === "in-progress")
                 .map((order) => (
@@ -220,14 +212,14 @@ export const KitchenManager_OrdersPage: FC = () => {
           </Box>
 
           {/* New takeaway */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto new-orders">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto new-orders">
             <Typography
               variant="h5"
               className="sticky top-0 p-4 bg-green-300/60 backdrop-blur z-10 text-black"
             >
               New Take-Away
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6}>
+            <Grid container spacing={2} ml={6} mr={6} mb={4}>
               {ordersList
                 .filter((order) => order.status === "new")
                 .map((order) => (
@@ -239,14 +231,14 @@ export const KitchenManager_OrdersPage: FC = () => {
           </Box>
 
           {/* In progress takeaway */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto in-progress-orders">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto in-progress-orders">
             <Typography
               variant="h5"
               className="sticky top-0 p-4 bg-yellow-300/60 backdrop-blur z-10 text-black"
             >
               In Progress Take-Away
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6}>
+            <Grid container spacing={2} ml={6} mr={6} mb={4}>
               {ordersList
                 .filter((order) => order.status === "in-progress")
                 .map((order) => (
@@ -262,14 +254,14 @@ export const KitchenManager_OrdersPage: FC = () => {
       {orderType === "archived" && (
         <Box className="grid grid-cols-1 md:grid-cols-2 gap-6" px={3}>
           {/* Completed */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto completed-orders">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto completed-orders">
             <Typography
               variant="h5"
               className="sticky top-0 p-4 bg-gray-300/60 backdrop-blur z-10 text-black"
             >
               Completed Orders
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6}>
+            <Grid container spacing={2} ml={6} mr={6} mb={4}>
               {ordersList
                 .filter((order) => order.status === "completed")
                 .map((order) => (
@@ -281,14 +273,14 @@ export const KitchenManager_OrdersPage: FC = () => {
           </Box>
 
           {/* Rejected */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-64px)] overflow-y-auto rejected-orders">
+          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto rejected-orders">
             <Typography
               variant="h5"
               className="sticky top-0 p-4 bg-red-300/60 backdrop-blur z-10 text-black"
             >
               Rejected Orders
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6}>
+            <Grid container spacing={2} ml={6} mr={6} mb={4}>
               {ordersList
                 .filter((order) => order.status === "rejected")
                 .map((order) => (

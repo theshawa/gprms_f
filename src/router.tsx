@@ -12,7 +12,6 @@ import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
 import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
 import { KitchenManager_MealsPage } from "@/ui/staff/kitchen-manager/meals";
 import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
-import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-item";
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
@@ -301,24 +300,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "meals",
-            children: [
-              {
-                index: true,
-                element: (
-                  <StaffAuthGuard role={StaffRole.KitchenManager}>
-                    <KitchenManager_MealsPage />
-                  </StaffAuthGuard>
-                ),
-              },
-              {
-                path: "meal-item/:mealId",
-                element: (
-                  <StaffAuthGuard role={StaffRole.KitchenManager}>
-                    <KitchenManager_MealItem />
-                  </StaffAuthGuard>
-                ),
-              },
-            ],
+            element: (
+              <StaffAuthGuard role={StaffRole.KitchenManager}>
+                <KitchenManager_MealsPage />
+              </StaffAuthGuard>
+            ),
           },
           {
             path: "ingredients",
