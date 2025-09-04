@@ -1,9 +1,10 @@
 import { useAlert } from "@/hooks/useAlert";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { useCustomerLoginDialogOpen } from "@/hooks/useCustomerLoginDialogOpen";
+import { useCustomerTakeAwayCart } from "@/hooks/useCustomerTakeAwayCart";
 import { CustomerAuthService } from "@/services/customer/customer-auth";
 import { Close, ExpandMore, MenuOpen, Person } from "@mui/icons-material";
-import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
+import { Badge, Button, CircularProgress, Menu, MenuItem } from "@mui/material";
 import { type FC, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -16,6 +17,8 @@ export const Header: FC = () => {
   const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(
     null
   );
+
+  const { cartItems } = useCustomerTakeAwayCart();
 
   const { auth, setAuth } = useCustomerAuth();
 
@@ -50,12 +53,14 @@ export const Header: FC = () => {
               >
                 Menu
               </Link>
-              <Link
-                to="/takeaway"
-                className="text-sm text-gray-700 hover:text-gray-900 font-medium"
-              >
-                Takeaway
-              </Link>
+              <Badge badgeContent={cartItems.length} color="primary">
+                <Link
+                  to={cartItems.length > 0 ? "/takeaway/cart" : "/takeaway"}
+                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+                >
+                  Takeaway
+                </Link>
+              </Badge>
               <Link
                 to="/reservations"
                 className="text-sm text-gray-700 hover:text-gray-900 font-medium"
@@ -163,12 +168,14 @@ export const Header: FC = () => {
             >
               Menu
             </Link>
-            <Link
-              to="/takeaway"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-            >
-              Takeaway
-            </Link>
+            <Badge badgeContent={cartItems.length} color="primary">
+              <Link
+                to={cartItems.length > 0 ? "/takeaway/cart" : "/takeaway"}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Takeaway
+              </Link>
+            </Badge>
             <Link
               to="/reservations"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"

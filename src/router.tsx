@@ -26,6 +26,7 @@ import { Customer_MenuViewOnly } from "./ui/customer/menu";
 import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_Reservations } from "./ui/customer/reservations";
 import { Customer_TakeAway } from "./ui/customer/takeaway";
+import { Customer_TakeAway_CartPage } from "./ui/customer/takeaway/cart";
 import { Admin_CalenderPage } from "./ui/staff/admin/calender";
 import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_DiningAreasPage } from "./ui/staff/admin/dining-areas";
@@ -89,7 +90,13 @@ export const router = createBrowserRouter([
       },
       {
         path: "takeaway",
-        element: <Customer_TakeAway />,
+        children: [
+          { index: true, element: <Customer_TakeAway /> },
+          {
+            path: "cart",
+            element: <Customer_TakeAway_CartPage />,
+          },
+        ],
       },
       {
         path: "our-story",
