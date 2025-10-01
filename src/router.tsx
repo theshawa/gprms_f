@@ -14,7 +14,7 @@ import { KitchenManager_MealsPage } from "@/ui/staff/kitchen-manager/meals";
 import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
-import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Customer_AboutPage } from "./ui/customer/about-us";
 import { Customer_ContactPage } from "./ui/customer/contact";
 import { Customer_DineInLayout } from "./ui/customer/dine-in";
@@ -39,10 +39,11 @@ import { Admin_OrdersLayout } from "./ui/staff/admin/orders";
 import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders";
 import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
-import { Cashier_HomePage } from "./ui/staff/cashier/home";
+import { Cashier_Root } from "./ui/staff/cashier";
+import { Cashier_HomePage } from "./ui/staff/cashier/home/index-dummy";
 import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
 import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
-import { InvoiceProvider } from "./ui/staff/cashier/shared/invoice-context";
+import { Cashier_TakeAwayPage } from "./ui/staff/cashier/take-away";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -325,11 +326,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "cashier",
-        element: (
-          <InvoiceProvider>
-            <Outlet />
-          </InvoiceProvider>
-        ),
+        element: <Cashier_Root />,
         children: [
           {
             index: true,
@@ -352,6 +349,14 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
                 <Cashier_OrdersPage />
+              </StaffAuthGuard>
+            ),
+          },
+          {
+            path: "take-away",
+            element: (
+              <StaffAuthGuard role={StaffRole.Cashier}>
+                <Cashier_TakeAwayPage />
               </StaffAuthGuard>
             ),
           },

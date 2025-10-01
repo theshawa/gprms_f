@@ -3,7 +3,6 @@ import {
   AttachMoney,
   CalendarToday,
   EggAlt,
-  EventSeat,
   Fastfood,
   Home,
   Kitchen,
@@ -14,7 +13,6 @@ import {
   People,
   RateReview,
   ReceiptLong,
-  Settings,
   SupervisedUserCircle,
   TableRestaurant,
 } from "@mui/icons-material";
@@ -167,6 +165,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Orders",
           link: "/staff/cashier/orders",
           Icon: AttachMoney,
+        },
+        {
+          title: "Take Away",
+          link: "/staff/cashier/take-away",
+          Icon: ReceiptLong,
         }
       );
       break;

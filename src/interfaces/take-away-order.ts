@@ -11,6 +11,6 @@ export interface TakeAwayOrder {
     priceAtOrder: number;
   };
   totalAmount: number;
-  status: "New" | "InProgress" | "Completed" | "Rejected";
+  status: "New" | "Preparing" | "Prepared" | "Completed" | "Rejected";
   createdAt: string;
 }
