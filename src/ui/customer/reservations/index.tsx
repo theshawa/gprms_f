@@ -29,7 +29,7 @@ export const CustomStepper = (props: StepperProps) => (
 );
 
 export const Customer_Reservations: FC = () => {
-  const steps = ["", "", "", "", ""];
+  const steps = ["", "", "", "", "", ""];
 
   const [step, setStep] = useState(1);
 
@@ -421,6 +421,58 @@ export const Customer_Reservations: FC = () => {
               </Box>
               <div className="text-center lg:text-left">
                 <h2 className="text-xl sm:text-2xl lg:text-[1.6rem] font-medium leading-tight lg:leading-[3rem] font-serif mb-4">
+                  Choose your table
+                </h2>
+                <p className="text-gray-600 mb-6 text-sm sm:text-base">
+                  Select the perfect table for your occasion
+                </p>
+                <div className="mb-8">
+                  <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
+                    Select Table Code
+                  </label>
+                  <select
+                    className="w-full border rounded-md bg-gray-100 px-4 py-2"
+                    value={timeSlot}
+                    onChange={(e) => setTimeSlot(e.target.value)}
+                  >
+                    <option value="">Select one...</option>
+                    <option value="t1">T#001</option>
+                    <option value="t2">T#002</option>
+                    <option value="t3">T#003</option>
+                    <option value="t4">T#004</option>
+                  </select>
+                </div>
+                <div className="flex flex-col sm:flex-row justify-end gap-2">
+                  <button
+                    onClick={prevStep}
+                    className="px-6 py-2 border rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={nextStep}
+                    className="px-6 py-2 bg-green-900 text-white rounded-md hover:bg-green-800"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 8 && (
+            <div className="w-full">
+              <Box className="mb-8">
+                <CustomStepper activeStep={6} alternativeLabel>
+                  {steps.map((label, index) => (
+                    <Step key={index}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </CustomStepper>
+              </Box>
+              <div className="text-center lg:text-left">
+                <h2 className="text-xl sm:text-2xl lg:text-[1.6rem] font-medium leading-tight lg:leading-[3rem] font-serif mb-4">
                   Reservation Summary
                 </h2>
                 <p className="text-gray-600 mt-2 mb-6 text-sm sm:text-base">
@@ -462,7 +514,7 @@ export const Customer_Reservations: FC = () => {
         <div className="w-full lg:w-1/2 xl:w-2/5 order-1 lg:order-2">
           <div className="w-full flex justify-center">
             <img
-              src="/reserve.png"
+              src={step === 7 ? "/tableselect.png" : "/reserve.png"}
               alt="Restaurant Interior"
               className="w-full max-w-sm sm:max-w-md lg:max-w-lg h-64 sm:h-80 lg:h-96 xl:h-[450px] object-cover rounded-lg shadow-lg"
             />
