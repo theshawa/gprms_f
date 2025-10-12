@@ -22,6 +22,7 @@ import { Customer_DineInMenuPage } from "./ui/customer/dine-in/menu";
 import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 import { Customer_Menu } from "./ui/customer/place-order";
+import { Customer_LoginPage } from "./ui/customer/login";
 import { Customer_Reservations } from "./ui/customer/reservations";
 import { Admin_CalenderPage } from "./ui/staff/admin/calender";
 import { Admin_CustomerPage } from "./ui/staff/admin/customers";
@@ -48,6 +49,12 @@ import { Customer_AboutPage } from "./ui/customer/about-us";
 import { Customer_ContactPage } from "./ui/customer/contact";
 
 export const router = createBrowserRouter([
+  // Customer login as a top-level page (no layout/header/footer)
+  {
+    path: "/customer/login",
+    element: <Customer_LoginPage />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/",
     errorElement: <ErrorPage />,
