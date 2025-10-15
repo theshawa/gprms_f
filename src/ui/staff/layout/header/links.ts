@@ -111,8 +111,8 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: Fastfood,
         },
         {
-          title: "Meals",
-          link: "/staff/kitchen-manager/meals",
+          title: "Dishes",
+          link: "/staff/kitchen-manager/dishes",
           Icon: LocalPizza,
         },
         {

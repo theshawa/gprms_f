@@ -16,81 +16,18 @@ import {
   type GridRenderCellParams,
   type GridRowParams,
 } from "@mui/x-data-grid";
+import type { Dish } from "@/interfaces/dish";
+import { useQuery } from "@tanstack/react-query";
+import { DishesService } from "@/services/staff/kitchen-manager/dishes";
+import { PageLoader } from "../../shared/page-loader";
+import { PageError } from "../../shared/page-error";
 
-interface Meal {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  status: "Available" | "Unavailable";
-  desc: string;
-  imageUrl: string;
-  ingredients: string[];
-}
-
-const meals: Meal[] = [
+const columns: GridColDef<Dish>[] = [
   {
-    id: "1",
-    name: "Margherita Pizza",
-    category: "Pizza",
-    price: 3560,
-    status: "Available",
-    desc: "The most basic pizza.",
-    imageUrl: "/item1.png",
-    ingredients: [
-      "Chicken",
-      "Cheddar Cheese",
-      "Lettuce",
-      "Tomato",
-      "Burger Bun",
-      "Gluten",
-      "Dairy",
-    ],
-  },
-  {
-    id: "2",
-    name: "Chicken Burger",
-    category: "Burgers",
-    price: 2200,
-    status: "Unavailable",
-    desc: "Juicy grilled chicken patty with lettuce.",
-    imageUrl: "/item2.png",
-    ingredients: [
-      "Chicken",
-      "Cheddar Cheese",
-      "Lettuce",
-      "Tomato",
-      "Burger Bun",
-      "Gluten",
-      "Dairy",
-    ],
-  },
-  {
-    id: "3",
-    name: "Tomato Soup",
-    category: "Soups",
-    price: 1200,
-    status: "Available",
-    desc: "Warm and comforting classic.",
-    imageUrl: "/item3.png",
-    ingredients: [
-      "Chicken",
-      "Cheddar Cheese",
-      "Lettuce",
-      "Tomato",
-      "Burger Bun",
-      "Gluten",
-      "Dairy",
-    ],
-  },
-];
-
-const columns: GridColDef<Meal>[] = [
-  {
-    field: "imageUrl",
+    field: "image",
     headerName: "",
     width: 80,
-    renderCell: (params: GridRenderCellParams<Meal, string>) => (
+    renderCell: (params: GridRenderCellParams<Dish, string>) => (
       <Avatar
         src={params.value}
         variant="rounded"
@@ -107,8 +44,8 @@ const columns: GridColDef<Meal>[] = [
     minWidth: 180,
   },
   {
-    field: "category",
-    headerName: "Category",
+    field: "description",
+    headerName: "Description",
     flex: 1,
     minWidth: 120,
   },
@@ -120,35 +57,33 @@ const columns: GridColDef<Meal>[] = [
     minWidth: 120,
     valueFormatter: (value: any) => `Rs. ${value.toLocaleString()}`,
   },
-  {
-    field: "status",
-    headerName: "Status",
-    flex: 1,
-    minWidth: 120,
-    renderCell: (params: GridRenderCellParams<Meal, Meal["status"]>) => (
-      <Chip
-        label={params.value}
-        color={params.value === "Available" ? "success" : "error"}
-        variant="outlined"
-      />
-    ),
-  },
-  {
-    field: "desc",
-    headerName: "Description",
-    flex: 2,
-    minWidth: 200,
-  },
 ];
 
-export const KitchenManager_MealsPage: FC = () => {
+export const KitchenManager_DishesPage: FC = () => {
   const [open, setOpen] = useState(false);
-  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+  const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
 
-  const handleRowClick = (params: GridRowParams<Meal>) => {
-    setSelectedMeal(params.row);
+  const handleRowClick = (params: GridRowParams<Dish>) => {
+    setSelectedDish(params.row);
     setOpen(true);
   };
+
+  const {
+    data: dishes = [],
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ["kitchen-manager_dishes"],
+    queryFn: () => DishesService.getAll(),
+  });
+
+  if (isPending) {
+    return <PageLoader />;
+  }
+
+  if (error) {
+    return <PageError title="dishes list" error={error} />;
+  }
 
   return (
     <main className="flex-1 overflow-y-auto">
@@ -157,12 +92,12 @@ export const KitchenManager_MealsPage: FC = () => {
         component="h2"
         className="sticky top-0 z-10 mb-6 px-8 py-4 bg-white/80 backdrop-blur"
       >
-        Meals
+        Dishes
       </Typography>
 
       <Box className="px-8 pb-8">
         <DataGrid
-          rows={meals}
+          rows={dishes}
           columns={columns}
           autoHeight
           pageSizeOptions={[5, 10]}
@@ -185,7 +120,7 @@ export const KitchenManager_MealsPage: FC = () => {
           },
         }}
       >
-        {selectedMeal && (
+        {selectedDish && (
           <>
             <DialogTitle
               sx={{
@@ -195,7 +130,7 @@ export const KitchenManager_MealsPage: FC = () => {
                 fontWeight: 600,
               }}
             >
-              {selectedMeal.name}
+              {selectedDish.name}
             </DialogTitle>
 
             <DialogContent sx={{ p: 0 }}>
@@ -203,31 +138,18 @@ export const KitchenManager_MealsPage: FC = () => {
               <Box
                 sx={{
                   height: 200,
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${selectedMeal.imageUrl})`,
+                  backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${selectedDish.image})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   display: "flex",
                   alignItems: "flex-end",
                   p: 3,
                 }}
-              >
-                <Chip
-                  label={selectedMeal.status}
-                  color={
-                    selectedMeal.status === "Available" ? "success" : "error"
-                  }
-                  variant="filled"
-                  sx={{
-                    fontWeight: 600,
-                    fontSize: "0.875rem",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                  }}
-                />
-              </Box>
+              ></Box>
 
               {/* Content Section */}
               <Box sx={{ p: 3 }}>
-                {/* Price and Category Row */}
+                {/* Price and description Row */}
                 <Box
                   sx={{
                     display: "flex",
@@ -241,15 +163,9 @@ export const KitchenManager_MealsPage: FC = () => {
                       variant="h5"
                       sx={{ fontWeight: 700, color: "primary.main" }}
                     >
-                      Rs {selectedMeal.price.toLocaleString()}
+                      Rs {selectedDish.price.toLocaleString()}
                     </Typography>
                   </Box>
-                  <Chip
-                    label={selectedMeal.category}
-                    variant="outlined"
-                    color="primary"
-                    sx={{ fontWeight: 500 }}
-                  />
                 </Box>
 
                 {/* Description */}
@@ -264,7 +180,7 @@ export const KitchenManager_MealsPage: FC = () => {
                     variant="body1"
                     sx={{ color: "text.secondary", lineHeight: 1.6 }}
                   >
-                    {selectedMeal.desc}
+                    {selectedDish.description}
                   </Typography>
                 </Box>
 
@@ -277,10 +193,10 @@ export const KitchenManager_MealsPage: FC = () => {
                     Ingredients
                   </Typography>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                    {selectedMeal.ingredients.map((ingredient, index) => (
+                    {selectedDish.ingredients.map((dishIngredient, index) => (
                       <Chip
-                        key={index}
-                        label={ingredient}
+                        key={dishIngredient.id ?? index}
+                        label={`${dishIngredient.ingredient.name} (${dishIngredient.quantity})`}
                         variant="outlined"
                         size="small"
                         sx={{

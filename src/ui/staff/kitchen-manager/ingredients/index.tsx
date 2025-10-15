@@ -3,6 +3,10 @@ import { Box, InputBase, Tab, Tabs, Typography } from "@mui/material";
 import type { FC } from "react";
 import { useState } from "react";
 import { IngredientCard } from "../shared/ingredient-card";
+import { IngredientsService } from "@/services/staff/kitchen-manager/ingredients";
+import { useQuery } from "@tanstack/react-query";
+import { PageLoader } from "../../shared/page-loader";
+import { PageError } from "../../shared/page-error";
 
 const categories = [
   "Spices",
@@ -22,19 +26,22 @@ export const KitchenManager_IngredientsPage: FC = () => {
     setActiveTab(newValue);
   };
 
-  const ingredients = Array.from({ length: 16 }, (_, i) => ({
-    id: i,
-    name: `${categories[activeTab]} ${i + 1}`,
-    stock: `${(Math.random() * 5 + 1).toFixed(1)} kg`,
-    unitCost: `Rs. ${(Math.random() * 1000 + 500).toFixed(0)}/kg`,
-    origin: "India",
-    hasAllergens: Math.random() > 0.7,
-    allergens: ["Gluten", "Dairy"].filter(() => Math.random() > 0.5),
-    expiryDate: "Dec 15, 2025",
-    supplier: "Supplier Co.",
-    lastUpdated: `${Math.floor(Math.random() * 10)} days ago`,
-    category: categories[activeTab],
-  }));
+  const {
+    data: ingredients = [],
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ["kitchen-manager_ingredients"],
+    queryFn: () => IngredientsService.getAll(),
+  });
+
+  if (isPending) {
+    return <PageLoader />;
+  }
+
+  if (error) {
+    return <PageError title="ingredients list" error={error} />;
+  }
 
   const filtered = ingredients.filter((i) =>
     i.name.toLowerCase().includes(searchTerm.toLowerCase())

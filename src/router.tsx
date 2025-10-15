@@ -10,7 +10,6 @@ import { Admin_HomePage } from "@/ui/staff/admin/home";
 import { Admin_StaffPage } from "@/ui/staff/admin/staff";
 import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
 import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
-import { KitchenManager_MealsPage } from "@/ui/staff/kitchen-manager/meals";
 import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
@@ -24,6 +23,7 @@ import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
 import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 import { Customer_Menu } from "./ui/customer/place-order";
+import { Customer_LoginPage } from "./ui/customer/login";
 import { Customer_Reservations } from "./ui/customer/reservations";
 import { Customer_TakeAway } from "./ui/customer/takeaway";
 import { Customer_TakeAway_CartPage } from "./ui/customer/takeaway/cart";
@@ -46,8 +46,15 @@ import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
+import { KitchenManager_DishesPage } from "./ui/staff/kitchen-manager/dishes";
 
 export const router = createBrowserRouter([
+  // Customer login as a top-level page (no layout/header/footer)
+  {
+    path: "/customer/login",
+    element: <Customer_LoginPage />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/",
     errorElement: <ErrorPage />,
@@ -306,10 +313,10 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "meals",
+            path: "dishes",
             element: (
               <StaffAuthGuard role={StaffRole.KitchenManager}>
-                <KitchenManager_MealsPage />
+                <KitchenManager_DishesPage />
               </StaffAuthGuard>
             ),
           },
