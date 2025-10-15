@@ -41,6 +41,7 @@ import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-or
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_Root } from "./ui/staff/cashier";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
+import { KitchenManager_Root } from "./ui/staff/kitchen-manager";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -286,6 +287,7 @@ export const router = createBrowserRouter([
       // Kitchen Manager routes
       {
         path: "kitchen-manager",
+        element: <KitchenManager_Root />,
         children: [
           {
             index: true,

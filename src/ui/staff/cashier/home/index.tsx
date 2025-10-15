@@ -54,6 +54,7 @@ export const Cashier_HomePage: FC = () => {
       socket.off("takeAwayOrdersResults");
       socket.off("takeAwayOrdersResultsError");
       socket.off("newTakeAwayOrder");
+      socket.off("takeAwayOrderPreparing");
       socket.off("takeAwayOrderPrepared");
     };
   }, [socket]);
@@ -66,7 +67,7 @@ export const Cashier_HomePage: FC = () => {
         break;
       case "active-take-away":
         orders = allTakeAwayOrders.filter((o: TakeAwayOrder) =>
-          ["New", "Prepared", "Prepared"].includes(o.status)
+          ["New", "Prepared", "Preparing"].includes(o.status)
         );
         break;
       case "past-dine-in":
@@ -95,6 +96,10 @@ export const Cashier_HomePage: FC = () => {
 
     setShowingOrders(orders);
   }, [allTakeAwayOrders, allDineInOrders, tab, sq]);
+
+  useEffect(() => {
+    setActiveOrder(null);
+  }, [allTakeAwayOrders, allDineInOrders]);
 
   return (
     <>
@@ -181,7 +186,24 @@ export const Cashier_HomePage: FC = () => {
         <Stack width={"30%"} flexShrink={0} bgcolor={"background.paper"} overflow={"auto"}>
           {activeOrder ? (
             tab === "active-take-away" || tab === "past-take-away" ? (
-              <TakeAwayOrderPreview order={activeOrder} close={() => setActiveOrder(null)} />
+              <TakeAwayOrderPreview
+                order={activeOrder}
+                close={() => setActiveOrder(null)}
+                cancelParentOrder={() => {
+                  setAllTakeAwayOrders((oto) =>
+                    oto.map((to) =>
+                      to.id === activeOrder?.id ? { ...to, status: "Cancelled" } : to
+                    )
+                  );
+                }}
+                completeParentOrder={() => {
+                  setAllTakeAwayOrders((oto) =>
+                    oto.map((to) =>
+                      to.id === activeOrder?.id ? { ...to, status: "Completed" } : to
+                    )
+                  );
+                }}
+              />
             ) : (
               <></>
             )

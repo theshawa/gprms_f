@@ -33,9 +33,20 @@ export const Notifications: FC = () => {
       ]);
     });
 
+    socket.on("takeAwayOrderPreparing", (order: TakeAwayOrder) => {
+      setNotifications((on) => [
+        {
+          content: `Kitchen started to prepare the Take Away Order #${order.id} placed by ${order.customerName}(${order.customerPhone})`,
+          time: order.createdAt,
+        },
+        ...on,
+      ]);
+    });
+
     return () => {
       socket.off("newTakeAwayOrder");
       socket.off("takeAwayOrderPrepared");
+      socket.off("takeAwayOrderPreparing");
     };
   }, [socket]);
   return (

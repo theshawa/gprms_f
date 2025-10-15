@@ -1,7 +1,12 @@
+import { getBackendErrorMessage } from "@/backend";
+import { useAlert } from "@/hooks/useAlert";
+import { type TakeAwayOrder } from "@/interfaces/take-away-order";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
-import { useState } from "react";
 import type { FC } from "react";
+import { useEffect, useState } from "react";
 import { OrderCard } from "../shared/order-card";
+import { useSocketConnection } from "../socket-context";
+import { TakeAwayOrderCard } from "./take-away-order-card";
 
 const dummyOrders = [
   {
@@ -151,41 +156,85 @@ const dummyOrders = [
 
 export const KitchenManager_OrdersPage: FC = () => {
   const [orderType, setOrderType] = useState<"current" | "archived">("current");
+  const [allTakeAwayOrders, setAllTakeAwayOrders] = useState<TakeAwayOrder[]>([]);
 
   const ordersList = dummyOrders;
 
-  const handleToggle = (
-    _: React.SyntheticEvent,
-    newValue: "current" | "archived"
-  ) => {
+  const socket = useSocketConnection();
+
+  const { showError } = useAlert();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.emit("getTakeAwayOrders");
+
+    socket.on("takeAwayOrdersResults", (orders) => {
+      setAllTakeAwayOrders(orders);
+    });
+
+    socket.on("takeAwayOrdersResultsError", (err) => {
+      showError(`Failed to fetch take away orders: ${getBackendErrorMessage(err)}`);
+    });
+
+    socket.on("newTakeAwayOrder", (order: TakeAwayOrder) => {
+      setAllTakeAwayOrders((oto) => [order, ...oto]);
+    });
+
+    socket.on("takeAwayOrderCancelled", (two: TakeAwayOrder) => {
+      setAllTakeAwayOrders((oto) =>
+        oto.map((o) => (o.id === two.id ? { ...o, status: "Cancelled" } : o))
+      );
+    });
+
+    return () => {
+      socket.off("takeAwayOrdersResults");
+      socket.off("takeAwayOrdersResultsError");
+      socket.off("newTakeAwayOrder");
+      socket.off("takeAwayOrderCancelled");
+    };
+  }, [socket]);
+
+  const handleToggle = (_: React.SyntheticEvent, newValue: "current" | "archived") => {
     if (newValue) setOrderType(newValue);
+  };
+
+  const updateTakeAwayOrderStatus = async (id: number, status: "Preparing" | "Prepared") => {
+    setAllTakeAwayOrders((oto) => oto.map((to) => (to.id === id ? { ...to, status } : to)));
   };
 
   return (
     <>
       {/* Toggle Controls */}
       <Box sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={orderType} onChange={handleToggle} centered>
+        <Tabs variant="fullWidth" value={orderType} onChange={handleToggle}>
           <Tab value="current" label="Current" />
           <Tab value="archived" label="Archived" />
         </Tabs>
       </Box>
 
       {orderType === "current" && (
-        <Box className="grid grid-cols-2 md:grid-cols-4 gap-6" px={3}>
+        <Box className="grid grid-cols-2 md:grid-cols-4">
           {/* New Orders dinein */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto new-orders">
+          <Box
+            borderRight={1}
+            borderColor={"divider"}
+            className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto new-orders"
+          >
             <Typography
-              variant="h5"
-              className="sticky top-0 p-4 bg-green-300/60 backdrop-blur z-10 text-black"
+              bgcolor={"background.paper"}
+              borderBottom={1}
+              borderColor={"divider"}
+              variant="subtitle1"
+              className="sticky top-0 p-2 z-10 text-black"
             >
-              New Dine-In
+              New Dine In
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6} mb={4}>
+            <Grid container spacing={2} columns={1} p={2}>
               {ordersList
                 .filter((order) => order.status === "new")
                 .map((order) => (
-                  <Grid xs={12} md={6} key={order.id}>
+                  <Grid size={1} key={order.id}>
                     <OrderCard order={order} />
                   </Grid>
                 ))}
@@ -193,18 +242,25 @@ export const KitchenManager_OrdersPage: FC = () => {
           </Box>
 
           {/* In Progress dinein */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto in-progress-orders">
+          <Box
+            borderRight={1}
+            borderColor={"divider"}
+            className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto in-progress-orders"
+          >
             <Typography
-              variant="h5"
-              className="sticky top-0 p-4 bg-yellow-300/60 backdrop-blur z-10 text-black"
+              bgcolor={"background.paper"}
+              borderBottom={1}
+              borderColor={"divider"}
+              variant="subtitle1"
+              className="sticky top-0 p-2 z-10 text-black"
             >
-              In Progress Dine-In
+              Preparing Dine-In
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6} mb={4}>
+            <Grid container spacing={2} columns={1} p={2}>
               {ordersList
                 .filter((order) => order.status === "in-progress")
                 .map((order) => (
-                  <Grid xs={12} md={6} key={order.id}>
+                  <Grid size={1} key={order.id}>
                     <OrderCard order={order} />
                   </Grid>
                 ))}
@@ -212,19 +268,29 @@ export const KitchenManager_OrdersPage: FC = () => {
           </Box>
 
           {/* New takeaway */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto new-orders">
+          <Box
+            borderRight={1}
+            borderColor={"divider"}
+            className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto new-orders"
+          >
             <Typography
-              variant="h5"
-              className="sticky top-0 p-4 bg-green-300/60 backdrop-blur z-10 text-black"
+              bgcolor={"background.paper"}
+              borderBottom={1}
+              borderColor={"divider"}
+              variant="subtitle1"
+              className="sticky top-0 p-2 z-10 text-black"
             >
-              New Take-Away
+              New Take Away
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6} mb={4}>
-              {ordersList
-                .filter((order) => order.status === "new")
+            <Grid container spacing={2} columns={1} p={2}>
+              {allTakeAwayOrders
+                .filter((order) => order.status === "New")
                 .map((order) => (
-                  <Grid xs={12} md={6} key={order.id}>
-                    <OrderCard order={order} />
+                  <Grid size={1} key={order.id}>
+                    <TakeAwayOrderCard
+                      updateParentStatus={() => updateTakeAwayOrderStatus(order.id, "Preparing")}
+                      order={order}
+                    />
                   </Grid>
                 ))}
             </Grid>
@@ -233,17 +299,23 @@ export const KitchenManager_OrdersPage: FC = () => {
           {/* In progress takeaway */}
           <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto in-progress-orders">
             <Typography
-              variant="h5"
-              className="sticky top-0 p-4 bg-yellow-300/60 backdrop-blur z-10 text-black"
+              bgcolor={"background.paper"}
+              borderBottom={1}
+              borderColor={"divider"}
+              variant="subtitle1"
+              className="sticky top-0 p-2 z-10 text-black"
             >
-              In Progress Take-Away
+              Preparing Take Away
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6} mb={4}>
-              {ordersList
-                .filter((order) => order.status === "in-progress")
+            <Grid container columns={1} p={2} spacing={2}>
+              {allTakeAwayOrders
+                .filter((order) => order.status === "Preparing")
                 .map((order) => (
-                  <Grid xs={12} md={6} key={order.id}>
-                    <OrderCard order={order} />
+                  <Grid size={1} key={order.id}>
+                    <TakeAwayOrderCard
+                      updateParentStatus={() => updateTakeAwayOrderStatus(order.id, "Prepared")}
+                      order={order}
+                    />
                   </Grid>
                 ))}
             </Grid>
@@ -252,20 +324,27 @@ export const KitchenManager_OrdersPage: FC = () => {
       )}
 
       {orderType === "archived" && (
-        <Box className="grid grid-cols-1 md:grid-cols-2 gap-6" px={3}>
+        <Box className="grid grid-cols-1 md:grid-cols-2">
           {/* Completed */}
-          <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto completed-orders">
+          <Box
+            borderRight={1}
+            borderColor={"divider"}
+            className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto completed-orders"
+          >
             <Typography
-              variant="h5"
-              className="sticky top-0 p-4 bg-gray-300/60 backdrop-blur z-10 text-black"
+              bgcolor={"background.paper"}
+              borderBottom={1}
+              borderColor={"divider"}
+              variant="subtitle1"
+              className="sticky top-0 p-2 z-10 text-black"
             >
               Completed Orders
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6} mb={4}>
+            <Grid container spacing={2} columns={2} p={2}>
               {ordersList
                 .filter((order) => order.status === "completed")
                 .map((order) => (
-                  <Grid xs={12} md={6} key={order.id}>
+                  <Grid size={1} key={order.id}>
                     <OrderCard order={order} />
                   </Grid>
                 ))}
@@ -275,16 +354,19 @@ export const KitchenManager_OrdersPage: FC = () => {
           {/* Rejected */}
           <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto rejected-orders">
             <Typography
-              variant="h5"
-              className="sticky top-0 p-4 bg-red-300/60 backdrop-blur z-10 text-black"
+              bgcolor={"background.paper"}
+              borderBottom={1}
+              borderColor={"divider"}
+              variant="subtitle1"
+              className="sticky top-0 p-2 z-10 text-black"
             >
               Rejected Orders
             </Typography>
-            <Grid container spacing={2} ml={6} mr={6} mb={4}>
+            <Grid container spacing={2} columns={2} p={2}>
               {ordersList
                 .filter((order) => order.status === "rejected")
                 .map((order) => (
-                  <Grid xs={12} md={6} key={order.id}>
+                  <Grid size={1} key={order.id}>
                     <OrderCard order={order} />
                   </Grid>
                 ))}
