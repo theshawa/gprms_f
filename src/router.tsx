@@ -13,7 +13,7 @@ import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingre
 import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
-import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Customer_AboutPage } from "./ui/customer/about-us";
 import { Customer_ContactPage } from "./ui/customer/contact";
 import { Customer_DineInLayout } from "./ui/customer/dine-in";
@@ -26,6 +26,7 @@ import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_LoginPage } from "./ui/customer/login";
 import { Customer_Reservations } from "./ui/customer/reservations";
 import { Customer_TakeAway } from "./ui/customer/takeaway";
+import { Customer_TakeAway_CartPage } from "./ui/customer/takeaway/cart";
 import { Admin_CalenderPage } from "./ui/staff/admin/calender";
 import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_DiningAreasPage } from "./ui/staff/admin/dining-areas";
@@ -38,10 +39,9 @@ import { Admin_OrdersLayout } from "./ui/staff/admin/orders";
 import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders";
 import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
+import { Cashier_Root } from "./ui/staff/cashier";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
-import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
-import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
-import { InvoiceProvider } from "./ui/staff/cashier/shared/invoice-context";
+import { KitchenManager_Root } from "./ui/staff/kitchen-manager";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -96,7 +96,13 @@ export const router = createBrowserRouter([
       },
       {
         path: "takeaway",
-        element: <Customer_TakeAway />,
+        children: [
+          { index: true, element: <Customer_TakeAway /> },
+          {
+            path: "cart",
+            element: <Customer_TakeAway_CartPage />,
+          },
+        ],
       },
       {
         path: "our-story",
@@ -288,6 +294,7 @@ export const router = createBrowserRouter([
       // Kitchen Manager routes
       {
         path: "kitchen-manager",
+        element: <KitchenManager_Root />,
         children: [
           {
             index: true,
@@ -325,33 +332,13 @@ export const router = createBrowserRouter([
       },
       {
         path: "cashier",
-        element: (
-          <InvoiceProvider>
-            <Outlet />
-          </InvoiceProvider>
-        ),
+        element: <Cashier_Root />,
         children: [
           {
             index: true,
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
                 <Cashier_HomePage />
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "invoices",
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_InvoicesPage />
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "orders",
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_OrdersPage />
               </StaffAuthGuard>
             ),
           },

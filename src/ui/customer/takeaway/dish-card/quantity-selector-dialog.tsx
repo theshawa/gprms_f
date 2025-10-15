@@ -1,5 +1,6 @@
-import { useCustomerCart } from "@/hooks/useCustomerCart";
+import { useCustomerTakeAwayCart } from "@/hooks/useCustomerTakeAwayCart";
 import type { Dish } from "@/interfaces/dish";
+import { formatCurrency } from "@/utils/currency-format";
 import { Add, Remove } from "@mui/icons-material";
 import {
   Button,
@@ -7,161 +8,71 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   IconButton,
-  Radio,
-  RadioGroup,
-  Checkbox,
   Stack,
   Typography,
 } from "@mui/material";
-import { type FC, useEffect, useState } from "react";
+import { type FC } from "react";
 
 export const QuantitySelectorDialog: FC<{
   open: boolean;
-  onClose: () => void;
+  handleClose: () => void;
   dish: Dish;
-}> = ({ open, onClose, dish }) => {
-  const [qty, setQty] = useState(1);
-  const { addItemToCart } = useCustomerCart();
+}> = ({ open, handleClose, dish }) => {
+  const { cartItems, increaseItemQuantity, decreaseItemQuantity } =
+    useCustomerTakeAwayCart();
 
-  // Example customization states
-  const [size, setSize] = useState("regular"); // radio choice
-  const [extras, setExtras] = useState<string[]>([]); // multiple checkboxes
-
-  useEffect(() => {
-    if (open) {
-      setQty(1);
-      setSize("regular");
-      setExtras([]);
-    }
-  }, [open]);
-
-  const toggleExtra = (extra: string) => {
-    setExtras((prev) =>
-      prev.includes(extra) ? prev.filter((e) => e !== extra) : [...prev, extra]
-    );
-  };
+  const currentQuantity =
+    cartItems.find((item) => item.dish.id === dish.id)?.quantity || 0;
 
   return (
-    <Dialog open={open} fullWidth maxWidth="sm">
+    <Dialog open={open} fullWidth maxWidth="xs">
       <DialogTitle>
-        Select Quantity for <span className="capitalize">{dish.name}</span>
+        <Typography variant="h6" textTransform={"capitalize"}>
+          {dish.name}
+        </Typography>
       </DialogTitle>
 
       <DialogContent>
-        {/* Dish details */}
-        <Typography variant="subtitle1" gutterBottom color="text.secondary">
-          {dish.description}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Rs. {dish.price.toFixed(2)}
+        <Typography variant="subtitle2" textAlign={"center"}>
+          Select Quantity
         </Typography>
 
         {/* Quantity Selector */}
         <Stack
           direction="row"
           py={3}
-          justifyContent="center"
           alignItems="center"
+          justifyContent={"space-between"}
           spacing={4}
         >
           <IconButton
-            color="error"
-            size="medium"
-            onClick={() => setQty(qty - 1)}
-            disabled={qty === 1}
+            size="large"
+            onClick={() => decreaseItemQuantity(dish)}
+            disabled={currentQuantity < 1}
           >
             <Remove />
           </IconButton>
-          <Typography variant="h5">{qty}</Typography>
+          <Typography variant="h4">{currentQuantity}</Typography>
           <IconButton
             color="success"
-            size="medium"
-            onClick={() => setQty(qty + 1)}
+            size="large"
+            onClick={() => increaseItemQuantity(dish)}
           >
             <Add />
           </IconButton>
         </Stack>
-
-        {/* Customization Options */}
-        <Stack spacing={3}>
-          {/* Example: Size choice */}
-          <FormControl>
-            <FormLabel>Size</FormLabel>
-            <RadioGroup
-              row
-              value={size}
-              onChange={(e) => setSize(e.target.value)}
-            >
-              <FormControlLabel
-                value="small"
-                control={<Radio />}
-                label="Small"
-              />
-              <FormControlLabel
-                value="regular"
-                control={<Radio />}
-                label="Regular"
-              />
-              <FormControlLabel
-                value="large"
-                control={<Radio />}
-                label="Large"
-              />
-            </RadioGroup>
-          </FormControl>
-
-          {/* Example: Extra add-ons */}
-          <FormControl>
-            <FormLabel>Add-ons</FormLabel>
-            <Stack direction="row" spacing={2}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={extras.includes("cheese")}
-                    onChange={() => toggleExtra("cheese")}
-                  />
-                }
-                label="Extra Cheese"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={extras.includes("spicy")}
-                    onChange={() => toggleExtra("spicy")}
-                  />
-                }
-                label="Spicy"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={extras.includes("sauce")}
-                    onChange={() => toggleExtra("sauce")}
-                  />
-                }
-                label="Extra Sauce"
-              />
-            </Stack>
-          </FormControl>
-        </Stack>
+        <Typography variant="subtitle1" textAlign={"center"}>
+          {formatCurrency(dish.price)} x {currentQuantity} ={" "}
+          <span className="font-medium">
+            {formatCurrency(currentQuantity * dish.price)}
+          </span>
+        </Typography>
       </DialogContent>
 
       <DialogActions>
-        <Button
-          onClick={() => {
-            addItemToCart(dish, qty);
-            onClose();
-          }}
-          variant="contained"
-        >
-          Add to Cart
-        </Button>
-        <Button onClick={onClose} color="inherit">
-          Cancel
+        <Button onClick={handleClose} color="inherit">
+          Close
         </Button>
       </DialogActions>
     </Dialog>

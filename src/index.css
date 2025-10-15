@@ -2,4 +2,6 @@
 
 :root {
   font-family: "Inter", sans-serif;
+
+  --header-height: 64px;
 }
