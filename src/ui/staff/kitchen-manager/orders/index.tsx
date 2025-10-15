@@ -2,157 +2,13 @@ import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { useState } from "react";
 import type { FC } from "react";
 import { OrderCard } from "../shared/order-card";
-
-const dummyOrders = [
-  {
-    id: "order-001",
-    orderCode: "ORD001",
-    customerName: "John Doe",
-    tableNumber: 1,
-    status: "new",
-    createdAt: "2025-07-23T09:00:00Z",
-    items: [
-      { name: "Margherita Pizza", quantity: 1 },
-      { name: "Iced Tea", quantity: 1 },
-    ],
-    note: "No onions",
-  },
-  {
-    id: "order-002",
-    orderCode: "ORD002",
-    customerName: "Jane Smith",
-    tableNumber: 2,
-    status: "new",
-    createdAt: "2025-07-23T09:05:00Z",
-    items: [
-      { name: "Pasta Carbonara", quantity: 2 },
-      { name: "Garlic Bread", quantity: 1 },
-    ],
-    note: "Medium cheese",
-  },
-  {
-    id: "order-003",
-    orderCode: "ORD003",
-    customerName: "Bob Brown",
-    tableNumber: 3,
-    status: "in-progress",
-    createdAt: "2025-07-23T08:50:00Z",
-    items: [
-      { name: "Burger", quantity: 1 },
-      { name: "Fries", quantity: 1 },
-    ],
-    note: "none",
-  },
-  {
-    id: "order-004",
-    orderCode: "ORD004",
-    customerName: "Alice Green",
-    tableNumber: 4,
-    status: "in-progress",
-    createdAt: "2025-07-23T08:30:00Z",
-    items: [
-      { name: "Chicken Wrap", quantity: 2 },
-      { name: "Smoothie", quantity: 2 },
-    ],
-    note: "One wrap without mayo",
-  },
-  {
-    id: "order-005",
-    orderCode: "ORD005",
-    customerName: "Michael White",
-    tableNumber: 5,
-    status: "completed",
-    createdAt: "2025-07-22T17:45:00Z",
-    items: [
-      { name: "Tuna Sandwich", quantity: 1 },
-      { name: "Cola", quantity: 1 },
-    ],
-  },
-  {
-    id: "order-006",
-    orderCode: "ORD006",
-    customerName: "Emily Davis",
-    tableNumber: 6,
-    status: "completed",
-    createdAt: "2025-07-22T16:30:00Z",
-    items: [
-      { name: "Mushroom Soup", quantity: 2 },
-      { name: "Water", quantity: 2 },
-    ],
-  },
-  {
-    id: "order-007",
-    orderCode: "ORD007",
-    customerName: "Chris Johnson",
-    tableNumber: 7,
-    status: "rejected",
-    createdAt: "2025-07-22T15:20:00Z",
-    items: [{ name: "Cheesecake", quantity: 1 }],
-    note: "Lactose intolerant – canceled",
-  },
-  {
-    id: "order-008",
-    orderCode: "ORD008",
-    customerName: "Sara Lee",
-    tableNumber: 8,
-    status: "rejected",
-    createdAt: "2025-07-22T15:00:00Z",
-    items: [
-      { name: "Nachos", quantity: 1 },
-      { name: "Lime Soda", quantity: 1 },
-    ],
-  },
-  {
-    id: "order-009",
-    orderCode: "ORD009",
-    customerName: "Tom Holland",
-    tableNumber: 9,
-    status: "new",
-    createdAt: "2025-07-23T09:10:00Z",
-    items: [{ name: "Chicken Biryani", quantity: 1 }],
-  },
-  {
-    id: "order-010",
-    orderCode: "ORD010",
-    customerName: "Nina Patel",
-    tableNumber: 10,
-    status: "in-progress",
-    createdAt: "2025-07-23T08:20:00Z",
-    items: [
-      { name: "Paneer Tikka", quantity: 1 },
-      { name: "Mango Lassi", quantity: 1 },
-    ],
-  },
-  {
-    id: "order-011",
-    orderCode: "ORD011",
-    customerName: "David King",
-    tableNumber: 11,
-    status: "completed",
-    createdAt: "2025-07-21T19:00:00Z",
-    items: [
-      { name: "Grilled Fish", quantity: 1 },
-      { name: "Rice", quantity: 1 },
-    ],
-  },
-  {
-    id: "order-012",
-    orderCode: "ORD012",
-    customerName: "Luna Cross",
-    tableNumber: 12,
-    status: "new",
-    createdAt: "2025-07-23T09:15:00Z",
-    items: [
-      { name: "French Toast", quantity: 2 },
-      { name: "Orange Juice", quantity: 1 },
-    ],
-  },
-];
+import { OrdersService } from "@/services/staff/kitchen-manager/orders";
+import { useQuery } from "@tanstack/react-query";
+import { PageLoader } from "../../shared/page-loader";
+import { PageError } from "../../shared/page-error";
 
 export const KitchenManager_OrdersPage: FC = () => {
   const [orderType, setOrderType] = useState<"current" | "archived">("current");
-
-  const ordersList = dummyOrders;
 
   const handleToggle = (
     _: React.SyntheticEvent,
@@ -160,6 +16,23 @@ export const KitchenManager_OrdersPage: FC = () => {
   ) => {
     if (newValue) setOrderType(newValue);
   };
+
+  const {
+    data: ordersList = [],
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ["kitchen-manager_orders"],
+    queryFn: () => OrdersService.getAll(),
+  });
+
+  if (isPending) {
+    return <PageLoader />;
+  }
+
+  if (error) {
+    return <PageError title="orders list" error={error} />;
+  }
 
   return (
     <>
@@ -257,7 +130,7 @@ export const KitchenManager_OrdersPage: FC = () => {
           <Box className="flex flex-col gap-5 max-h-[calc(100vh-130px)] overflow-y-auto completed-orders">
             <Typography
               variant="h5"
-              className="sticky top-0 p-4 bg-gray-300/60 backdrop-blur z-10 text-black"
+              className="sticky top-0 p-4 bg-green-600/60 backdrop-blur z-10 text-black"
             >
               Completed Orders
             </Typography>
