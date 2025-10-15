@@ -9,8 +9,8 @@ export interface TakeAwayOrder {
     dish: Dish;
     quantity: number;
     priceAtOrder: number;
-  };
+  }[];
   totalAmount: number;
-  status: "New" | "Preparing" | "Prepared" | "Completed" | "Rejected";
+  status: "New" | "Preparing" | "Prepared" | "Completed" | "Cancelled";
   createdAt: string;
 }

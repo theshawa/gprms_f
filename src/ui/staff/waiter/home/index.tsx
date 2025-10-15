@@ -26,9 +26,7 @@ export const Waiter_HomePage: FC = () => {
     });
 
     socket.on("diningTablesError", (err) => {
-      showError(
-        `Failed to fetch assigned tables: ${getBackendErrorMessage(err)}`
-      );
+      showError(`Failed to fetch assigned tables: ${getBackendErrorMessage(err)}`);
     });
 
     socket.emit("getOngoingOrdersCount", auth!.user.id);
@@ -38,9 +36,7 @@ export const Waiter_HomePage: FC = () => {
     });
 
     socket.on("ongoingOrdersCountError", (err) => {
-      showError(
-        `Failed to fetch ongoing orders count: ${getBackendErrorMessage(err)}`
-      );
+      showError(`Failed to fetch ongoing orders count: ${getBackendErrorMessage(err)}`);
     });
 
     return () => {
@@ -58,18 +54,10 @@ export const Waiter_HomePage: FC = () => {
           Dining Table Status
         </Typography>
         <Stack direction="row" ml="auto" spacing={1}>
-          <Chip
-            color="success"
-            label={`${diningTables.length} Tables Assigned`}
-          />
+          <Chip color="success" label={`${diningTables.length} Tables Assigned`} />
         </Stack>
       </Stack>
-      <Grid
-        columns={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
-        container
-        spacing={2}
-        mt={5}
-      >
+      <Grid columns={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6 }} container spacing={2} mt={5}>
         {diningTables.map((dt) => (
           <TableCard key={dt.id} diningTable={dt} />
         ))}

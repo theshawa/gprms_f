@@ -40,10 +40,7 @@ import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders
 import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_Root } from "./ui/staff/cashier";
-import { Cashier_HomePage } from "./ui/staff/cashier/home/index-dummy";
-import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
-import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
-import { Cashier_TakeAwayPage } from "./ui/staff/cashier/take-away";
+import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -333,30 +330,6 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
                 <Cashier_HomePage />
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "invoices",
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_InvoicesPage />
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "orders",
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_OrdersPage />
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "take-away",
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <Cashier_TakeAwayPage />
               </StaffAuthGuard>
             ),
           },
