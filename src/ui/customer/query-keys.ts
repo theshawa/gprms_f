@@ -1,3 +1,3 @@
 export const QKs = {
-  customer_dinein: (tableId: string) => ["customer_dinein", tableId],
+  customer_takeaway_dishes: ["customer_takeaway_dishes"],
 };

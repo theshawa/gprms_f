@@ -1,0 +1,4 @@
+- Dishes "Allow Take Away" field
+- Customer Takeaway Cart UI [DONE]
+- Takeaway place order
+- Kitchen Manager Realtime Take Away Order

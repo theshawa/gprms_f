@@ -3,7 +3,6 @@ import {
   AttachMoney,
   CalendarToday,
   EggAlt,
-  EventSeat,
   Fastfood,
   Home,
   Kitchen,
@@ -14,7 +13,6 @@ import {
   People,
   RateReview,
   ReceiptLong,
-  Settings,
   SupervisedUserCircle,
   TableRestaurant,
 } from "@mui/icons-material";
@@ -113,8 +111,8 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: Fastfood,
         },
         {
-          title: "Meals",
-          link: "/staff/kitchen-manager/meals",
+          title: "Dishes",
+          link: "/staff/kitchen-manager/dishes",
           Icon: LocalPizza,
         },
         {
@@ -150,25 +148,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
       );
       break;
     case StaffRole.Cashier:
-      links.push(
-        {
-          title: "Home",
-          link: "/staff/cashier",
-          Icon: Home,
-          exactLinkMatch: true,
-        },
-        {
-          title: "Invoices",
-          link: "/staff/cashier/invoices",
-          Icon: ReceiptLong,
-          exactLinkMatch: true,
-        },
-        {
-          title: "Orders",
-          link: "/staff/cashier/orders",
-          Icon: AttachMoney,
-        }
-      );
+      links.push({
+        title: "Orders",
+        link: "/staff/cashier",
+        Icon: ReceiptLong,
+      });
       break;
     default:
       links.push({

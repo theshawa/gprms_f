@@ -5,26 +5,29 @@ import { Customer_DishDetailPage } from "@/ui/customer/dish-detail";
 import { Customer_Layout } from "@/ui/customer/layout";
 import { ErrorPage } from "@/ui/error";
 import { NotFoundPage } from "@/ui/not-found";
-import { Admin_HomePage } from "@/ui/staff/admin/home";
 import { Admin_AnalyticsPage } from "@/ui/staff/admin/analytics";
 import { Admin_FeedbackPage } from "@/ui/staff/admin/feedback";
+import { Admin_HomePage } from "@/ui/staff/admin/home";
 import { Admin_StaffPage } from "@/ui/staff/admin/staff";
 import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
 import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
-import { KitchenManager_MealsPage } from "@/ui/staff/kitchen-manager/meals";
 import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
-import { KitchenManager_MealItem } from "@/ui/staff/kitchen-manager/shared/meal-item";
 import { Staff_Layout } from "@/ui/staff/layout";
 import { Staff_LoginPage } from "@/ui/staff/login";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { Customer_AboutPage } from "./ui/customer/about-us";
+import { Customer_ContactPage } from "./ui/customer/contact";
 import { Customer_DineInLayout } from "./ui/customer/dine-in";
 import { Customer_DineInConfirm } from "./ui/customer/dine-in/confirm";
 import { Customer_DineInMenuPage } from "./ui/customer/dine-in/menu";
 import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
+import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 // import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_LoginPage } from "./ui/customer/login";
 import { Customer_Reservations } from "./ui/customer/reservations";
+import { Customer_TakeAway } from "./ui/customer/takeaway";
+import { Customer_TakeAway_CartPage } from "./ui/customer/takeaway/cart";
 import { Admin_CalenderPage } from "./ui/staff/admin/calender";
 import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_DiningAreasPage } from "./ui/staff/admin/dining-areas";
@@ -37,10 +40,9 @@ import { Admin_OrdersLayout } from "./ui/staff/admin/orders";
 import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders";
 import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
+import { Cashier_Root } from "./ui/staff/cashier";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
-import { Cashier_InvoicesPage } from "./ui/staff/cashier/invoices";
-import { Cashier_OrdersPage } from "./ui/staff/cashier/orders";
-import { InvoiceProvider } from "./ui/staff/cashier/shared/invoice-context";
+import { KitchenManager_Root } from "./ui/staff/kitchen-manager";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -52,6 +54,7 @@ import { Customer_HomePage as Customer_ViewMenuPage } from "./ui/customer/view-m
 import { Customer_CartPage } from "./ui/customer/shopping-cart";
 import { Customer_OrderSuccessPage } from "./ui/customer/order-success";
 import { Customer_FeedbackPage } from "./ui/customer/feedback";
+import { KitchenManager_DishesPage } from "./ui/staff/kitchen-manager/dishes";
 
 export const router = createBrowserRouter([
   // Customer login as a top-level page (no layout/header/footer)
@@ -138,6 +141,16 @@ export const router = createBrowserRouter([
           {
             path: "status",
             element: <Customer_DineInStatusPage />,
+          },
+        ],
+      },
+      {
+        path: "takeaway",
+        children: [
+          { index: true, element: <Customer_TakeAway /> },
+          {
+            path: "cart",
+            element: <Customer_TakeAway_CartPage />,
           },
         ],
       },
@@ -267,8 +280,8 @@ export const router = createBrowserRouter([
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
                 <Admin_AnalyticsPage />
-                </StaffAuthGuard>
-             ),
+              </StaffAuthGuard>
+            ),
           },
           {
             path: "customers",
@@ -284,7 +297,7 @@ export const router = createBrowserRouter([
               <StaffAuthGuard role={StaffRole.Admin}>
                 <Admin_FeedbackPage />
               </StaffAuthGuard>
-            )
+            ),
           },
           {
             path: "calendar",
@@ -331,6 +344,7 @@ export const router = createBrowserRouter([
       // Kitchen Manager routes
       {
         path: "kitchen-manager",
+        element: <KitchenManager_Root />,
         children: [
           {
             index: true,
@@ -349,25 +363,12 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "meals",
-            children: [
-              {
-                index: true,
-                element: (
-                  <StaffAuthGuard role={StaffRole.KitchenManager}>
-                    <KitchenManager_MealsPage />
-                  </StaffAuthGuard>
-                ),
-              },
-              {
-                path: "meal-item/:mealId",
-                element: (
-                  <StaffAuthGuard role={StaffRole.KitchenManager}>
-                    <KitchenManager_MealItem />
-                  </StaffAuthGuard>
-                ),
-              },
-            ],
+            path: "dishes",
+            element: (
+              <StaffAuthGuard role={StaffRole.KitchenManager}>
+                <KitchenManager_DishesPage />
+              </StaffAuthGuard>
+            ),
           },
           {
             path: "ingredients",
@@ -381,34 +382,13 @@ export const router = createBrowserRouter([
       },
       {
         path: "cashier",
+        element: <Cashier_Root />,
         children: [
           {
             index: true,
             element: (
               <StaffAuthGuard role={StaffRole.Cashier}>
-                <InvoiceProvider>
-                  <Cashier_HomePage />
-                </InvoiceProvider>
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "invoices",
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <InvoiceProvider>
-                  <Cashier_InvoicesPage />
-                </InvoiceProvider>
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "orders",
-            element: (
-              <StaffAuthGuard role={StaffRole.Cashier}>
-                <InvoiceProvider>
-                  <Cashier_OrdersPage />
-                </InvoiceProvider>
+                <Cashier_HomePage />
               </StaffAuthGuard>
             ),
           },
