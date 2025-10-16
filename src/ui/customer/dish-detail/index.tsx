@@ -171,7 +171,7 @@ export const Customer_DishDetailPage: FC = () => {
   }
 
   const handleClose = () => {
-    navigate(-1); // Go back to previous page
+    navigate('/view-menu'); // Go back to menu page
   };
 
   const handleRemoveConfirm = () => {
@@ -197,8 +197,8 @@ export const Customer_DishDetailPage: FC = () => {
       
       addItemToCart(dishToAdd, quantity);
       
-      // Navigate back after adding to cart
-      navigate(-1);
+      // Navigate back to menu after adding to cart
+      navigate('/view-menu');
     }
     // If quantity is 0, do nothing
   };
@@ -206,7 +206,7 @@ export const Customer_DishDetailPage: FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-start">
       <div data-layer="View item" className="ViewItem w-full max-w-sm mx-auto min-h-screen relative">
-        <div data-layer="detail selected options" className="DetailSelectedOptions w-full min-h-screen bg-white overflow-y-auto">
+        <div data-layer="detail selected options" className="DetailSelectedOptions w-full min-h-screen bg-white overflow-y-auto pb-24">
           <img 
             data-layer="hero img" 
             className="HeroImg w-96 h-96 left-0 top-0 absolute object-cover" 
@@ -225,17 +225,20 @@ export const Customer_DishDetailPage: FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <div data-layer="description" className="Description w-full px-6 mt-[392px] pb-32 inline-flex flex-col justify-start items-center gap-4">
-            <div data-layer="dish header" className="DishHeader inline-flex flex-col justify-start items-center gap-2">
-              <div data-layer="dish name" className="DishName text-center text-gray-900 text-xl font-bold leading-7">{dish.name}</div>
-              <div data-layer="dish price" className="DishPrice inline-flex items-center gap-1">
-                <div data-layer="price amount" className="PriceAmount text-green-600 text-lg font-bold leading-tight">LKR {dish.price.toFixed(2)}</div>
+          <div data-layer="content" className="Content w-full mt-[392px] pb-8 inline-flex flex-col justify-start items-center">
+            {/* Description Section */}
+            <div data-layer="description" className="Description w-full px-6 pb-8 inline-flex flex-col justify-start items-center gap-4">
+              <div data-layer="dish header" className="DishHeader inline-flex flex-col justify-start items-center gap-2">
+                <div data-layer="dish name" className="DishName text-center text-gray-900 text-xl font-bold leading-7">{dish.name}</div>
+                <div data-layer="dish price" className="DishPrice inline-flex items-center gap-1">
+                  <div data-layer="price amount" className="PriceAmount text-green-600 text-lg font-bold leading-tight">LKR {dish.price.toFixed(2)}</div>
+                </div>
               </div>
+              <div data-layer="dish description" className="DishDescription w-full px-4 text-center text-gray-600 text-sm font-normal leading-relaxed">{dish.description}</div>
             </div>
-            <div data-layer="dish description" className="DishDescription w-full px-4 text-center text-gray-600 text-sm font-normal leading-relaxed">{dish.description}</div>
-          </div>
 
-          <div data-layer="quantity" className="Quantity w-full px-6 py-4 inline-flex flex-col justify-start items-start gap-2.5">
+            {/* Quantity Section - Moved right after description with proper gap */}
+            <div data-layer="quantity" className="Quantity w-full px-6 py-4 inline-flex flex-col justify-start items-start gap-2.5">
             <div data-layer="quantity bar" className="QuantityBar self-stretch p-4 bg-gray-100 rounded-2xl inline-flex justify-between items-center">
               <div data-layer="number" className="Number w-16 h-4 relative">
                 <div data-layer="Quantity" className="Quantity left-0 top-[1px] absolute justify-start text-gray-900 text-xs font-normal leading-none">Quantity</div>
@@ -265,6 +268,7 @@ export const Customer_DishDetailPage: FC = () => {
               </div>
             </div>
           </div>
+          </div>
           <div data-layer="bottom" className="Bottom fixed bottom-0 left-0 right-0 w-full max-w-sm mx-auto px-6 pt-3 pb-8 bg-white border-t-[0.50px] border-gray-300 inline-flex flex-col justify-start items-start gap-2.5 z-40">
             <div data-layer="bottom bar" className="BottomBar self-stretch px-4 pt-4 pb-5 bg-gray-100 rounded-xl backdrop-blur-[50px] inline-flex justify-between items-center">
               <div data-layer="total" className="Total inline-flex flex-col justify-center items-start gap-2">
@@ -285,7 +289,7 @@ export const Customer_DishDetailPage: FC = () => {
                 className={`Button w-36 h-10 px-6 py-2 rounded-full flex justify-center items-center gap-2.5 transition-colors ${
                   quantity === 0 
                     ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-green-900 hover:bg-green-800'
+                    : 'bg-green-600 hover:bg-green-700'
                 }`}
               >
                 <div data-layer="button name" className="ButtonName text-center justify-start text-white text-base font-semibold leading-tight">
