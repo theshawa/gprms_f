@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { Link } from "react-router-dom";
 
 export const Customer_DiningAreasPage: FC = () => {
   return (
@@ -135,18 +136,18 @@ export const Customer_DiningAreasPage: FC = () => {
             dining experience with us.
           </p>
           <div className="space-x-4">
-            <a
-              href="/reservations"
+            <Link
+              to="/reservations"
               className="bg-green-900 hover:bg-green-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
             >
               Reserve Now
-            </a>
-            <a
-              href="/menu"
+            </Link>
+            <Link
+              to="/menu"
               className="border border-green-900 text-green-900 hover:bg-green-50 px-8 py-3 rounded-lg transition-colors"
             >
               View Menu
-            </a>
+            </Link>
           </div>
         </div>
       </section>

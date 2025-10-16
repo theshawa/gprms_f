@@ -32,6 +32,12 @@ export const Customer_HomePage: FC = () => {
             >
               Reserve
             </Link>
+            <Link
+              to="customer/login"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors duration-300 ml-4"
+            >
+              Test Dine-In
+            </Link>
           </div>
         </div>
       </section>
@@ -59,7 +65,7 @@ export const Customer_HomePage: FC = () => {
                   Enjoy exclusive discounts on top-rated dishes
                 </p>
                 <Link
-                  to="deals"
+                  to="/menu"
                   className="text-white-900 hover:underline font-semibold"
                 >
                   SEE ALL DEALS →
@@ -146,13 +152,10 @@ export const Customer_HomePage: FC = () => {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="border border-black text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
-                Add to favourites
-              </button>
+            <div className="flex justify-center">
               <Link
                 to="menu"
-                className="bg-green-900 hover:bg-green-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                className="bg-green-900 hover:bg-green-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
               >
                 Explore →
               </Link>

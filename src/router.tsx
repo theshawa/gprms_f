@@ -1,6 +1,7 @@
 import { StaffAuthGuard } from "@/components/staff-auth-guard";
 import { StaffRole } from "@/enums/staff-role";
 import { Customer_HomePage } from "@/ui/customer/home";
+import { Customer_DishDetailPage } from "@/ui/customer/dish-detail";
 import { Customer_Layout } from "@/ui/customer/layout";
 import { ErrorPage } from "@/ui/error";
 import { NotFoundPage } from "@/ui/not-found";
@@ -22,7 +23,7 @@ import { Customer_DineInMenuPage } from "./ui/customer/dine-in/menu";
 import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
 import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
-import { Customer_Menu } from "./ui/customer/place-order";
+// import { Customer_Menu } from "./ui/customer/place-order";
 import { Customer_LoginPage } from "./ui/customer/login";
 import { Customer_Reservations } from "./ui/customer/reservations";
 import { Customer_TakeAway } from "./ui/customer/takeaway";
@@ -46,6 +47,13 @@ import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
+import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
+import { Customer_AboutPage } from "./ui/customer/about-us";
+import { Customer_ContactPage } from "./ui/customer/contact";
+import { Customer_HomePage as Customer_ViewMenuPage } from "./ui/customer/view-menu";
+import { Customer_CartPage } from "./ui/customer/shopping-cart";
+import { Customer_OrderSuccessPage } from "./ui/customer/order-success";
+import { Customer_FeedbackPage } from "./ui/customer/feedback";
 import { KitchenManager_DishesPage } from "./ui/staff/kitchen-manager/dishes";
 
 export const router = createBrowserRouter([
@@ -55,6 +63,48 @@ export const router = createBrowserRouter([
     element: <Customer_LoginPage />,
     errorElement: <ErrorPage />,
   },
+  // Order summary page - shows current order status and allows more ordering rounds
+  {
+    path: "/order-summary",
+    element: <Customer_MenuViewOnly />,
+    errorElement: <ErrorPage />,
+  },
+  // Individual dish details page
+  {
+    path: "/dish/:dishId",
+    element: <Customer_DishDetailPage />,
+    errorElement: <ErrorPage />,
+  },
+  // View menu page - dine-in experience after login (no layout/header/footer)
+  {
+    path: "/view-menu",
+    element: <Customer_ViewMenuPage />,
+    errorElement: <ErrorPage />,
+  },
+  // Cart page - view and manage cart items
+  {
+    path: "/cart",
+    element: <Customer_CartPage />,
+    errorElement: <ErrorPage />,
+  },
+  // Order success page
+  {
+    path: "/order-success",
+    element: <Customer_OrderSuccessPage />,
+    errorElement: <ErrorPage />,
+  },
+  // Feedback page
+  {
+    path: "/feedback",
+    element: <Customer_FeedbackPage />,
+    errorElement: <ErrorPage />,
+  },
+  // Place order page as a top-level page (no layout/header/footer) - mobile/tablet focused
+  // {
+  //   path: "/place-order",
+  //   element: <Customer_Menu />,
+  //   errorElement: <ErrorPage />,
+  // },
   {
     path: "/",
     errorElement: <ErrorPage />,
@@ -73,8 +123,8 @@ export const router = createBrowserRouter([
         element: <Customer_MenuViewOnly />,
       },
       {
-        path: "place-order",
-        element: <Customer_Menu />,
+        path: "dish/:dishId", 
+        element: <Customer_DishDetailPage />,
       },
       {
         path: "dine-in/:tableId",

@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { Link } from "react-router-dom";
 
 export const Customer_AboutPage: FC = () => {
   return (
@@ -136,18 +137,18 @@ export const Customer_AboutPage: FC = () => {
             and add your story to ours.
           </p>
           <div className="space-x-4">
-            <a
-              href="/reservations"
+            <Link
+              to="/reservations"
               className="bg-green-900 hover:bg-green-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
             >
               Reserve Your Table
-            </a>
-            <a
-              href="/menu"
+            </Link>
+            <Link
+              to="/menu"
               className="border border-green-900 text-green-900 hover:bg-green-50 px-8 py-3 rounded-lg transition-colors"
             >
               Explore Menu
-            </a>
+            </Link>
           </div>
         </div>
       </section>

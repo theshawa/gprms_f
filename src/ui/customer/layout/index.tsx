@@ -5,7 +5,7 @@ import { CustomerAuthService } from "@/services/customer/customer-auth";
 import { Box, CircularProgress } from "@mui/material";
 import type { FC } from "react";
 import { useLayoutEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { Header } from "./header";
 import { LoginDialog } from "./login-dialog";
 
@@ -107,16 +107,16 @@ export const Customer_Layout: FC = () => {
               <img src="/logo.png" alt="Logo" className="h-8 mb-4" />
               <ul className="flex flex-wrap gap-6 text-sm">
                 <li>
-                  <a href="#">About Us</a>
+                  <Link to="/our-story">About Us</Link>
                 </li>
                 <li>
-                  <a href="#">Contact Us</a>
+                  <Link to="/contact">Contact Us</Link>
                 </li>
                 <li>
-                  <a href="#">Menu Options</a>
+                  <Link to="/menu">Menu Options</Link>
                 </li>
                 <li>
-                  <a href="#">Reservation Info</a>
+                  <Link to="/reservations">Reservation Info</Link>
                 </li>
               </ul>
             </div>
@@ -138,9 +138,9 @@ export const Customer_Layout: FC = () => {
           <div className="my-6 border-t border-gray-400" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between text-xs gap-4">
             <div className="flex gap-4">
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
-              <a href="#">Cookies Settings</a>
+              <Link to="/privacy-policy">Privacy Policy</Link>
+              <Link to="/terms-of-service">Terms of Service</Link>
+              <Link to="/cookies-settings">Cookies Settings</Link>
             </div>
             <p className="text-gray-400">
               © {new Date().getFullYear()} Your Restaurant Name. All rights
