@@ -43,7 +43,6 @@ import {
 import type { FC } from "react";
 import { useMemo, useState } from "react";
 import { PageLayout } from "../../shared/page-layout";
-import { avatarColors } from "../../../../muitheme";
 
 // Mock data for customers
 const mockCustomers = [
@@ -218,13 +217,13 @@ const getCustomerAge = (birthday: string) => {
 };
 
 export const Admin_CustomerPage: FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [tierFilter, setTierFilter] = useState("all");
+  const [searchTerm] = useState("");
+  const [statusFilter] = useState("all");
+  const [tierFilter] = useState("all");
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
+  const [_selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [activeTab, setActiveTab] = useState(0);
 
   const filteredCustomers = useMemo(() => {
@@ -258,13 +257,14 @@ export const Admin_CustomerPage: FC = () => {
     return stats;
   }, []);
 
-  const tierCounts = useMemo(() => {
-    const counts = { platinum: 0, gold: 0, silver: 0, bronze: 0 };
-    mockCustomers.forEach((customer) => {
-      counts[customer.tier as keyof typeof counts]++;
-    });
-    return counts;
-  }, []);
+  // Commented out unused tierCounts
+  // const tierCounts = useMemo(() => {
+  //   const counts = { platinum: 0, gold: 0, silver: 0, bronze: 0 };
+  //   mockCustomers.forEach((customer) => {
+  //     counts[customer.tier as keyof typeof counts]++;
+  //   });
+  //   return counts;
+  // }, []);
 
   const handleViewDetails = (customer: any) => {
     setSelectedCustomer(customer);

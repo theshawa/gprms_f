@@ -75,11 +75,6 @@ export const Customer_OrderSuccessPage: React.FC = () => {
   // Get order details from navigation state
   const orderDetails = location.state?.orderDetails;
 
-  const handleDone = () => {
-    clearCart(); // Clear the cart after successful order
-    navigate('/'); // Navigate to home page
-  };
-
   const handleFinishDining = () => {
     setShowFinishConfirmation(true);
   };

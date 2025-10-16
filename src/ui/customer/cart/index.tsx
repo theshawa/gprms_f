@@ -1,25 +1,10 @@
-import React  const handleIncrease = (dishId: number) => {
-    increaseItemQuantity(dishId);
-  };
-
-  const handleDecrease = (dishId: number) => {
-    const item = cartItems.find(item => item.dish.id === dishId);
-    if (item && item.quantity > 1) {
-      decreaseItemQuantity(dishId);
-    } else {
-      removeItemFromCart(dishId);
-    }
-  };
-
-  const clearCart = () => {
-    cartItems.forEach(item => removeItemFromCart(item.dish.id));
-  };;
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCustomerCart } from '@/hooks/useCustomerCart';
 
 export const Customer_CartPage: React.FC = () => {
   const navigate = useNavigate();
-  const { cartItems, removeItemFromCart, increaseItemQuantity, decreaseItemQuantity } = useCustomerCart();
+  const { cartItems, removeItemFromCart, increaseItemQuantity, decreaseItemQuantity, clearCart } = useCustomerCart();
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + (item.dish.price * item.quantity), 0);
@@ -28,16 +13,17 @@ export const Customer_CartPage: React.FC = () => {
   const handleQuantityChange = (dishId: number, newQuantity: number) => {
     if (newQuantity === 0) {
       removeItemFromCart(dishId);
-    } else if (newQuantity > cartItems.find(item => item.dish.id === dishId)?.quantity || 0) {
+    } else if (newQuantity > (cartItems.find(item => item.dish.id === dishId)?.quantity || 0)) {
       increaseItemQuantity(dishId);
     } else {
       decreaseItemQuantity(dishId);
     }
   };
 
-  const clearCart = () => {
-    cartItems.forEach(item => removeItemFromCart(item.dish.id));
-  };
+  // Function to clear cart - available for future use
+  // const handleClearCart = () => {
+  //   clearCart();
+  // };
 
   const handleOrderNow = () => {
     // Navigate to checkout or place order
@@ -84,18 +70,18 @@ export const Customer_CartPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {cartItems.map((item, index) => (
-              <div key={item.id} data-layer="cart item" data-property-1="normal" className="CartItem w-full h-28 relative rounded-xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.10)] overflow-hidden">
+            {cartItems.map((item) => (
+              <div key={item.dish.id} data-layer="cart item" data-property-1="normal" className="CartItem w-full h-28 relative rounded-xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.10)] overflow-hidden">
                 <div data-layer="cart item" data-property-1="Default" className="CartItem w-full p-4 left-0 top-0 absolute bg-color-system-0 rounded-xl inline-flex justify-start items-start gap-4 overflow-hidden">
                   <img 
                     data-layer="Rectangle 6492" 
                     className="Rectangle6492 w-16 h-16 rounded-xl object-cover" 
-                    src={item.image || "https://placehold.co/64x64"} 
-                    alt={item.name}
+                    src={item.dish.image || "https://placehold.co/64x64"} 
+                    alt={item.dish.name}
                   />
                   <div data-layer="title" className="Title flex-1 inline-flex flex-col justify-start items-start gap-1.5">
                     <div data-layer="dish name" className="DishName w-60 justify-start text-text-primary text-base font-semibold font-['Inter'] leading-tight">
-                      {item.name}
+                      {item.dish.name}
                     </div>
                     <div data-layer="quantity" className="Quantity self-stretch inline-flex justify-between items-center">
                       <div data-layer="number" className="Number flex justify-center items-start gap-1">
@@ -104,7 +90,7 @@ export const Customer_CartPage: React.FC = () => {
                       </div>
                       <div data-layer="btn" className="Btn px-2 bg-color-system-100 rounded-xl flex justify-start items-start gap-4">
                         <button 
-                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                          onClick={() => handleQuantityChange(item.dish.id, item.quantity - 1)}
                           data-layer="Frame 15360" 
                           className="Frame15360 w-8 h-8 flex justify-center items-center gap-2.5 hover:bg-gray-200 rounded transition-colors"
                         >
@@ -113,7 +99,7 @@ export const Customer_CartPage: React.FC = () => {
                           </div>
                         </button>
                         <button 
-                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                          onClick={() => handleQuantityChange(item.dish.id, item.quantity + 1)}
                           data-layer="Frame 15361" 
                           className="Frame15361 w-8 h-8 flex justify-center items-center gap-2.5 hover:bg-gray-200 rounded transition-colors"
                         >
@@ -124,7 +110,7 @@ export const Customer_CartPage: React.FC = () => {
                       </div>
                     </div>
                     <div data-layer="price" className="Price justify-start text-text-primary text-base font-semibold font-['Inter'] leading-tight">
-                      LKR {(item.price * item.quantity).toFixed(2)}
+                      LKR {(item.dish.price * item.quantity).toFixed(2)}
                     </div>
                   </div>
                 </div>
