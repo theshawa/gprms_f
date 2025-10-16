@@ -39,9 +39,9 @@ export const Header: FC = () => {
         <div className="flex items-center justify-between h-[54px]">
           {/* Left Nav */}
           <div className="flex items-center space-x-8">
-            <a href="/">
+            <Link to="/">
               <img src="/logo.png" alt="Logo" className="h-7 w-auto" />
-            </a>
+            </Link>
 
             <nav className="hidden md:flex items-center space-x-6">
               <Link

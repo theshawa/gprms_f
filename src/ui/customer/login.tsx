@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import "./login.css";
 
 export const Customer_LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { setAuth } = useCustomerAuth();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -26,9 +28,27 @@ export const Customer_LoginPage: React.FC = () => {
       return;
     }
     
-    // Clear any previous errors and proceed
+    // Clear any previous errors and simulate successful login
     setPhoneError("");
-    navigate(`/dine-in/${encodeURIComponent(tableNo)}`);
+    
+    // Mock authentication - replace with actual API call
+    const mockCustomer = {
+      id: `customer_${Date.now()}`,
+      name: name.trim(),
+      phoneNumber: phone.trim(),
+      loyaltyPoints: 150 // Mock loyalty points
+    };
+    
+    const mockAuthState = {
+      accessToken: `mock_token_${Date.now()}`,
+      user: mockCustomer
+    };
+    
+    // Set authentication state
+    setAuth(mockAuthState);
+    
+    // Navigate to view menu page for dine-in experience
+    navigate("/view-menu");
   };
 
   return (

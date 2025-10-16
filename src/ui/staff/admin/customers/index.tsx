@@ -61,7 +61,6 @@ const mockCustomers = [
     averageOrderValue: 10833,
     lastOrderDate: "2024-07-20",
     loyaltyPoints: 2437,
-    favoriteItems: ["Grilled Salmon", "Caesar Salad"],
     preferences: ["vegetarian", "no_spicy"],
     notes: "Prefers window tables, regular customer",
     visits: 52,
@@ -80,9 +79,8 @@ const mockCustomers = [
     totalSpent: 325600,
     averageOrderValue: 11628,
     lastOrderDate: "2024-07-18",
-    loyaltyPoints: 1628,
-    favoriteItems: ["Kottu Rotti", "Fish Curry"],
-    preferences: ["spicy", "local_cuisine"],
+    loyaltyPoints: 4250,
+    preferences: ["spicy", "traditional"],
     notes: "Business meetings, prefers quick service",
     visits: 32,
     rating: 4.6,
@@ -100,8 +98,7 @@ const mockCustomers = [
     totalSpent: 145800,
     averageOrderValue: 12150,
     lastOrderDate: "2024-07-21",
-    loyaltyPoints: 729,
-    favoriteItems: ["Pasta Carbonara", "Chocolate Cake"],
+    loyaltyPoints: 3125,
     preferences: ["italian", "desserts"],
     notes: "Young professional, weekend diner",
     visits: 15,
@@ -121,7 +118,6 @@ const mockCustomers = [
     averageOrderValue: 14367,
     lastOrderDate: "2024-07-19",
     loyaltyPoints: 6250,
-    favoriteItems: ["Lobster Thermidor", "Wine Selection"],
     preferences: ["seafood", "premium", "wine_pairing"],
     notes: "VIP customer, special occasions, celebrates anniversaries here",
     visits: 94,
@@ -140,8 +136,7 @@ const mockCustomers = [
     totalSpent: 67200,
     averageOrderValue: 8400,
     lastOrderDate: "2024-03-15",
-    loyaltyPoints: 336,
-    favoriteItems: ["Vegetable Curry", "Fresh Juice"],
+    loyaltyPoints: 1250,
     preferences: ["vegetarian", "healthy"],
     notes: "Health-conscious, family dining",
     visits: 10,
@@ -161,7 +156,6 @@ const mockCustomers = [
     averageOrderValue: 12978,
     lastOrderDate: "2024-07-17",
     loyaltyPoints: 1492,
-    favoriteItems: ["Beef Steak", "Beer"],
     preferences: ["meat", "beverages"],
     notes: "Sports events watcher, prefers bar area",
     visits: 28,
@@ -929,27 +923,7 @@ export const Admin_CustomerPage: FC = () => {
                           Preferences & Notes
                         </Typography>
                         <Stack spacing={2}>
-                          <Stack>
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              gutterBottom
-                            >
-                              Favorite Items:
-                            </Typography>
-                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                              {selectedCustomer.favoriteItems.map(
-                                (item: string, index: number) => (
-                                  <Chip
-                                    key={index}
-                                    label={item}
-                                    size="small"
-                                    variant="outlined"
-                                  />
-                                )
-                              )}
-                            </Stack>
-                          </Stack>
+
                           <Stack>
                             <Typography
                               variant="body2"
