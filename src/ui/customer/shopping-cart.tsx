@@ -113,7 +113,7 @@ export const Customer_CartPage: React.FC = () => {
             {/* Call to Action */}
             <button
               onClick={() => navigate('/view-menu')}
-              className="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-green-600 active:bg-green-700 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="bg-green-600 text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-green-700 active:bg-green-800 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Explore Menu
             </button>
@@ -201,7 +201,7 @@ export const Customer_CartPage: React.FC = () => {
                         </button>
                         <button
                           onClick={() => setShowNoteInput(false)}
-                          className="px-4 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors"
+                          className="px-4 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
                         >
                           Save
                         </button>
@@ -245,7 +245,7 @@ export const Customer_CartPage: React.FC = () => {
             </div>
             <button 
               onClick={handleOrderNow}
-              className="w-full h-12 bg-green-500 hover:bg-green-600 rounded-full flex justify-center items-center transition-colors"
+              className="w-full h-12 bg-green-600 hover:bg-green-700 rounded-full flex justify-center items-center transition-colors"
             >
               <span className="text-white text-base font-semibold">Order Now</span>
             </button>
@@ -256,60 +256,54 @@ export const Customer_CartPage: React.FC = () => {
 
       {/* Remove Single Item Confirmation Popup */}
       {showRemoveConfirmation && (
-        <>
-          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-40" />
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="PopUp w-64 px-6 py-8 bg-white rounded-2xl inline-flex flex-col justify-start items-center gap-4">
-              <div className="Title self-stretch flex flex-col justify-start items-center gap-2">
-                <div className="RemoveDish self-stretch text-center text-gray-900 text-xl font-semibold leading-normal">Remove this dish</div>
-                <div className="AreYouSureYouWantToRemoveThisDish self-stretch text-center text-gray-900 text-sm font-normal leading-snug">Are you sure you want to remove this dish from your cart?</div>
-              </div>
-              <div className="Button flex flex-col justify-start items-center gap-3">
-                <button
-                  onClick={confirmRemove}
-                  className="Button w-48 h-10 px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700"
-                >
-                  Yes
-                </button>
-                <button
-                  onClick={cancelRemove}
-                  className="Button w-48 h-10 px-6 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
-                >
-                  No
-                </button>
-              </div>
+        <div data-layer="pop up" className="PopUp w-72 px-6 py-6 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.4)] border border-gray-200 flex flex-col justify-start items-center gap-6 transform scale-105">
+            <div data-layer="title" className="Title self-stretch flex flex-col justify-start items-center gap-3">
+              <div data-layer="Remove dish" className="RemoveDish self-stretch text-center justify-start text-gray-900 text-xl font-semibold leading-normal">Remove dish</div>
+              <div data-layer="confirmation text" className="ConfirmationText self-stretch text-center justify-start text-gray-900 text-xs font-normal leading-none">Are you sure you want to remove this dish from your cart?</div>
+            </div>
+            <div data-layer="button" className="Button flex flex-col justify-start items-center gap-3">
+              <button
+                onClick={confirmRemove}
+                data-layer="button" 
+                className="Button w-48 h-10 px-6 py-2 bg-green-600 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-green-700 transition-colors"
+              >
+                <div data-layer="button name" className="ButtonName text-center justify-start text-white text-base font-semibold leading-tight">Yes</div>
+              </button>
+              <button
+                onClick={cancelRemove}
+                data-layer="button" 
+                className="Button w-48 h-10 px-6 py-2 rounded-[360px] border border-gray-300 bg-white inline-flex justify-center items-center gap-2.5 hover:bg-gray-50 transition-colors"
+              >
+                <div data-layer="button name" className="ButtonName text-center justify-start text-gray-700 text-base font-semibold leading-tight">No</div>
+              </button>
             </div>
           </div>
-        </>
       )}
 
       {/* Clear All Items Confirmation Popup */}
       {showClearAllConfirmation && (
-        <>
-          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-40" />
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="PopUp w-64 px-6 py-8 bg-white rounded-2xl inline-flex flex-col justify-start items-center gap-4">
-              <div className="Title self-stretch flex flex-col justify-start items-center gap-2">
-                <div className="ClearCart self-stretch text-center text-gray-900 text-xl font-semibold leading-normal">Clear all items</div>
-                <div className="AreYouSureYouWantToClearCart self-stretch text-center text-gray-900 text-sm font-normal leading-snug">Are you sure you want to remove all items from your cart?</div>
-              </div>
-              <div className="Button flex flex-col justify-start items-center gap-3">
-                <button
-                  onClick={confirmClearCart}
-                  className="Button w-48 h-10 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700"
-                >
-                  Yes, Clear All
-                </button>
-                <button
-                  onClick={cancelClearCart}
-                  className="Button w-48 h-10 px-6 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
-                >
-                  No
-                </button>
-              </div>
+        <div data-layer="pop up" className="PopUp w-72 px-6 py-6 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.4)] border border-gray-200 flex flex-col justify-start items-center gap-6 transform scale-105">
+            <div data-layer="title" className="Title self-stretch flex flex-col justify-start items-center gap-3">
+              <div data-layer="Clear cart" className="ClearCart self-stretch text-center justify-start text-gray-900 text-xl font-semibold leading-normal">Clear all items</div>
+              <div data-layer="confirmation text" className="ConfirmationText self-stretch text-center justify-start text-gray-900 text-xs font-normal leading-none">Are you sure you want to remove all items from your cart?</div>
+            </div>
+            <div data-layer="button" className="Button flex flex-col justify-start items-center gap-3">
+              <button
+                onClick={confirmClearCart}
+                data-layer="button" 
+                className="Button w-48 h-10 px-6 py-2 bg-red-600 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-red-700 transition-colors"
+              >
+                <div data-layer="button name" className="ButtonName text-center justify-start text-white text-base font-semibold leading-tight">Yes, Clear All</div>
+              </button>
+              <button
+                onClick={cancelClearCart}
+                data-layer="button" 
+                className="Button w-48 h-10 px-6 py-2 rounded-[360px] border border-gray-300 bg-white inline-flex justify-center items-center gap-2.5 hover:bg-gray-50 transition-colors"
+              >
+                <div data-layer="button name" className="ButtonName text-center justify-start text-gray-700 text-base font-semibold leading-tight">No</div>
+              </button>
             </div>
           </div>
-        </>
       )}
     </>
   );

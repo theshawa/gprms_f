@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCustomerCart } from '@/hooks/useCustomerCart';
+import { useCustomerAuth } from '@/hooks/useCustomerAuth';
 
 // Order History Item Component
 const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
@@ -69,8 +70,12 @@ export const Customer_OrderSuccessPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { cartItems, clearCart } = useCustomerCart();
+  const { auth } = useCustomerAuth();
   const [showOrderHistory, setShowOrderHistory] = useState(false);
   const [showFinishConfirmation, setShowFinishConfirmation] = useState(false);
+  
+  // Get customer first name
+  const firstName = auth?.user?.name?.split(' ')[0] || 'Guest';
   
   // Get order details from navigation state
   const orderDetails = location.state?.orderDetails;
@@ -84,7 +89,7 @@ export const Customer_OrderSuccessPage: React.FC = () => {
     console.log('Waiter has been notified to bring the bill');
     setShowFinishConfirmation(false);
     clearCart(); // Clear the cart after successful order
-    navigate('/'); // Navigate to home page
+    navigate('/feedback'); // Navigate to feedback page instead of home
   };
 
   const cancelFinishDining = () => {
@@ -94,25 +99,17 @@ export const Customer_OrderSuccessPage: React.FC = () => {
 
 
   return (
-    <div className="w-full max-w-sm mx-auto h-screen bg-white overflow-hidden">
+    <div className="w-full max-w-sm mx-auto min-h-screen bg-white overflow-y-auto">
       {/* Header */}
-      <div className="w-full h-24 px-6 pt-14 pb-1 bg-white relative flex items-center">
-        <button 
-          onClick={() => navigate('/')}
-          className="absolute left-6 w-8 h-8 flex justify-center items-center hover:bg-gray-100 rounded-full transition-colors"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 12L6 8L10 4" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        <div className="flex-1 text-center text-black text-xl font-semibold">Order Confirmed</div>
+      <div className="w-full h-24 px-6 pt-14 pb-1 bg-white flex flex-col items-center justify-center">
+        <div className="text-center text-black text-xl font-semibold">Order Confirmed, {firstName}! 👋</div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-6 pt-6 pb-32 overflow-y-auto">
-        <div className="flex flex-col items-center min-h-full justify-center">
+      <div className="px-6 pt-6 pb-16">
+        <div className="flex flex-col items-center space-y-6">
         {/* Chef Preparing Image */}
-        <div className="w-32 h-32 mb-8">
+        <div className="w-32 h-32">
           <img 
             src="/chef-preparing.jpg" 
             alt="Chef preparing your dishes" 
@@ -120,18 +117,13 @@ export const Customer_OrderSuccessPage: React.FC = () => {
           />
         </div>
         
-        {/* Success Message */}
-        <h2 className="text-gray-800 text-2xl font-bold mb-4 text-center leading-relaxed">
-          All set!
-        </h2>
-        
         {/* Supporting Message */}
-        <p className="text-gray-600 text-base mb-8 max-w-xs text-center leading-relaxed">
-          Your dishes are being prepared and will be ready soon. Want to add more to your experience?
+        <p className="text-gray-600 text-base max-w-xs text-center leading-relaxed mt-8">
+          You can add more items or relax while we work our magic!
         </p>
         
         {/* Current Order Summary */}
-        <div className="w-full bg-gray-50 rounded-xl p-4 mb-4">
+        <div className="w-full bg-gray-50 rounded-xl p-4">
           <div className="flex justify-between items-center mb-3">
             <span className="text-gray-600 text-sm">Order #</span>
             <span className="text-gray-900 font-semibold text-sm">{orderDetails?.id || Math.floor(Math.random() * 10000)}</span>
@@ -159,14 +151,14 @@ export const Customer_OrderSuccessPage: React.FC = () => {
         {/* Order History Toggle */}
         <button
           onClick={() => setShowOrderHistory(!showOrderHistory)}
-          className="w-full mb-4 text-center text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"
+          className="w-full text-center text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"
         >
           {showOrderHistory ? 'Hide Previous Orders' : 'View Previous Orders'}
         </button>
 
         {/* Order History */}
         {showOrderHistory && (
-          <div className="w-full mb-4 space-y-2">
+          <div className="w-full space-y-2">
             {(() => {
               const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
               const previousOrders = orderHistory.slice(0, -1); // Exclude current order
@@ -199,13 +191,6 @@ export const Customer_OrderSuccessPage: React.FC = () => {
           </button>
           
           <button 
-            onClick={() => navigate('/feedback')}
-            className="w-full h-12 bg-white border border-green-500 hover:bg-green-50 active:bg-green-100 rounded-full flex justify-center items-center transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <span className="text-green-500 text-base font-semibold">Share Feedback</span>
-          </button>
-          
-          <button 
             onClick={handleFinishDining}
             className="w-full h-12 bg-white border border-gray-300 hover:bg-gray-50 rounded-full flex justify-center items-center transition-colors"
           >
@@ -217,31 +202,26 @@ export const Customer_OrderSuccessPage: React.FC = () => {
 
       {/* Finish Dining Confirmation Popup */}
       {showFinishConfirmation && (
-        <>
-          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-40" />
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="PopUp w-64 px-6 py-8 bg-white rounded-2xl inline-flex flex-col justify-start items-center gap-4">
-              <div className="Title self-stretch flex flex-col justify-start items-center gap-2">
-                <div className="ReadyToFinishDining self-stretch text-center text-gray-900 text-xl font-semibold leading-normal">Ready to finish dining?</div>
-                <div className="ThisWillAlertYourWaiter self-stretch text-center text-gray-900 text-sm font-normal leading-snug">This will alert your waiter to bring the bill for payment. Are you ready to complete your dining experience?</div>
+        <div className="PopUp w-72 px-6 py-6 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.4)] border border-gray-200 flex flex-col justify-start items-center gap-6">
+              <div className="Title self-stretch flex flex-col justify-start items-center gap-3">
+                <div className="ReadyToFinishDining self-stretch text-center text-gray-900 text-xl font-semibold leading-tight">Finish dining?</div>
+                <div className="Description self-stretch text-center text-gray-600 text-sm font-normal leading-relaxed">This will request the bill</div>
               </div>
               <div className="Button flex flex-col justify-start items-center gap-3">
                 <button
                   onClick={confirmFinishDining}
-                  className="Button w-48 h-10 px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700"
+                  className="Button w-48 h-10 px-6 py-2 bg-green-600 text-white text-base font-semibold rounded-full hover:bg-green-700 transition-colors"
                 >
-                  Yes, I'm Ready
+                  Yes, Finish
                 </button>
                 <button
                   onClick={cancelFinishDining}
-                  className="Button w-48 h-10 px-6 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
+                  className="Button w-48 h-10 px-6 py-2 rounded-full border border-gray-300 text-gray-700 text-base font-semibold hover:bg-gray-50 transition-colors"
                 >
-                  Not Yet
+                  No
                 </button>
               </div>
             </div>
-          </div>
-        </>
       )}
     </div>
   );

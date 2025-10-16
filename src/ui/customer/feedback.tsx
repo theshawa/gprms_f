@@ -36,12 +36,12 @@ export const Customer_FeedbackPage: React.FC = () => {
   const handleSendFeedback = () => {
     // Handle feedback submission logic here
     console.log('Feedback submitted:', { ratings, experienceText });
-    // Navigate back or show success message
-    navigate(-1);
+    // Navigate to home page after completing feedback
+    navigate('/');
   };
 
   const handleSkip = () => {
-    navigate(-1);
+    navigate('/');
   };
 
   const renderEmoji = (rating: number) => {
@@ -64,17 +64,8 @@ export const Customer_FeedbackPage: React.FC = () => {
   return (
     <div className="w-full max-w-sm mx-auto min-h-screen bg-white relative overflow-hidden">
       {/* Header */}
-      <div className="w-full px-6 pt-14 pb-1 flex justify-between items-center">
-        <button
-          onClick={() => navigate(-1)}
-          className="w-12 h-12 p-2 bg-gray-100 rounded-full flex justify-center items-center"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18L9 12L15 6" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+      <div className="w-full px-6 pt-14 pb-1 flex justify-center items-center">
         <div className="text-center text-black text-xl font-semibold">Share your feedback</div>
-        <button className="text-red-600 text-xs">Delete</button>
       </div>
 
       {/* Content */}
@@ -147,7 +138,7 @@ export const Customer_FeedbackPage: React.FC = () => {
           </button>
           <button
             onClick={handleSkip}
-            className="w-full h-14 px-5 py-4 rounded-full border border-green-500 flex justify-center items-center transition-colors hover:bg-green-50"
+            className="w-full h-14 px-5 py-4 rounded-full border border-red-600 flex justify-center items-center transition-colors hover:bg-red-50"
           >
             <span className="text-red-600 text-base font-semibold">Skip</span>
           </button>

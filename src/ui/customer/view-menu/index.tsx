@@ -67,41 +67,59 @@ const dishesByCategory = {
 
 export const Customer_HomePage: FC = () => {
   const { auth } = useCustomerAuth();
-  const { cartItems, addItemToCart } = useCustomerCart();
+  const { cartItems } = useCustomerCart();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(1); // Rice & Curry selected by default
 
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-  // Get dishes for selected category
-  const currentDishes = dishesByCategory[selectedCategory as keyof typeof dishesByCategory] || [];
+  // Get all dishes from all categories for search
+  const allDishes = Object.values(dishesByCategory).flat();
 
-  const handleAddToCart = (dish: typeof currentDishes[0]) => {
-    if (!dish.available) return;
-    
-    const dishItem = {
-      id: dish.id,
-      name: dish.name,
-      description: `Delicious ${dish.name}`,
-      price: dish.price,
-      ingredients: [],
-      image: dish.image
-    };
-    addItemToCart(dishItem, 1);
+  // Determine which dishes to show
+  let displayDishes;
+  if (searchQuery.trim()) {
+    // If searching, search across all categories
+    displayDishes = allDishes.filter(dish => 
+      dish.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  } else {
+    // If not searching, show dishes from selected category
+    displayDishes = dishesByCategory[selectedCategory as keyof typeof dishesByCategory] || [];
+  }
+
+  // Helper function to get quantity of specific dish in cart
+  const getDishQuantity = (dishId: number): number => {
+    const cartItem = cartItems.find(item => item.dish.id === dishId);
+    return cartItem ? cartItem.quantity : 0;
   };
 
   const firstName = auth?.user?.name?.split(' ')[0] || 'Sudu';
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-start">
-      <div data-layer="Home" className="Home w-full max-w-sm mx-auto min-h-screen relative">
-        <div data-layer="home" className="Home w-full min-h-screen bg-white overflow-y-auto shadow-lg">
+    <div className="min-h-screen bg-gray-100">
+      <div data-layer="Home" className="Home w-full max-w-sm mx-auto min-h-screen relative bg-white shadow-lg">
+        
+        {/* Header */}
+        <div data-layer="heading" className="Heading px-6 pt-4 pb-2 flex justify-between items-center">
+          <div data-layer="Hello, Alex! 👋" className="HelloAlex text-gray-900 text-xl font-semibold leading-tight">
+            Hello, {firstName}! 👋
+          </div>
+          <div data-layer="table No." className="TableNo flex justify-start items-center gap-3">
+            <div data-svg-wrapper data-layer="Vector" className="Vector">
+              <svg width="26" height="14" viewBox="0 0 26 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M0.58675 0.0594047C0.514188 0.082561 0.394625 0.158921 0.321125 0.228999L0.1875 0.356405V7.0037V13.651L0.328125 13.7717C0.620187 14.0222 1.15956 14.0041 1.37712 13.7365C1.49419 13.5925 1.49956 13.4872 1.49975 11.3242L1.5 9.0625H4.25H7V11.2906C7 13.7366 7.00475 13.7705 7.367 13.911C7.61781 14.0082 7.80156 14.0033 8.04306 13.8929C8.17694 13.8317 8.264 13.7433 8.30831 13.6235C8.35194 13.5057 8.37444 12.2492 8.37463 9.91797L8.375 6.39062H4.9375H1.5V3.36794V0.345248L1.32812 0.202233C1.14281 0.0480612 0.818 -0.0145172 0.58675 0.0594047ZM24.8993 0.0594047C24.8267 0.082561 24.7071 0.158921 24.6336 0.228999C24.5002 0.356124 24.5 0.362404 24.5 3.37351V6.39062H21.061H17.622L17.6391 10.0117C17.6551 13.3817 17.6639 13.6412 17.7665 13.7545C17.9693 13.9783 18.3036 14.0387 18.633 13.911C18.9952 13.7705 19 13.7366 19 11.2906V9.0625H21.75H24.5L24.5002 11.3242C24.5004 13.4872 24.5058 13.5925 24.6229 13.7365C24.8404 14.0041 25.3798 14.0222 25.6719 13.7717L25.8125 13.651V6.99812V0.345248L25.6406 0.202233C25.4553 0.0480612 25.1305 -0.0145172 24.8993 0.0594047ZM5.88037 3.28361C5.72862 3.32383 5.48437 3.44678 5.33762 3.55684C4.97419 3.82937 4.875 4.09712 4.875 4.80541V5.35937H8.53125H12.1875V8.89033V12.4213L11.6884 12.4786C10.2026 12.6492 9.50313 13.0768 10.0655 13.4709C10.5106 13.7826 11.5701 13.9588 13 13.9588C14.0977 13.9588 14.7285 13.8895 15.4095 13.6941C16.0592 13.5076 16.3011 13.2062 15.9972 12.9617C15.7261 12.7435 14.9618 12.5356 14.1406 12.4569L13.8125 12.4254V8.89239V5.35937H17.4688H21.125V4.80541C21.125 4.09778 21.0257 3.82933 20.6635 3.55769C20.1604 3.18034 20.6498 3.20265 12.9733 3.20683C6.96669 3.21011 6.12344 3.2192 5.88037 3.28361Z" fill="var(--text-primary, black)"/>
+              </svg>
+            </div>
+            <div data-layer="05" className="text-gray-900 text-base font-semibold leading-tight">05</div>
+          </div>
+        </div>
         
         {/* Search Bar */}
-        <div data-layer="search bar" className="SearchBar w-96 px-6 py-4 left-0 top-[116px] absolute inline-flex flex-col justify-center items-center gap-2.5">
-          <div data-layer="search" className="Search self-stretch h-12 px-3 py-2 rounded-xl border border-gray-300 inline-flex justify-start items-center gap-2">
-            <div data-layer="Frame 15397" className="Frame15397 w-52 flex justify-start items-center gap-2">
+        <div data-layer="search bar" className="SearchBar px-6 py-2 flex flex-col justify-center items-center gap-2.5">
+          <div data-layer="search" className="Search w-full h-12 px-3 py-2 rounded-xl border border-gray-300 flex justify-start items-center gap-2">
+            <div data-layer="Frame 15397" className="Frame15397 flex justify-start items-center gap-2 flex-1">
               <div data-layer="search-1" className="Search1 w-6 h-6 relative">
                 <svg className="w-4 h-4 text-gray-600 absolute left-[3px] top-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -118,143 +136,116 @@ export const Customer_HomePage: FC = () => {
           </div>
         </div>
 
-        {/* Header */}
-        <div data-layer="heading" className="Heading w-80 left-[24px] top-[60px] absolute inline-flex justify-between items-center">
-          <div data-layer="Hello, Alex! 👋" className="HelloAlex text-gray-900 text-xl font-semibold leading-tight">
-            Hello, {firstName}! 👋
-          </div>
-          <div data-layer="table No." className="TableNo inline-flex flex-col justify-start items-start">
-            <div data-layer="Table No." className="TableNo text-gray-900 text-xs font-normal leading-none">Table No.</div>
-            <div data-layer="icon" className="Icon inline-flex justify-start items-center gap-1">
-              <div data-layer="trace 1" className="Trace1 w-8 h-6 relative overflow-hidden">
-                <svg className="w-6 h-4 text-gray-900" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/>
-                </svg>
-              </div>
-              <div data-layer="05" className="text-gray-900 text-base font-semibold leading-tight">05</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Categories Sidebar */}
-        <div data-layer="category" className="Category h-[921px] pl-6 pr-1 pt-4 left-[-1px] top-[216px] absolute bg-white border-r-[0.50px] border-gray-300 inline-flex flex-col justify-start items-start gap-4">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              data-layer="item" 
-              className="Item flex flex-col justify-start items-center gap-2"
-            >
-              <div 
-                data-layer="icon" 
-                className={`Icon w-16 h-14 p-3 rounded-2xl inline-flex justify-center items-center gap-2.5 overflow-hidden ${
-                  selectedCategory === category.id
-                    ? 'bg-orange-100 border border-orange-600'
-                    : 'bg-gray-100'
-                }`}
+        {/* Main Content Area */}
+        <div className="flex h-[calc(100vh-140px)] overflow-hidden">
+          {/* Categories Sidebar */}
+          <div data-layer="category" className="Category w-24 bg-white border-r border-gray-300 flex flex-col gap-4 px-3 py-4 overflow-y-auto">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => {
+                  setSelectedCategory(category.id);
+                  setSearchQuery(""); // Clear search when selecting a category
+                }}
+                data-layer="item" 
+                className="Item flex flex-col justify-center items-center gap-2 min-w-0"
               >
-                <img 
-                  data-layer="Rectangle 6489" 
-                  className="Rectangle6489 w-9 h-9" 
-                  src={category.image} 
-                  alt={category.name}
-                />
-              </div>
-              <div data-layer="group menu" className="GroupMenu self-stretch flex flex-col justify-center items-center gap-2">
+                <div 
+                  data-layer="icon" 
+                  className={`Icon w-16 h-14 p-3 rounded-2xl flex justify-center items-center ${
+                    selectedCategory === category.id && !searchQuery.trim()
+                      ? 'bg-orange-100 border border-orange-600'
+                      : 'bg-gray-100'
+                  }`}
+                >
+                  <img 
+                    data-layer="Rectangle 6489" 
+                    className="Rectangle6489 w-9 h-9" 
+                    src={category.image} 
+                    alt={category.name}
+                  />
+                </div>
                 <div 
                   data-layer={category.name} 
-                  className={`self-stretch text-center text-xs font-semibold tracking-tight ${
-                    selectedCategory === category.id
+                  className={`text-center text-xs font-semibold tracking-tight leading-tight ${
+                    selectedCategory === category.id && !searchQuery.trim()
                       ? 'text-orange-600'
                       : 'text-gray-600'
                   }`}
                 >
                   {category.name}
                 </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
+              </button>
+            ))}
+          </div>
 
-      {/* Dishes Grid */}
-      <div data-layer="Frame 2608249" className="Frame2608249 left-[110px] top-[217px] absolute right-0 bottom-0 overflow-y-auto">
-        <div className="inline-flex flex-col justify-start items-start gap-5 pl-3 pr-5 pt-5 pb-32">
-        {currentDishes.map((dish) => (
-          <div 
-            key={dish.id}
-            data-layer="card vertical" 
-            data-property-1="default" 
-            className={`CardVertical w-52 pb-4 bg-white rounded-2xl border border-black/10 flex flex-col justify-start items-center overflow-hidden cursor-pointer hover:shadow-lg transition-shadow ${
-              !dish.available ? 'opacity-60' : ''
-            }`}
-            onClick={() => navigate(`/dish/${dish.id}`)}
-          >
-            <img 
-              data-layer="Rectangle 6493" 
-              className="Rectangle6493 w-44 h-44" 
-              src={dish.image}
-              alt={dish.name}
-            />
-            <div 
-              data-layer="title" 
-              className={`Title self-stretch px-3 flex flex-col justify-center items-end gap-3 ${
-                !dish.available ? 'opacity-10' : ''
-              }`}
-            >
-              <div data-layer="dish name" className="DishName self-stretch text-center text-gray-900 text-base font-semibold leading-tight">
-                {dish.name}
-              </div>
-              <div data-layer="price section" className="PriceSection self-stretch flex justify-center items-center gap-2 py-1">
-                <div data-layer="price" className="Price text-center text-gray-900 text-lg font-bold leading-tight">
-                  LKR {dish.price.toFixed(2)}
-                </div>
-                <div data-layer="currency" className="Currency text-center text-gray-600 text-sm font-normal leading-tight">
-                  
-                </div>
-              </div>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click when clicking add button
-                  handleAddToCart(dish);
-                }}
-                disabled={!dish.available}
-                data-layer="button" 
-                className="Button p-1.5 bg-gray-900 rounded inline-flex justify-center items-center gap-2.5 hover:bg-gray-800 transition-colors disabled:cursor-not-allowed"
-              >
-                <div data-layer="Frame 15361" className="Frame15361 w-3 h-3 flex justify-center items-center">
-                  <div data-layer="plus" className="Plus w-3 h-3 relative flex justify-center items-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
-                      <path d="M7 0H5v5H0v2h5v5h2V7h5V5H7V0z"/>
-                    </svg>
+          {/* Dishes Grid */}
+          <div data-layer="Frame 2608249" className="Frame2608249 flex-1 overflow-y-auto bg-gray-50">
+            <div className="flex flex-col gap-5 p-6 pb-24">
+              {displayDishes.map((dish) => (
+                <div 
+                  key={dish.id}
+                  data-layer="card vertical" 
+                  data-property-1="default" 
+                  className={`CardVertical w-full bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-start items-center overflow-hidden cursor-pointer transition-all duration-300 ease-out hover:shadow-lg hover:border-gray-200 hover:-translate-y-1 ${
+                    !dish.available ? 'opacity-60' : ''
+                  }`}
+                  onClick={() => navigate(`/dish/${dish.id}`)}
+                >
+                  <div className="relative w-full">
+                    <img 
+                      data-layer="Rectangle 6493" 
+                      className="Rectangle6493 w-full h-48 object-cover" 
+                      src={dish.image}
+                      alt={dish.name}
+                    />
+                    {/* Quantity Display - Top right of image */}
+                    {getDishQuantity(dish.id) > 0 && (
+                      <div className="absolute top-3 right-3 bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold shadow-lg">
+                        {getDishQuantity(dish.id)}
+                      </div>
+                    )}
+                  </div>
+                  <div 
+                    data-layer="title" 
+                    className={`Title self-stretch px-6 py-5 flex flex-col justify-center items-start gap-2 ${
+                      !dish.available ? 'opacity-10' : ''
+                    }`}
+                  >
+                    <div data-layer="dish name" className="DishName self-stretch text-left text-gray-900 text-lg font-semibold leading-snug tracking-tight">
+                      {dish.name}
+                    </div>
+                    <div data-layer="price section" className="PriceSection self-stretch flex justify-start items-center">
+                      <div data-layer="price" className="Price text-left text-gray-700 text-base font-medium">
+                        LKR {dish.price.toFixed(2)}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </button>
+              ))}
             </div>
           </div>
-        ))}
         </div>
-      </div>
 
-      {/* View Cart Button - Fixed to bottom of viewport */}
-      {totalCartItems > 0 && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-8">
-          <button
-            onClick={() => navigate('/cart')}
-            data-layer="button" 
-            data-left-icom="true" 
-            data-right-icon="true" 
-            data-size="large" 
-            data-state="default" 
-            data-type="black btn" 
-            className="Button w-full h-14 px-6 py-4 bg-gray-900 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-gray-800 transition-colors shadow-lg"
-          >
-            <div data-layer="button name" className="ButtonName text-center text-white text-base font-semibold leading-tight">
-              View cart ({totalCartItems})
-            </div>
-          </button>
-        </div>
-      )}
+        {/* View Cart Button - Fixed to bottom of viewport */}
+        {totalCartItems > 0 && (
+          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-8">
+            <button
+              onClick={() => navigate('/cart')}
+              data-layer="button" 
+              data-left-icom="true" 
+              data-right-icon="true" 
+              data-size="large" 
+              data-state="default" 
+              data-type="black btn" 
+              className="Button w-full h-14 px-6 py-4 bg-gray-900 rounded-[360px] inline-flex justify-center items-center gap-2.5 transition-all duration-300 shadow-lg transform hover:scale-105 hover:bg-gray-800 active:scale-95"
+            >
+              <div data-layer="button name" className="ButtonName text-center text-white text-base font-semibold leading-tight">
+                View cart ({totalCartItems})
+              </div>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

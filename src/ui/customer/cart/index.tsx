@@ -37,7 +37,7 @@ export const Customer_CartPage: React.FC = () => {
       {/* Header */}
       <div data-layer="header" className="Header w-96 h-24 px-6 pt-14 pb-1 left-0 top-0 absolute bg-color-system-0 inline-flex justify-between items-center">
         <button 
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/view-menu')}
           data-layer="icon button" 
           data-property-1="back" 
           className="IconButton w-12 h-12 bg-color-system-100 rounded-[100px] flex justify-center items-center hover:bg-gray-200 transition-colors"
