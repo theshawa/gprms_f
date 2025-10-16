@@ -11,7 +11,7 @@ const dishDetails = {
     name: "Rice & Curry Special",
     description: "Traditional Sri Lankan rice and curry with aromatic basmati rice, fish curry, chicken curry, dhal curry, and fresh vegetables. Served with papadum and pickles.",
     price: 1850.00,
-    image: "/item1.png",
+    image: "/sample-dish.png",
     typeOptions: [
       { id: 1, name: "Regular Plate", price: 0 },
       { id: 2, name: "Extra Portions", price: 500.00 }
@@ -23,9 +23,9 @@ const dishDetails = {
       { id: 4, name: "Mango Pickle", price: 200.00, checked: false }
     ],
     similarDishes: [
-      { id: 2, name: "Kottu Roti", price: 1200.00, image: "/brunch.png" },
-      { id: 3, name: "Fish Ambul Thiyal", price: 2200.00, image: "/dinner.png" },
-      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/lunch.png" }
+      { id: 2, name: "Kottu Roti", price: 1200.00, image: "/sample-dish.png" },
+      { id: 3, name: "Fish Ambul Thiyal", price: 2200.00, image: "/sample-dish.png" },
+      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/sample-dish.png" }
     ]
   },
   2: {
@@ -33,7 +33,7 @@ const dishDetails = {
     name: "Kottu Roti",
     description: "Sri Lanka's famous street food - chopped roti bread stir-fried with vegetables, egg, and your choice of chicken or beef. A true local favorite with authentic spices.",
     price: 1200.00,
-    image: "/brunch.png",
+    image: "/sample-dish.png",
     typeOptions: [
       { id: 1, name: "Vegetable Kottu", price: 0 },
       { id: 2, name: "Chicken Kottu", price: 300.00 },
@@ -46,9 +46,9 @@ const dishDetails = {
       { id: 4, name: "Chili Paste", price: 100.00, checked: false }
     ],
     similarDishes: [
-      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/item1.png" },
-      { id: 3, name: "Fish Ambul Thiyal", price: 2200.00, image: "/dinner.png" },
-      { id: 6, name: "String Hoppers", price: 850.00, image: "/lunch.png" }
+      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/sample-dish.png" },
+      { id: 3, name: "Fish Ambul Thiyal", price: 2200.00, image: "/sample-dish.png" },
+      { id: 6, name: "String Hoppers", price: 850.00, image: "/sample-dish.png" }
     ]
   },
   3: {
@@ -56,7 +56,7 @@ const dishDetails = {
     name: "Fish Ambul Thiyal",
     description: "Traditional dry fish curry with chunks of fresh tuna, cooked in a rich blend of spices including black pepper, cinnamon, and curry leaves. A signature dish from Southern Sri Lanka.",
     price: 2200.00,
-    image: "/dinner.png",
+    image: "/sample-dish.png",
     typeOptions: [
       { id: 1, name: "Regular Portion", price: 0 },
       { id: 2, name: "Large Portion", price: 600.00 }
@@ -68,9 +68,9 @@ const dishDetails = {
       { id: 4, name: "Pol Sambol", price: 250.00, checked: false }
     ],
     similarDishes: [
-      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/item1.png" },
-      { id: 2, name: "Kottu Roti", price: 1200.00, image: "/brunch.png" },
-      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/lunch.png" }
+      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/sample-dish.png" },
+      { id: 2, name: "Kottu Roti", price: 1200.00, image: "/sample-dish.png" },
+      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/sample-dish.png" }
     ]
   },
   5: {
@@ -78,7 +78,7 @@ const dishDetails = {
     name: "Hoppers with Curry",
     description: "Traditional Sri Lankan hoppers (appa) - bowl-shaped pancakes made from fermented rice flour, served with spicy chicken curry and coconut sambol.",
     price: 950.00,
-    image: "/lunch.png",
+    image: "/sample-dish.png",
     typeOptions: [
       { id: 1, name: "Plain Hoppers (3pcs)", price: 0 },
       { id: 2, name: "Egg Hoppers (3pcs)", price: 300.00 }
@@ -89,9 +89,9 @@ const dishDetails = {
       { id: 3, name: "Kiri Hodi", price: 300.00, checked: false }
     ],
     similarDishes: [
-      { id: 6, name: "String Hoppers", price: 850.00, image: "/hightea.png" },
-      { id: 7, name: "Milk Rice", price: 750.00, image: "/dinner.png" },
-      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/item1.png" }
+      { id: 6, name: "String Hoppers", price: 850.00, image: "/sample-dish.png" },
+      { id: 7, name: "Milk Rice", price: 750.00, image: "/sample-dish.png" },
+      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/sample-dish.png" }
     ]
   },
   6: {
@@ -99,7 +99,7 @@ const dishDetails = {
     name: "String Hoppers",
     description: "Delicate steamed rice noodle nests (idiyappa) served with aromatic chicken curry and fresh coconut sambol. A popular breakfast dish in Sri Lankan households.",
     price: 850.00,
-    image: "/hightea.png",
+    image: "/sample-dish.png",
     typeOptions: [
       { id: 1, name: "Regular (6pcs)", price: 0 },
       { id: 2, name: "Extra (10pcs)", price: 400.00 }
@@ -110,9 +110,9 @@ const dishDetails = {
       { id: 3, name: "Dhal Curry", price: 300.00, checked: false }
     ],
     similarDishes: [
-      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/lunch.png" },
-      { id: 7, name: "Milk Rice", price: 750.00, image: "/dinner.png" },
-      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/item1.png" }
+      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/sample-dish.png" },
+      { id: 7, name: "Milk Rice", price: 750.00, image: "/sample-dish.png" },
+      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/sample-dish.png" }
     ]
   },
   7: {
@@ -120,7 +120,7 @@ const dishDetails = {
     name: "Milk Rice (Kiribath)",
     description: "Traditional Sri Lankan milk rice cooked with coconut milk, served with lunu miris (spicy onion relish) and jaggery. Often enjoyed during special occasions and celebrations.",
     price: 750.00,
-    image: "/dinner.png",
+    image: "/sample-dish.png",
     typeOptions: [
       { id: 1, name: "Sweet Style", price: 0 },
       { id: 2, name: "Savory Style", price: 0 }
@@ -131,9 +131,9 @@ const dishDetails = {
       { id: 3, name: "Banana", price: 120.00, checked: false }
     ],
     similarDishes: [
-      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/lunch.png" },
-      { id: 6, name: "String Hoppers", price: 850.00, image: "/hightea.png" },
-      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/item1.png" }
+      { id: 5, name: "Hoppers with Curry", price: 950.00, image: "/sample-dish.png" },
+      { id: 6, name: "String Hoppers", price: 850.00, image: "/sample-dish.png" },
+      { id: 1, name: "Rice & Curry Special", price: 1850.00, image: "/sample-dish.png" }
     ]
   }
 };
