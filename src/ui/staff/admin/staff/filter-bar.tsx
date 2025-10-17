@@ -46,6 +46,9 @@ export const FilterBar: FC<{
               <MenuItem value={StaffRole.KitchenManager}>
                 Kitchen Manager
               </MenuItem>
+              <MenuItem value={StaffRole.Receptionist}>
+                Receptionist
+              </MenuItem>
               <MenuItem value={StaffRole.Admin}>Admin</MenuItem>
             </Select>
           </FormControl>

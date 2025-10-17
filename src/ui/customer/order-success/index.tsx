@@ -14,9 +14,9 @@ const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
         className="w-full p-3 text-left hover:bg-gray-50 transition-colors"
       >
         <div className="flex justify-between items-center mb-2">
-          <span className="text-gray-600 text-xs">Order #{order.id}</span>
+          <span className="text-gray-600 text-xs">Round {String(order.roundNumber || 1).padStart(2, '0')}</span>
           <div className="flex items-center gap-2">
-            <span className="text-green-600 text-xs font-medium">Completed</span>
+            <span className="text-green-600 text-xs font-medium">Delivered</span>
             <svg 
               width="12" 
               height="12" 
@@ -55,7 +55,7 @@ const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
             ))}
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-medium text-gray-700">Total</span>
+                <span className="text-xs font-medium text-gray-700">Subtotal</span>
                 <span className="text-xs font-semibold text-gray-900">LKR {order.total.toFixed(2)}</span>
               </div>
             </div>
@@ -80,6 +80,37 @@ export const Customer_OrderSuccessPage: React.FC = () => {
   // Get order details from navigation state
   const orderDetails = location.state?.orderDetails;
 
+  // Save current order to session rounds
+  React.useEffect(() => {
+    if (orderDetails || cartItems.length > 0) {
+      // Get current session rounds
+      const currentSessionRounds = JSON.parse(localStorage.getItem('currentSessionRounds') || '[]');
+      
+      // Create unique ID based on timestamp to avoid duplicates
+      const uniqueId = orderDetails?.id || `round-${Date.now()}`;
+      
+      // Check if this round already exists
+      const roundExists = currentSessionRounds.some((round: any) => round.id === uniqueId);
+      
+      if (!roundExists) {
+        // Calculate round number (current rounds count + 1)
+        const roundNumber = currentSessionRounds.length + 1;
+        
+        const currentRound = {
+          roundNumber: roundNumber,
+          id: uniqueId,
+          items: orderDetails?.items || cartItems,
+          total: (orderDetails?.items || cartItems).reduce((sum: number, item: any) => 
+            sum + (item.dish.price * item.quantity), 0),
+          timestamp: new Date().toISOString()
+        };
+        
+        currentSessionRounds.push(currentRound);
+        localStorage.setItem('currentSessionRounds', JSON.stringify(currentSessionRounds));
+      }
+    }
+  }, [orderDetails, cartItems]);
+
   const handleFinishDining = () => {
     setShowFinishConfirmation(true);
   };
@@ -87,6 +118,10 @@ export const Customer_OrderSuccessPage: React.FC = () => {
   const confirmFinishDining = () => {
     // Here you would typically make an API call to alert the waiter
     console.log('Waiter has been notified to bring the bill');
+    
+    // Clear current session rounds as dining is finished
+    localStorage.removeItem('currentSessionRounds');
+    
     setShowFinishConfirmation(false);
     clearCart(); // Clear the cart after successful order
     navigate('/feedback'); // Navigate to feedback page instead of home
@@ -125,8 +160,14 @@ export const Customer_OrderSuccessPage: React.FC = () => {
         {/* Current Order Summary */}
         <div className="w-full bg-gray-50 rounded-xl p-4">
           <div className="flex justify-between items-center mb-3">
-            <span className="text-gray-600 text-sm">Order #</span>
-            <span className="text-gray-900 font-semibold text-sm">{orderDetails?.id || Math.floor(Math.random() * 10000)}</span>
+            <span className="text-gray-600 text-sm">Round</span>
+            <span className="text-gray-900 font-semibold text-sm">
+              {(() => {
+                const currentSessionRounds = JSON.parse(localStorage.getItem('currentSessionRounds') || '[]');
+                const currentRoundNumber = currentSessionRounds.length;
+                return `Round ${String(currentRoundNumber).padStart(2, '0')}`;
+              })()}
+            </span>
           </div>
           
           {/* Items List */}
@@ -148,35 +189,62 @@ export const Customer_OrderSuccessPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Order History Toggle */}
+        {/* Previous Rounds Toggle */}
         <button
           onClick={() => setShowOrderHistory(!showOrderHistory)}
           className="w-full text-center text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"
         >
-          {showOrderHistory ? 'Hide Previous Orders' : 'View Previous Orders'}
+          {showOrderHistory ? 'Hide Previous Rounds' : 'View Previous Rounds'}
         </button>
 
-        {/* Order History */}
+        {/* Previous Rounds (Current Session Only) */}
         {showOrderHistory && (
           <div className="w-full space-y-2">
             {(() => {
-              const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
-              const previousOrders = orderHistory.slice(0, -1); // Exclude current order
+              // Get current session rounds only
+              const currentSessionRounds = JSON.parse(localStorage.getItem('currentSessionRounds') || '[]');
+              const previousRounds = currentSessionRounds.slice(0, -1); // Exclude current round
               
-              if (previousOrders.length === 0) {
+              if (previousRounds.length === 0) {
                 return (
                   <div className="w-full bg-gray-50 rounded-xl p-4 text-center">
-                    <span className="text-gray-500 text-sm">No previous orders</span>
+                    <span className="text-gray-500 text-sm">No previous rounds in this session</span>
                   </div>
                 );
               }
               
-              return previousOrders.slice(-3).reverse().map((order: any) => (
+              return previousRounds.reverse().map((order: any) => (
                 <OrderHistoryItem key={order.id} order={order} />
               ));
             })()}
           </div>
         )}
+
+        {/* Total Summary */}
+        <div className="w-full bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col">
+              <span className="text-gray-500 text-xs mb-1">Total</span>
+              <span className="text-gray-600 text-sm">
+                {(() => {
+                  const currentSessionRounds = JSON.parse(localStorage.getItem('currentSessionRounds') || '[]');
+                  const roundCount = currentSessionRounds.length;
+                  return `${roundCount} Round${roundCount !== 1 ? 's' : ''}`;
+                })()}
+              </span>
+            </div>
+            <div className="text-right">
+              <span className="text-gray-900 text-xl font-semibold">
+                {(() => {
+                  const currentSessionRounds = JSON.parse(localStorage.getItem('currentSessionRounds') || '[]');
+                  const totalAmount = currentSessionRounds.reduce((sum: number, round: any) => 
+                    sum + (round.total || 0), 0);
+                  return `LKR ${totalAmount.toFixed(2)}`;
+                })()}
+              </span>
+            </div>
+          </div>
+        </div>
         
         {/* Action Buttons */}
         <div className="w-full space-y-3">
@@ -210,7 +278,7 @@ export const Customer_OrderSuccessPage: React.FC = () => {
               <div className="Button flex flex-col justify-start items-center gap-3">
                 <button
                   onClick={confirmFinishDining}
-                  className="Button w-48 h-10 px-6 py-2 bg-green-600 text-white text-base font-semibold rounded-full hover:bg-green-700 transition-colors"
+                  className="Button w-48 h-10 px-6 py-2 bg-green-500 text-white text-base font-semibold rounded-full hover:bg-green-600 transition-colors"
                 >
                   Yes, Finish
                 </button>

@@ -113,7 +113,7 @@ export const Customer_CartPage: React.FC = () => {
             {/* Call to Action */}
             <button
               onClick={() => navigate('/view-menu')}
-              className="bg-green-600 text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-green-700 active:bg-green-800 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-green-600 active:bg-green-700 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Explore Menu
             </button>
@@ -201,7 +201,7 @@ export const Customer_CartPage: React.FC = () => {
                         </button>
                         <button
                           onClick={() => setShowNoteInput(false)}
-                          className="px-4 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
+                          className="px-4 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors"
                         >
                           Save
                         </button>
@@ -245,7 +245,7 @@ export const Customer_CartPage: React.FC = () => {
             </div>
             <button 
               onClick={handleOrderNow}
-              className="w-full h-12 bg-green-600 hover:bg-green-700 rounded-full flex justify-center items-center transition-colors"
+              className="w-full h-12 bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-full flex justify-center items-center transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
             >
               <span className="text-white text-base font-semibold">Order Now</span>
             </button>
@@ -265,7 +265,7 @@ export const Customer_CartPage: React.FC = () => {
               <button
                 onClick={confirmRemove}
                 data-layer="button" 
-                className="Button w-48 h-10 px-6 py-2 bg-green-600 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-green-700 transition-colors"
+                className="Button w-48 h-10 px-6 py-2 bg-green-500 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-green-600 transition-colors"
               >
                 <div data-layer="button name" className="ButtonName text-center justify-start text-white text-base font-semibold leading-tight">Yes</div>
               </button>
