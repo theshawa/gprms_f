@@ -96,7 +96,7 @@ export const Customer_MenuScrollPage: FC = () => {
   const currentItems = menuItems[selectedCategory as keyof typeof menuItems] || [];
 
   return (
-    <div className="w-full max-w-sm mx-auto h-screen bg-white relative overflow-hidden">
+    <div className="w-full mx-auto h-screen bg-white relative overflow-hidden">
       {/* Header */}
       <div className="w-full px-6 pt-14 pb-2 bg-white border-b border-gray-300 flex justify-between items-center">
         <button 
