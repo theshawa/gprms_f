@@ -4,5 +4,8 @@ import { useAtom } from "jotai";
 export const useCustomerAuth = () => {
   const [auth, setAuth] = useAtom(customerAuthAtom);
 
-  return { auth, setAuth };
+  const customer = auth?.user ?? null;
+  const isLoggedIn = !!customer;
+
+  return { auth, setAuth, customer, isLoggedIn };
 };
