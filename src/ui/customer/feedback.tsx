@@ -1,11 +1,31 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Rating from '@mui/material/Rating';
+import Box from '@mui/material/Box';
+import StarIcon from '@mui/icons-material/Star';
 
 interface FeedbackItem {
   id: number;
   name: string;
   image: string;
   rating?: number;
+}
+
+const labels: { [index: string]: string } = {
+  0.5: 'Useless',
+  1: 'Useless+',
+  1.5: 'Poor',
+  2: 'Poor+',
+  2.5: 'Ok',
+  3: 'Ok+',
+  3.5: 'Good',
+  4: 'Good+',
+  4.5: 'Excellent',
+  5: 'Excellent+',
+};
+
+function getLabelText(value: number) {
+  return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
 }
 
 export const Customer_FeedbackPage: React.FC = () => {
@@ -23,13 +43,21 @@ export const Customer_FeedbackPage: React.FC = () => {
     }
   ]);
   
-  const [ratings, setRatings] = useState<{ [key: number]: number }>({});
+  const [ratings, setRatings] = useState<{ [key: number]: number | null }>({});
+  const [hover, setHover] = useState<{ [key: number]: number }>({});
   const [experienceText, setExperienceText] = useState('');
 
-  const handleRating = (itemId: number, rating: number) => {
+  const handleRating = (itemId: number, rating: number | null) => {
     setRatings(prev => ({
       ...prev,
       [itemId]: rating
+    }));
+  };
+
+  const handleHover = (itemId: number, newHover: number) => {
+    setHover(prev => ({
+      ...prev,
+      [itemId]: newHover
     }));
   };
 
@@ -42,23 +70,6 @@ export const Customer_FeedbackPage: React.FC = () => {
 
   const handleSkip = () => {
     navigate('/');
-  };
-
-  const renderEmoji = (rating: number) => {
-    switch (rating) {
-      case 1:
-        return "😠"; // Angry
-      case 2:
-        return "😞"; // Disappointed
-      case 3:
-        return "😐"; // Neutral
-      case 4:
-        return "😊"; // Happy
-      case 5:
-        return "😍"; // Love
-      default:
-        return "😐";
-    }
   };
 
   return (
@@ -90,22 +101,28 @@ export const Customer_FeedbackPage: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Emoji Rating */}
-                <div className="flex justify-start items-start gap-2.5 mb-6">
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <button
-                      key={rating}
-                      onClick={() => handleRating(item.id, rating)}
-                      className={`w-12 h-12 p-2.5 flex justify-center items-center rounded-full transition-all ${
-                        ratings[item.id] === rating 
-                          ? 'bg-green-100 scale-110' 
-                          : 'hover:bg-gray-100'
-                      }`}
-                    >
-                      <span className="text-2xl">{renderEmoji(rating)}</span>
-                    </button>
-                  ))}
-                </div>
+                {/* Star Rating */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <Rating
+                    name={`rating-${item.id}`}
+                    value={ratings[item.id] || null}
+                    precision={0.5}
+                    getLabelText={getLabelText}
+                    onChange={(event, newValue) => {
+                      handleRating(item.id, newValue);
+                    }}
+                    onChangeActive={(event, newHover) => {
+                      handleHover(item.id, newHover);
+                    }}
+                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                    sx={{ fontSize: '2rem' }}
+                  />
+                  {ratings[item.id] !== null && ratings[item.id] !== undefined && (
+                    <Box sx={{ ml: 1, color: 'text.secondary', fontSize: '0.875rem' }}>
+                      {labels[hover[item.id] !== undefined && hover[item.id] !== -1 ? hover[item.id] : ratings[item.id] || 0]}
+                    </Box>
+                  )}
+                </Box>
               </div>
             ))}
           </div>
@@ -132,7 +149,7 @@ export const Customer_FeedbackPage: React.FC = () => {
         <div className="px-6 pt-2 pb-8 flex flex-col gap-2.5">
           <button
             onClick={handleSendFeedback}
-            className="w-full h-14 px-6 py-4 bg-green-500 hover:bg-green-600 rounded-full flex justify-center items-center transition-colors"
+            className="w-full h-14 px-6 py-4 bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-full flex justify-center items-center transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
           >
             <span className="text-white text-base font-semibold">Send feedback</span>
           </button>

@@ -3,6 +3,7 @@ export enum StaffRole {
   Waiter = "Waiter",
   KitchenManager = "KitchenManager",
   Cashier = "Cashier",
+  Receptionist = "Receptionist",
 }
 
 export const getEndpointForRole = (role: StaffRole): string => {
@@ -15,6 +16,8 @@ export const getEndpointForRole = (role: StaffRole): string => {
       return "kitchen-manager";
     case StaffRole.Cashier:
       return "cashier";
+    case StaffRole.Receptionist:
+      return "receptionist";
     default:
       return "";
   }
@@ -30,6 +33,8 @@ export const getNameForRole = (role: StaffRole): string => {
       return "Kitchen Manager";
     case StaffRole.Cashier:
       return "Cashier";
+    case StaffRole.Receptionist:
+      return "Receptionist";
     default:
       return "Unknown Role";
   }

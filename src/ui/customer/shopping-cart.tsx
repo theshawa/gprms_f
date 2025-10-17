@@ -170,26 +170,43 @@ export const Customer_CartPage: React.FC = () => {
                 Explore Menu
               </button>
             </div>
-          ) : (
-            <div className="space-y-4">
-              {cartItems.map((item) => (
-                <div
-                  key={item.dish.id}
-                  className="w-full bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
-                >
-                  <div className="w-full p-4 flex gap-4">
-                    <img
-                      className="w-16 h-16 rounded-xl object-cover bg-gray-200"
-                      src={
-                        cloudinary
-                          ? getCloudinaryImageUrl(item.dish.image)
-                          : item.dish.image || "https://placehold.co/64x64"
-                      }
-                      alt={item.dish.name}
-                    />
-                    <div className="flex-1 flex flex-col gap-2">
-                      <div className="text-black text-base font-semibold">
-                        {item.dish.name}
+            
+            {/* Primary Message */}
+            <h2 className="text-gray-800 text-xl font-semibold mb-3 leading-relaxed">
+              Your cart is waiting for delicious choices
+            </h2>
+            
+            {/* Supporting Message */}
+            <p className="text-gray-500 text-base mb-8 max-w-xs leading-relaxed">
+              Browse our menu and add your favorite dishes to get started
+            </p>
+            
+            {/* Call to Action */}
+            <button
+              onClick={() => navigate('/view-menu')}
+              className="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-green-600 active:bg-green-700 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              Explore Menu
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {cartItems.map((item) => (
+              <div key={item.dish.id} className="w-full bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="w-full p-4 flex gap-4">
+                  <img 
+                    className="w-16 h-16 rounded-xl object-cover bg-gray-200" 
+                    src={item.dish.image || "https://placehold.co/64x64"} 
+                    alt={item.dish.name}
+                  />
+                  <div className="flex-1 flex flex-col gap-2">
+                    <div className="text-black text-base font-semibold">
+                      {item.dish.name}
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-600 text-sm">Quantity</span>
+                        <span className="text-black text-sm">{item.quantity}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-1">
@@ -227,12 +244,52 @@ export const Customer_CartPage: React.FC = () => {
                 </div>
               ))}
 
-              {/* Add Order Note Section */}
-              <div className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200">
-                <div className="flex flex-col gap-3">
-                  <div className="flex justify-between items-center">
-                    <div className="text-black text-base font-semibold">
-                      Add an order note
+            {/* Add Order Note Section */}
+            <div className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="flex flex-col gap-3">
+                <div className="flex justify-between items-center">
+                  <div className="text-black text-base font-semibold">Add an order note</div>
+                  {!showNoteInput && (
+                    <button 
+                      onClick={() => setShowNoteInput(true)}
+                      className="w-8 h-8 bg-white rounded-lg flex justify-center items-center hover:bg-gray-50 transition-colors border border-gray-200"
+                    >
+                      <span className="text-black text-lg font-medium">+</span>
+                    </button>
+                  )}
+                </div>
+                
+                {showNoteInput ? (
+                  <div className="space-y-3">
+                    <textarea
+                      value={orderNote}
+                      onChange={(e) => setOrderNote(e.target.value)}
+                      placeholder="Add allergies, special instructions, or any other notes for your order..."
+                      className="w-full p-3 bg-white border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                      rows={3}
+                      maxLength={200}
+                    />
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-400">
+                        {orderNote.length}/200 characters
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setShowNoteInput(false);
+                            setOrderNote('');
+                          }}
+                          className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => setShowNoteInput(false)}
+                          className="px-4 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors"
+                        >
+                          Save
+                        </button>
+                      </div>
                     </div>
                     {!showNoteInput && (
                       <button
@@ -325,6 +382,12 @@ export const Customer_CartPage: React.FC = () => {
                 </span>
               </button>
             </div>
+            <button 
+              onClick={handleOrderNow}
+              className="w-full h-12 bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-full flex justify-center items-center transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
+            >
+              <span className="text-white text-base font-semibold">Order Now</span>
+            </button>
           </div>
         )}
       </div>
@@ -345,25 +408,11 @@ export const Customer_CartPage: React.FC = () => {
             >
               Remove dish
             </div>
-            <div
-              data-layer="confirmation text"
-              className="ConfirmationText self-stretch text-center justify-start text-gray-900 text-xs font-normal leading-none"
-            >
-              Are you sure you want to remove this dish from your cart?
-            </div>
-          </div>
-          <div
-            data-layer="button"
-            className="Button flex flex-col justify-start items-center gap-3"
-          >
-            <button
-              onClick={confirmRemove}
-              data-layer="button"
-              className="Button w-48 h-10 px-6 py-2 bg-green-600 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-green-700 transition-colors"
-            >
-              <div
-                data-layer="button name"
-                className="ButtonName text-center justify-start text-white text-base font-semibold leading-tight"
+            <div data-layer="button" className="Button flex flex-col justify-start items-center gap-3">
+              <button
+                onClick={confirmRemove}
+                data-layer="button" 
+                className="Button w-48 h-10 px-6 py-2 bg-green-500 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-green-600 transition-colors"
               >
                 Yes
               </div>

@@ -197,7 +197,7 @@ export const Customer_MenuScrollPage: FC = () => {
                         e.stopPropagation();
                         handleAddToCart(item);
                       }}
-                      className="px-2 py-1 bg-green-600 rounded-full text-white text-xs font-semibold hover:bg-green-700 transition-colors"
+                      className="px-2 py-1 bg-green-500 rounded-full text-white text-xs font-semibold hover:bg-green-600 transition-colors"
                     >
                       Add
                     </button>

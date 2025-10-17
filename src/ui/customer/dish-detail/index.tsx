@@ -271,9 +271,9 @@ export const Customer_DishDetailPage: FC = () => {
                 data-state="default"
                 data-type="primary"
                 className={`Button w-36 h-10 px-6 py-2 rounded-full flex justify-center items-center gap-2.5 transition-colors ${
-                  quantity === 0
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-green-600 hover:bg-green-700"
+                  quantity === 0 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-green-500 hover:bg-green-600 active:bg-green-700'
                 }`}
               >
                 <div
@@ -325,13 +325,13 @@ export const Customer_DishDetailPage: FC = () => {
             >
               <button
                 onClick={handleRemoveConfirm}
-                data-layer="button"
-                data-left-icom="true"
-                data-right-icon="true"
-                data-size="small"
-                data-state="default"
-                data-type="primary"
-                className="Button w-48 h-10 px-6 py-2 bg-green-600 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-green-700 transition-colors"
+                data-layer="button" 
+                data-left-icom="true" 
+                data-right-icon="true" 
+                data-size="small" 
+                data-state="default" 
+                data-type="primary" 
+                className="Button w-48 h-10 px-6 py-2 bg-green-500 rounded-[360px] inline-flex justify-center items-center gap-2.5 hover:bg-green-600 transition-colors"
               >
                 <div
                   data-layer="button name"

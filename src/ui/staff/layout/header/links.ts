@@ -154,6 +154,14 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
         Icon: ReceiptLong,
       });
       break;
+    case StaffRole.Receptionist:
+      links.push({
+        title: "Dashboard",
+        link: "/staff/receptionist",
+        Icon: Home,
+        exactLinkMatch: true,
+      });
+      break;
     default:
       links.push({
         title: "Login",

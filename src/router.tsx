@@ -40,6 +40,7 @@ import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_Root } from "./ui/staff/cashier";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { KitchenManager_Root } from "./ui/staff/kitchen-manager";
+import { ReceptionistDashboard } from "./ui/staff/receptionist/receptionist-homepage";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -390,6 +391,14 @@ export const router = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: "receptionist",
+        element: (
+          <StaffAuthGuard role={StaffRole.Receptionist}>
+            <ReceptionistDashboard />
+          </StaffAuthGuard>
+        ),
       },
     ],
   },
