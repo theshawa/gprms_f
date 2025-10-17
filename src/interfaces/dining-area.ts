@@ -8,4 +8,7 @@ export interface DiningArea {
   diningTables: DiningTable[];
   assignedWaiters: StaffUser[];
   image: string;
+
+  // reservations
+  reservationSeatsCount: number;
 }
