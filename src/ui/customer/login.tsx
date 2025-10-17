@@ -1,36 +1,156 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { CustomerAuthService } from "@/services/customer/customer-auth";
+import { getBackendErrorMessage } from "@/backend";
 import "./login.css";
+import { useAlert } from "@/hooks/useAlert";
+import { useForm } from "react-hook-form";
 
 export const Customer_LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { setAuth } = useCustomerAuth();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [readyToVerify, setReadyToVerify] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+
+  const { showSuccess, showError } = useAlert();
 
   const tableNo = useMemo(() => {
     const t = searchParams.get("table") || searchParams.get("tableNo") || "05";
     return String(t).slice(0, 3).padStart(2, "0");
   }, [searchParams]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { reset } = useForm<{ name: string; phone: string }>();
+
+  // ----- LOGIN SUBMIT -----
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!name.trim() || !phone.trim()) return;
-    
-    // Simulate phone number validation (you'll replace this with actual API call)
-    // For demo purposes, let's say any phone number ending with "00" triggers the error
-    if (phone.trim().endsWith("00")) {
-      setPhoneError("This is not the number you have used while reserving the table.");
-      return;
+
+    try {
+      const status = await CustomerAuthService.login(
+        `+94${phone}`,
+        name.trim()
+      );
+
+      showSuccess(
+        status === "already-sent"
+          ? `A verification code has already been sent to +94${phone}. Please check your messages.`
+          : `Verification code sent to +94${phone}. Please check your messages.`
+      );
+
+      setReadyToVerify(phone);
+      reset();
+    } catch (error) {
+      showError(
+        `Failed to login due to an error: ${getBackendErrorMessage(error)}`
+      );
     }
-    
-    // Clear any previous errors and proceed
-    setPhoneError("");
-    navigate(`/dine-in/${encodeURIComponent(tableNo)}`);
   };
 
+  // ----- VERIFICATION SUBMIT -----
+  const handleVerificationSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    if (verificationCode.length !== 6) return;
+
+    try {
+      const { accessToken, user, customerFound } =
+        await CustomerAuthService.verifyLoginCode(
+          `+94${readyToVerify}`,
+          verificationCode
+        );
+
+      if (!customerFound) {
+        showSuccess(
+          `Welcome to Resto Ease, ${user.name}! You have successfully registered.`
+        );
+      } else {
+        showSuccess(
+          `Welcome back, ${user.name}! You have successfully logged in.`
+        );
+      }
+
+      setAuth({ accessToken, user });
+
+      showSuccess(
+        customerFound
+          ? `Welcome back, ${user.name}!`
+          : `Welcome, ${user.name}! You have registered successfully.`
+      );
+
+      navigate("/view-menu");
+    } catch (error) {
+      showError(
+        `Failed to login due to an error: ${getBackendErrorMessage(error)}`
+      );
+    }
+  };
+
+  // ----- CONDITIONAL RENDER -----
+  if (readyToVerify) {
+    // Verification Form
+    return (
+      <main className="cl-root">
+        <header className="cl-header" aria-label={`Table number ${tableNo}`}>
+          <div className="cl-table">
+            <span className="cl-table__label">Table No.</span>
+            <span className="cl-table__value">{tableNo}</span>
+          </div>
+        </header>
+
+        <div className="cl-logo" aria-hidden>
+          {/* Your logo SVG here */}
+        </div>
+
+        <form
+          className="cl-form"
+          onSubmit={handleVerificationSubmit}
+          noValidate
+        >
+          <div className="cl-fields">
+            <label className="cl-field">
+              <input
+                className="cl-input"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="Enter 6-digit code"
+                maxLength={6}
+                inputMode="numeric"
+                aria-label="Verification code"
+              />
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="cl-cta"
+            disabled={verificationCode.length !== 6}
+          >
+            Verify
+          </button>
+          <button
+            type="button"
+            className="cl-link"
+            onClick={() => {
+              setReadyToVerify("");
+              setVerificationCode("");
+            }}
+          >
+            Cancel
+          </button>
+        </form>
+      </main>
+    );
+  }
+
+  // Login Form
   return (
     <main className="cl-root">
       <header className="cl-header" aria-label={`Table number ${tableNo}`}>
@@ -61,21 +181,57 @@ export const Customer_LoginPage: React.FC = () => {
       </header>
 
       <div className="cl-logo" aria-hidden>
-          <svg width="86" height="38" viewBox="0 0 86 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M34.0976 14.4115H23.9568V8.14215H20.8038V24.0741H23.9568V17.386H34.0976V24.0741H37.2482V8.14215H34.0976V14.4115Z" fill="#B59B46"/>
-            <path d="M71.0959 19.8434L60.9299 8.14215H57.3605V24.0741H60.5135V12.3728L70.6772 24.0741H74.2512V8.14215H71.0959V19.8434Z" fill="#B59B46"/>
-            <path d="M53.0517 16.0326C53.0517 13.1634 50.5783 10.8318 47.5374 10.8318C44.4988 10.8318 42.03 13.1634 42.03 16.0326C42.03 18.8996 44.4988 21.2312 47.5374 21.2312C50.5783 21.2312 53.0517 18.8996 53.0517 16.0326ZM56.2069 16.0326C56.2069 20.5379 52.3172 24.2057 47.5374 24.2057C42.7599 24.2057 38.8747 20.5379 38.8747 16.0326C38.8747 11.5205 42.7599 7.85731 47.5374 7.85731C52.3172 7.85731 56.2069 11.5205 56.2069 16.0326Z" fill="#B59B46"/>
-            <path d="M85.6614 5.97766C71.8093 2.34189 57.4584 0.499983 42.9954 0.499983C28.5416 0.499983 14.1907 2.34189 0.343216 5.97766L0 6.0669V9.16039L0.594899 9.00022C4.17118 8.04609 7.78178 7.2178 11.4198 6.5085V23.9963H11.5159H14.6689H14.7604V5.89529C24.0455 4.28677 33.4976 3.47678 42.9954 3.47678C57.3829 3.47678 71.6537 5.33242 85.4074 9.00022L86 9.16039V6.06919L85.6614 5.97766Z" fill="#B59B46"/>
-            <path d="M26.1241 28.6775H24.7307V32.2927H20.4313V28.6775H18.832V37.4478H20.4313V33.796H24.7307V37.4478H26.3255V28.6775H26.1241Z" fill="#B59B46"/>
-            <path d="M29.6144 33.0816C29.6144 32.2121 29.905 31.4891 30.477 30.9354C31.0582 30.3725 31.8041 30.0888 32.701 30.0888C33.5659 30.0888 34.2706 30.3656 34.861 30.9399C35.4513 31.512 35.7373 32.1961 35.7373 33.0335C35.7373 33.8824 35.4421 34.6009 34.861 35.1706C34.2752 35.7404 33.5339 36.0309 32.6667 36.0309C31.7949 36.0309 31.0627 35.7472 30.4816 35.1889C29.905 34.6329 29.6144 33.9236 29.6144 33.0816ZM29.3009 29.8348C28.4177 30.6928 27.9692 31.7865 27.9692 33.0816C27.9692 34.3515 28.4154 35.4223 29.2895 36.2689C30.1635 37.1109 31.2732 37.5365 32.582 37.5365C33.9503 37.5365 35.0989 37.1132 36.0004 36.2712C36.9088 35.4246 37.3664 34.3446 37.3664 33.0587C37.3664 31.7774 36.9088 30.6905 36.0141 29.8348C35.1195 28.9836 33.9846 28.5535 32.6484 28.5535C31.3076 28.5535 30.1818 28.9836 29.3009 29.8348Z" fill="#B59B46"/>
-            <path d="M45.4077 28.6775H38.2186V30.1533H41.0855V37.4478H42.6964V30.1533H45.6091V28.6775H45.4077Z" fill="#B59B46"/>
-            <path d="M52.2519 28.6775H47.3027V37.4478H52.563V35.9674H48.8975V33.7662H52.3319V32.2927H48.8975V30.1533H52.4555V28.6775H52.2519Z" fill="#B59B46"/>
-            <path d="M56.1754 28.6775H54.7774V37.4478H60.1475V35.9536H56.3768V28.6775H56.1754Z" fill="#B59B46"/>
-            <path d="M62.8095 29.2361C62.3107 29.6822 62.0568 30.2726 62.0568 30.9887C62.0568 31.4669 62.1918 31.8994 62.4595 32.2723C62.7157 32.6316 63.1436 32.9954 63.7339 33.3523L64.64 33.906C65.3058 34.3248 65.6468 34.7526 65.6468 35.1828C65.6468 35.4322 65.5461 35.6381 65.3425 35.8097C65.132 35.9882 64.8642 36.0729 64.5348 36.0729C63.7431 36.0729 62.7752 35.4047 62.0911 34.8831V36.6655L62.1712 36.725C62.885 37.2649 63.6836 37.5372 64.5439 37.5372C65.3173 37.5372 65.9488 37.3061 66.4316 36.8531C66.9189 36.3955 67.1683 35.796 67.1683 35.0707C67.1683 34.0525 66.6215 33.2127 65.5461 32.5698L64.6354 32.0252C64.2419 31.7918 63.9605 31.5722 63.798 31.38C63.6424 31.1969 63.5646 31.0025 63.5646 30.808C63.5646 30.5906 63.6584 30.4213 63.8598 30.2748C64.0771 30.1238 64.3563 30.046 64.7041 30.046C65.4569 30.046 66.4545 30.6684 66.848 30.943V29.2475L66.7588 29.188C66.1433 28.7784 65.4591 28.5702 64.7224 28.5702C63.9467 28.5702 63.3038 28.7945 62.8095 29.2361Z" fill="#B59B46"/>
-          </svg>
+        <svg
+          width="86"
+          height="38"
+          viewBox="0 0 86 38"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M34.0976 14.4115H23.9568V8.14215H20.8038V24.0741H23.9568V17.386H34.0976V24.0741H37.2482V8.14215H34.0976V14.4115Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M71.0959 19.8434L60.9299 8.14215H57.3605V24.0741H60.5135V12.3728L70.6772 24.0741H74.2512V8.14215H71.0959V19.8434Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M53.0517 16.0326C53.0517 13.1634 50.5783 10.8318 47.5374 10.8318C44.4988 10.8318 42.03 13.1634 42.03 16.0326C42.03 18.8996 44.4988 21.2312 47.5374 21.2312C50.5783 21.2312 53.0517 18.8996 53.0517 16.0326ZM56.2069 16.0326C56.2069 20.5379 52.3172 24.2057 47.5374 24.2057C42.7599 24.2057 38.8747 20.5379 38.8747 16.0326C38.8747 11.5205 42.7599 7.85731 47.5374 7.85731C52.3172 7.85731 56.2069 11.5205 56.2069 16.0326Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M85.6614 5.97766C71.8093 2.34189 57.4584 0.499983 42.9954 0.499983C28.5416 0.499983 14.1907 2.34189 0.343216 5.97766L0 6.0669V9.16039L0.594899 9.00022C4.17118 8.04609 7.78178 7.2178 11.4198 6.5085V23.9963H11.5159H14.6689H14.7604V5.89529C24.0455 4.28677 33.4976 3.47678 42.9954 3.47678C57.3829 3.47678 71.6537 5.33242 85.4074 9.00022L86 9.16039V6.06919L85.6614 5.97766Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M26.1241 28.6775H24.7307V32.2927H20.4313V28.6775H18.832V37.4478H20.4313V33.796H24.7307V37.4478H26.3255V28.6775H26.1241Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M29.6144 33.0816C29.6144 32.2121 29.905 31.4891 30.477 30.9354C31.0582 30.3725 31.8041 30.0888 32.701 30.0888C33.5659 30.0888 34.2706 30.3656 34.861 30.9399C35.4513 31.512 35.7373 32.1961 35.7373 33.0335C35.7373 33.8824 35.4421 34.6009 34.861 35.1706C34.2752 35.7404 33.5339 36.0309 32.6667 36.0309C31.7949 36.0309 31.0627 35.7472 30.4816 35.1889C29.905 34.6329 29.6144 33.9236 29.6144 33.0816ZM29.3009 29.8348C28.4177 30.6928 27.9692 31.7865 27.9692 33.0816C27.9692 34.3515 28.4154 35.4223 29.2895 36.2689C30.1635 37.1109 31.2732 37.5365 32.582 37.5365C33.9503 37.5365 35.0989 37.1132 36.0004 36.2712C36.9088 35.4246 37.3664 34.3446 37.3664 33.0587C37.3664 31.7774 36.9088 30.6905 36.0141 29.8348C35.1195 28.9836 33.9846 28.5535 32.6484 28.5535C31.3076 28.5535 30.1818 28.9836 29.3009 29.8348Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M45.4077 28.6775H38.2186V30.1533H41.0855V37.4478H42.6964V30.1533H45.6091V28.6775H45.4077Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M52.2519 28.6775H47.3027V37.4478H52.563V35.9674H48.8975V33.7662H52.3319V32.2927H48.8975V30.1533H52.4555V28.6775H52.2519Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M56.1754 28.6775H54.7774V37.4478H60.1475V35.9536H56.3768V28.6775H56.1754Z"
+            fill="#B59B46"
+          />
+          <path
+            d="M62.8095 29.2361C62.3107 29.6822 62.0568 30.2726 62.0568 30.9887C62.0568 31.4669 62.1918 31.8994 62.4595 32.2723C62.7157 32.6316 63.1436 32.9954 63.7339 33.3523L64.64 33.906C65.3058 34.3248 65.6468 34.7526 65.6468 35.1828C65.6468 35.4322 65.5461 35.6381 65.3425 35.8097C65.132 35.9882 64.8642 36.0729 64.5348 36.0729C63.7431 36.0729 62.7752 35.4047 62.0911 34.8831V36.6655L62.1712 36.725C62.885 37.2649 63.6836 37.5372 64.5439 37.5372C65.3173 37.5372 65.9488 37.3061 66.4316 36.8531C66.9189 36.3955 67.1683 35.796 67.1683 35.0707C67.1683 34.0525 66.6215 33.2127 65.5461 32.5698L64.6354 32.0252C64.2419 31.7918 63.9605 31.5722 63.798 31.38C63.6424 31.1969 63.5646 31.0025 63.5646 30.808C63.5646 30.5906 63.6584 30.4213 63.8598 30.2748C64.0771 30.1238 64.3563 30.046 64.7041 30.046C65.4569 30.046 66.4545 30.6684 66.848 30.943V29.2475L66.7588 29.188C66.1433 28.7784 65.4591 28.5702 64.7224 28.5702C63.9467 28.5702 63.3038 28.7945 62.8095 29.2361Z"
+            fill="#B59B46"
+          />
+        </svg>
       </div>
 
-      <form className="cl-form" onSubmit={handleSubmit} noValidate>
+      <form className="cl-form" onSubmit={handleLoginSubmit} noValidate>
         <div className="cl-fields">
           <label className="cl-field">
             <input
@@ -87,13 +243,13 @@ export const Customer_LoginPage: React.FC = () => {
               autoComplete="name"
             />
           </label>
+
           <label className="cl-field">
             <input
-              className={`cl-input ${phoneError ? 'cl-input--error' : ''}`}
+              className={`cl-input ${phoneError ? "cl-input--error" : ""}`}
               value={phone}
               onChange={(e) => {
                 setPhone(e.target.value);
-                // Clear error when user starts typing
                 if (phoneError) setPhoneError("");
               }}
               placeholder="Phone number"
@@ -101,22 +257,15 @@ export const Customer_LoginPage: React.FC = () => {
               aria-label="Phone number"
               autoComplete="tel"
             />
-            {phoneError && (
-              <div className="cl-input__error">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22.75C6.072 22.75 1.25 17.928 1.25 12C1.25 6.072 6.072 1.25 12 1.25C17.928 1.25 22.75 6.072 22.75 12C22.75 17.928 17.928 22.75 12 22.75ZM12 2.75C6.899 2.75 2.75 6.899 2.75 12C2.75 17.101 6.899 21.25 12 21.25C17.101 21.25 21.25 17.101 21.25 12C21.25 6.899 17.101 2.75 12 2.75ZM13.02 15.5C13.02 14.948 12.573 14.5 12.02 14.5H12.01C11.458 14.5 11.0149 14.948 11.0149 15.5C11.0149 16.052 11.468 16.5 12.02 16.5C12.572 16.5 13.02 16.052 13.02 15.5ZM12.75 12.071V7.5C12.75 7.086 12.414 6.75 12 6.75C11.586 6.75 11.25 7.086 11.25 7.5V12.071C11.25 12.485 11.586 12.821 12 12.821C12.414 12.821 12.75 12.485 12.75 12.071Z" fill="var(--error)"/>
-                </svg>
-              </div>
-            )}
+            {phoneError && <div className="cl-input__error">{phoneError}</div>}
           </label>
-          {phoneError && (
-            <div className="cl-error-message">
-              {phoneError}
-            </div>
-          )}
         </div>
 
-        <button type="submit" className="cl-cta" disabled={!name.trim() || !phone.trim()}>
+        <button
+          type="submit"
+          className="cl-cta"
+          disabled={!name.trim() || !phone.trim()}
+        >
           Let’s Start
         </button>
 
@@ -126,6 +275,14 @@ export const Customer_LoginPage: React.FC = () => {
             Scan Again
           </button>
         </p>
+
+        <button
+          type="button"
+          className="cl-link"
+          onClick={() => navigate("/view-menu")}
+        >
+          Continue as a Guest
+        </button>
       </form>
     </main>
   );

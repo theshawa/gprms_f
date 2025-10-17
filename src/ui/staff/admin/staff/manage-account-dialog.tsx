@@ -139,6 +139,9 @@ export const ManageAccountDialog: FC<{
                 <MenuItem value={StaffRole.KitchenManager}>
                   Kitchen Manager
                 </MenuItem>
+                <MenuItem value={StaffRole.Receptionist}>
+                  Receptionist
+                </MenuItem>
               </Select>
             )}
           />

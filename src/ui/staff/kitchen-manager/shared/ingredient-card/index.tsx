@@ -1,8 +1,8 @@
 import { Card, Typography, Box, Chip } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import type { FC } from "react";
 import type { Ingredient } from "@/interfaces/ingredient";
-import { GridCheckCircleIcon } from "@mui/x-data-grid";
 
 interface Props {
   ingredient: Ingredient;
@@ -71,7 +71,7 @@ export const IngredientCard: FC<Props> = ({ ingredient }) => {
         />
       ) : (
         <Chip
-          icon={<GridCheckCircleIcon />}
+          icon={<CheckCircleIcon />}
           label={`In Stock`}
           color="success"
           size="small"
