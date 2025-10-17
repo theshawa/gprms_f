@@ -1,53 +1,55 @@
 import { staffBackend } from "@/backend";
-import type { Reservation, ReservationFilters, ReservationVerification } from "@/interfaces/reservation";
+import type { ReservationFilters } from "@/interfaces/reservation";
 
-// Get all reservations with filters
-export const getAllReservations = async (filters?: ReservationFilters): Promise<Reservation[]> => {
-  const queryParams = new URLSearchParams();
-  
-  if (filters?.diningAreaId) queryParams.append('diningAreaId', filters.diningAreaId.toString());
-  if (filters?.date) queryParams.append('date', filters.date);
-  if (filters?.customerName) queryParams.append('customerName', filters.customerName);
-  if (filters?.customerPhone) queryParams.append('customerPhone', filters.customerPhone);
-  if (filters?.status) queryParams.append('status', filters.status);
-  if (filters?.meal) queryParams.append('meal', filters.meal);
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
 
-  const url = `/receptionist/reservations${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-  
-  const response = await staffBackend.get(url);
-  return response.data;
-};
+interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
 
-// Get reservation by code
-export const getReservationByCode = async (code: string): Promise<Reservation> => {
-  const response = await staffBackend.get(`/receptionist/reservations/code/${code}`);
-  return response.data;
-};
+export class ReceptionistReservationsService {
+  static async getAll(filters?: ReservationFilters & PaginationParams) {
+    const queryParams = new URLSearchParams();
 
-// Verify reservation with code and optional phone
-export const verifyReservation = async (verification: ReservationVerification): Promise<Reservation> => {
-  const response = await staffBackend.post('/receptionist/reservations/verify', verification);
-  return response.data;
-};
+    if (filters?.page) queryParams.append("page", filters.page.toString());
+    if (filters?.limit) queryParams.append("limit", filters.limit.toString());
+    if (filters?.diningAreaId) queryParams.append("diningAreaId", filters.diningAreaId.toString());
+    if (filters?.date) queryParams.append("date", filters.date);
+    if (filters?.customerName) queryParams.append("customerName", filters.customerName);
+    if (filters?.customerPhone) queryParams.append("customerPhone", filters.customerPhone);
+    if (filters?.status) queryParams.append("status", filters.status);
+    if (filters?.meal) queryParams.append("meal", filters.meal);
 
-// Update reservation status
-export const updateReservationStatus = async (
-  id: number, 
-  status: 'Pending' | 'Cancelled' | 'Completed'
-): Promise<Reservation> => {
-  const response = await staffBackend.patch(`/receptionist/reservations/${id}/status`, { status });
-  return response.data;
-};
+    const url = `/receptionist/reservations${
+      queryParams.toString() ? `?${queryParams.toString()}` : ""
+    }`;
 
-// Get today's reservations summary
-export const getTodaysSummary = async (): Promise<{
-  total: number;
-  pending: number;
-  completed: number;
-  cancelled: number;
-  byMeal: { [key: string]: number };
-  byArea: { [key: string]: number };
-}> => {
-  const response = await staffBackend.get('/receptionist/reservations/today-summary');
-  return response.data;
-};
+    const response = await staffBackend.get<PaginatedResponse<any>>(url);
+    return response.data;
+  }
+
+  static async completeReservation(reservationId: number) {
+    const response = await staffBackend.post<{ success: boolean }>(
+      `/receptionist/reservations/complete/${reservationId}`
+    );
+    return response.data;
+  }
+
+  static async cancelReservation(reservationId: number) {
+    const response = await staffBackend.post<{ success: boolean }>(
+      `/receptionist/reservations/cancel/${reservationId}`
+    );
+    return response.data;
+  }
+}
