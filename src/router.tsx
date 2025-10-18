@@ -51,6 +51,7 @@ import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { Staff_PayrollPage } from "./ui/staff/common/payroll";
 import { KitchenManager_Root } from "./ui/staff/kitchen-manager";
 import { KitchenManager_DishesPage } from "./ui/staff/kitchen-manager/dishes";
+import { ReceptionistDashboard } from "./ui/staff/receptionist/receptionist-homepage";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
@@ -419,6 +420,13 @@ export const router = createBrowserRouter([
       {
         path: "payroll",
         element: <Staff_PayrollPage />,
+      {
+        path: "receptionist",
+        element: (
+          <StaffAuthGuard role={StaffRole.Receptionist}>
+            <ReceptionistDashboard />
+          </StaffAuthGuard>
+        ),
       },
     ],
   },

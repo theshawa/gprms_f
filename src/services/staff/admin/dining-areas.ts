@@ -4,28 +4,34 @@ import type { StaffUser } from "@/interfaces/staff-user";
 import type { WaiterAssignment } from "@/interfaces/waiter-assignment";
 
 export class DiningAreasService {
-  static async create(name: string, description: string, imageFile: File) {
+  static async create(
+    name: string,
+    description: string,
+    imageFile: File,
+    reservationSeatsCount: number
+  ) {
     const formData = new FormData();
-    formData.append("data", JSON.stringify({ name, description }));
+    formData.append(
+      "data",
+      JSON.stringify({
+        name,
+        description,
+        reservationSeatsCount,
+      })
+    );
     formData.append("image", imageFile);
 
-    const { data } = await staffBackend.post<DiningArea>(
-      "/admin/dining-areas",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const { data } = await staffBackend.post<DiningArea>("/admin/dining-areas", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     return data;
   }
 
   static async getAll() {
-    const { data } = await staffBackend.get<DiningArea[]>(
-      "/admin/dining-areas"
-    );
+    const { data } = await staffBackend.get<DiningArea[]>("/admin/dining-areas");
     return data;
   }
 
@@ -33,24 +39,21 @@ export class DiningAreasService {
     id: number,
     name: string,
     description: string,
-    imageFile: File | null
+    imageFile: File | null,
+    reservationSeatsCount: number
   ) {
     const formData = new FormData();
-    formData.append("data", JSON.stringify({ name, description }));
+    formData.append("data", JSON.stringify({ name, description, reservationSeatsCount }));
 
     if (imageFile) {
       formData.append("image", imageFile);
     }
 
-    const { data } = await staffBackend.put<DiningArea>(
-      `/admin/dining-areas/${id}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const { data } = await staffBackend.put<DiningArea>(`/admin/dining-areas/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return data;
   }
 

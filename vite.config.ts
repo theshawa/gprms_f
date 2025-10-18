@@ -6,4 +6,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tsconfigPaths(), react(), tailwindcss()],
+  server: {
+    host: '0.0.0.0', // Allow external connections
+    port: 5173,
+  },
 });
