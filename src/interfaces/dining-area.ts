@@ -1,4 +1,5 @@
 import type { DiningTable } from "./dining-table";
+import type { Reservation } from "./reservation";
 import type { StaffUser } from "./staff-user";
 
 export interface DiningArea {
@@ -11,4 +12,5 @@ export interface DiningArea {
 
   // reservations
   reservationSeatsCount: number;
+  reservations?: Reservation[];
 }

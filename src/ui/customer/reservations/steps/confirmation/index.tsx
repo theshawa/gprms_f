@@ -2,7 +2,9 @@ import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { CustomerReservationService } from "@/services/customer/reservation";
+import { QKs } from "@/ui/customer/query-keys";
 import { Button, Stack, Typography } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, type FC } from "react";
 import { useReservationContext } from "../../context";
 import { DefaultReservationData } from "../../reservation-data.interface";
@@ -12,6 +14,7 @@ export const ConfirmationStep: FC = () => {
   const { data, diningAreas, setCurrentStep, setData } = useReservationContext();
   const diningArea = diningAreas?.find((area) => area.id === data.diningAreaId);
   const [verificationOpen, setVerificationOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { auth } = useCustomerAuth();
   const [placing, setPlacing] = useState(false);
@@ -28,6 +31,7 @@ export const ConfirmationStep: FC = () => {
         );
         setData(DefaultReservationData);
         setCurrentStep(0);
+        queryClient.invalidateQueries({ queryKey: QKs.customer_reservation_dining_areas });
         return;
       }
       const { data: resData } = await CustomerReservationService.sendReservationVerificationCode(

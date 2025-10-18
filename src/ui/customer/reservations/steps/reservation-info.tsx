@@ -1,6 +1,7 @@
 import { getCloudinaryImageUrl } from "@/cloudinary";
 import { Meal } from "@/enums/meal";
 import {
+  Alert,
   Button,
   FormControl,
   FormHelperText,
@@ -10,6 +11,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import dayjs from "dayjs";
 import { useEffect, useMemo, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useReservationContext } from "../context";
@@ -42,15 +44,29 @@ export const ReservationsInfoStep: FC = () => {
   }, [data]);
 
   const selectedDiningAreaId = watch("diningAreaId");
+  const selectedMeal = watch("meal");
 
   const image = useMemo(() => {
     const selectedArea = diningAreas?.find((area) => area.id === selectedDiningAreaId);
     if (selectedArea) {
       return getCloudinaryImageUrl(selectedArea.image);
     }
-
     return DEFAULT_IMAGE_URL;
-  }, [diningAreas, selectedDiningAreaId]);
+  }, [selectedDiningAreaId, diningAreas]);
+
+  const availableSeatsCount = useMemo(() => {
+    const selectedArea = diningAreas?.find((area) => area.id === selectedDiningAreaId);
+    if (selectedArea) {
+      return (
+        selectedArea.reservationSeatsCount -
+        (selectedArea.reservations
+          ?.filter((r) => dayjs().date() === data.reservationDate.date() && r.meal === selectedMeal)
+          .reduce((pv, r) => pv + r.noOfSeats, 0) ?? 0)
+      );
+    }
+
+    return 9999;
+  }, [diningAreas, selectedDiningAreaId, data, selectedMeal]);
 
   const onSubmit = (data: FormInputs) => {
     setData((prev) => ({
@@ -109,21 +125,26 @@ export const ReservationsInfoStep: FC = () => {
           <FormHelperText>{errors.diningAreaId?.message}</FormHelperText>
         </FormControl>
 
-        <TextField
-          type="number"
-          label="Number of Seats"
-          variant="filled"
-          margin="dense"
-          fullWidth
-          error={!!errors.noOfSeats}
-          helperText={errors.noOfSeats?.message}
-          {...control.register("noOfSeats", {
-            required: "Number of seats is required",
-            min: { value: 1, message: "At least 1 seat is required" },
-            max: { value: 20, message: "Maximum 20 seats allowed" },
-          })}
-          sx={{ mb: 5 }}
-        />
+        {availableSeatsCount > 0 && (
+          <TextField
+            type="number"
+            label="Number of Seats"
+            variant="filled"
+            margin="dense"
+            fullWidth
+            error={!!errors.noOfSeats}
+            helperText={errors.noOfSeats?.message}
+            {...control.register("noOfSeats", {
+              required: "Number of seats is required",
+              min: { value: 1, message: "At least 1 seat is required" },
+              max: {
+                value: availableSeatsCount,
+                message: `Only ${availableSeatsCount} seats are available at selected dining area`,
+              },
+            })}
+            sx={{ mb: 5 }}
+          />
+        )}
 
         <Stack direction={"row"} spacing={2}>
           <Button
@@ -134,10 +155,22 @@ export const ReservationsInfoStep: FC = () => {
           >
             Back
           </Button>
-          <Button type="submit" className="w-max" variant="contained">
+          <Button
+            type="submit"
+            className="w-max"
+            variant="contained"
+            disabled={availableSeatsCount <= 0}
+          >
             Next
           </Button>
         </Stack>
+        <Alert
+          severity="error"
+          sx={{ mt: 3, display: availableSeatsCount <= 0 ? "block" : "none" }}
+        >
+          No available seats for the selected dining area and meal. Please choose a different
+          option.
+        </Alert>
       </form>
       <img src={image} className="w-full aspect-square object-cover rounded-2xl" alt="" />
     </div>

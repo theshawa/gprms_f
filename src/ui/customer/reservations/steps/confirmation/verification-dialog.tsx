@@ -1,6 +1,7 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
 import { CustomerReservationService } from "@/services/customer/reservation";
+import { QKs } from "@/ui/customer/query-keys";
 import {
   Button,
   Dialog,
@@ -10,6 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { useReservationContext } from "../../context";
@@ -30,6 +32,8 @@ export const VerificationDialog: FC<{ open: boolean; handleClose: () => void }> 
 
   const { showSuccess, showError } = useAlert();
 
+  const queryClient = useQueryClient();
+
   const onSubmit = async ({ code }: { code: string }) => {
     try {
       await CustomerReservationService.verifyPhoneNumberAndPlaceReservation(
@@ -41,6 +45,8 @@ export const VerificationDialog: FC<{ open: boolean; handleClose: () => void }> 
       showSuccess(
         `Your reservation has been placed successfully, ${data.customerName}! Our staff will contact you soon.`
       );
+
+      queryClient.invalidateQueries({ queryKey: QKs.customer_reservation_dining_areas });
 
       setData(DefaultReservationData);
       setCurrentStep(0);

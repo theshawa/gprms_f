@@ -3,6 +3,7 @@ import { CustomerReservationService } from "@/services/customer/reservation";
 import { Alert, Box, LinearProgress, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useState, type FC } from "react";
+import { QKs } from "../query-keys";
 import { ReservationContext } from "./context";
 import { DefaultReservationData, type ReservationData } from "./reservation-data.interface";
 import { ReservationStepContent } from "./reservation-step-content";
@@ -17,7 +18,7 @@ export const Customer_Reservations: FC = () => {
     isPending,
     error,
   } = useQuery({
-    queryKey: ["customer_diningAreas"],
+    queryKey: QKs.customer_reservation_dining_areas,
     queryFn: () => CustomerReservationService.getDiningAreas(),
   });
 
@@ -33,21 +34,25 @@ export const Customer_Reservations: FC = () => {
 
   if (error) {
     return (
-      <Box p={3}>
-        <Alert severity="error">
-          Failed to load data related to this view: {getBackendErrorMessage(error)}
-        </Alert>
-      </Box>
+      <main className="min-h-screen bg-white py-4  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Box p={3}>
+          <Alert severity="error">
+            Failed to load data related to this view: {getBackendErrorMessage(error)}
+          </Alert>
+        </Box>
+      </main>
     );
   }
 
   if (!diningAreas?.length) {
     return (
-      <Box p={3}>
-        <Alert severity="warning">
-          No dining areas are available for reservations at the moment. Please try again later.
-        </Alert>
-      </Box>
+      <main className="min-h-screen bg-white py-4  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Box p={3}>
+          <Alert severity="warning">
+            No dining areas are available for reservations at the moment. Please try again later.
+          </Alert>
+        </Box>
+      </main>
     );
   }
 
