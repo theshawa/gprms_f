@@ -139,7 +139,9 @@ export const ReservationsInfoStep: FC = () => {
               min: { value: 1, message: "At least 1 seat is required" },
               max: {
                 value: availableSeatsCount,
-                message: `Only ${availableSeatsCount} seats are available at selected dining area`,
+                message: `Only ${availableSeatsCount} seat${
+                  availableSeatsCount === 1 ? "" : "s"
+                } are available at selected dining area for the chosen meal`,
               },
             })}
             sx={{ mb: 5 }}
@@ -168,7 +170,7 @@ export const ReservationsInfoStep: FC = () => {
           severity="error"
           sx={{ mt: 3, display: availableSeatsCount <= 0 ? "block" : "none" }}
         >
-          No available seats for the selected dining area and meal. Please choose a different
+          No available seats for the selected dining area, meal and date. Please choose a different
           option.
         </Alert>
       </form>
