@@ -172,7 +172,12 @@ export const IngredientsSelector: FC<{
                             )
                           }
                           sx={{ width: 80 }}
-                          inputProps={{ min: 0 }}
+                          slotProps={{
+                            htmlInput: {
+                              step: 0.01,
+                              min: 0,
+                            },
+                          }}
                           error={item.quantity === 0}
                         />
                         <IconButton
