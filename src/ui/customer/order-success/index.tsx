@@ -4,6 +4,7 @@ import { OrderService } from "@/services/customer/order";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSocketConnection } from "../socket-context";
 
 // Order History Item Component
 const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
@@ -22,13 +23,17 @@ const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
             Round {String(order.roundNumber || 1).padStart(2, "0")}
           </span>
           <div className="flex items-center gap-2">
-            <span className="text-green-600 text-xs font-medium">Delivered</span>
+            <span className="text-green-600 text-xs font-medium">
+              Delivered
+            </span>
             <svg
               width="12"
               height="12"
               viewBox="0 0 12 12"
               fill="none"
-              className={`transform transition-transform ${isExpanded ? "rotate-180" : ""}`}
+              className={`transform transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
             >
               <path
                 d="M3 4.5L6 7.5L9 4.5"
@@ -52,12 +57,19 @@ const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
       {isExpanded && (
         <div className="px-3 pb-3 border-t border-gray-100">
           <div className="mt-3 space-y-2">
-            <div className="text-xs font-medium text-gray-700 mb-2">Items ordered:</div>
+            <div className="text-xs font-medium text-gray-700 mb-2">
+              Items ordered:
+            </div>
             {order.items.map((item: any, index: number) => (
-              <div key={index} className="flex justify-between items-center py-1">
+              <div
+                key={index}
+                className="flex justify-between items-center py-1"
+              >
                 <div className="flex-1">
                   <div className="text-xs text-gray-800">{item.dish.name}</div>
-                  <div className="text-xs text-gray-500">LKR {item.dish.price.toFixed(2)} each</div>
+                  <div className="text-xs text-gray-500">
+                    LKR {item.dish.price.toFixed(2)} each
+                  </div>
                 </div>
                 <div className="text-xs text-gray-600">×{item.quantity}</div>
                 <div className="text-xs font-medium text-gray-800 ml-3">
@@ -67,7 +79,9 @@ const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
             ))}
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-medium text-gray-700">Subtotal</span>
+                <span className="text-xs font-medium text-gray-700">
+                  Subtotal
+                </span>
                 <span className="text-xs font-semibold text-gray-900">
                   LKR {order.total.toFixed(2)}
                 </span>
@@ -99,17 +113,23 @@ export const Customer_OrderSuccessPage: React.FC = () => {
     queryFn: () => OrderService.getOrder(orderCode),
   });
 
+  const socket = useSocketConnection();
+
   // Save current order to session rounds
   React.useEffect(() => {
     if ((order && cartItems.length > 0) || cartItems.length > 0) {
       // Get current session rounds
-      const currentSessionRounds = JSON.parse(localStorage.getItem("currentSessionRounds") || "[]");
+      const currentSessionRounds = JSON.parse(
+        localStorage.getItem("currentSessionRounds") || "[]"
+      );
 
       // Create unique ID based on order code or timestamp
       const uniqueId = order?.orderCode || `round-${Date.now()}`;
 
       // Check if this round already exists
-      const roundExists = currentSessionRounds.some((round: any) => round.id === uniqueId);
+      const roundExists = currentSessionRounds.some(
+        (round: any) => round.id === uniqueId
+      );
 
       if (!roundExists) {
         // Calculate round number (current rounds count + 1)
@@ -127,10 +147,30 @@ export const Customer_OrderSuccessPage: React.FC = () => {
         };
 
         currentSessionRounds.push(currentRound);
-        localStorage.setItem("currentSessionRounds", JSON.stringify(currentSessionRounds));
+        localStorage.setItem(
+          "currentSessionRounds",
+          JSON.stringify(currentSessionRounds)
+        );
       }
     }
-  }, [order, cartItems]);
+
+    if (!socket || !order) return;
+
+    socket.on("diningTableStatusUpdate", (data: any) => {
+      console.log("Received table status update:", data);
+
+      // if (data.waiterId == order.waiterId) {
+      //   if (data.message.includes("Waiter assigned")) {
+
+
+      //   }
+      // }
+    });
+
+    return () => {
+      socket.off("diningTableStatusUpdate");
+    };
+  }, [order, cartItems, socket, order]);
 
   const handleFinishDining = () => {
     setShowFinishConfirmation(true);
@@ -182,7 +222,28 @@ export const Customer_OrderSuccessPage: React.FC = () => {
           <div className="w-full bg-gray-50 rounded-xl p-4">
             <div className="flex justify-between items-center mb-3">
               <span className="text-gray-600 text-sm">Order #</span>
-              <span className="text-gray-900 font-semibold text-sm">{order?.orderCode}</span>
+              <span className="text-gray-900 font-semibold text-sm">
+                {order?.orderCode}
+              </span>
+            </div>
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-gray-600 text-sm">Items</span>
+              <span className="text-gray-900 font-semibold text-sm">
+                {order?.orderItems.map((item) => (
+                  <div
+                    key={item.dishId}
+                    className="w-full border-gray-100 overflow-hidden"
+                  >
+                    {item.dish?.name} x{item.quantity}
+                  </div>
+                ))}
+              </span>
+            </div>
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-gray-600 text-sm">Total</span>
+              <span className="text-gray-900 font-semibold text-sm">
+                LKR {order?.totalAmount.toFixed(2)}
+              </span>
             </div>
 
             {/* Previous Rounds Toggle */}
@@ -190,7 +251,9 @@ export const Customer_OrderSuccessPage: React.FC = () => {
               onClick={() => setShowOrderHistory(!showOrderHistory)}
               className="w-full text-center text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"
             >
-              {showOrderHistory ? "Hide Previous Rounds" : "View Previous Rounds"}
+              {showOrderHistory
+                ? "Hide Previous Rounds"
+                : "View Previous Rounds"}
             </button>
 
             {/* Previous Rounds (Current Session Only) */}
@@ -215,42 +278,12 @@ export const Customer_OrderSuccessPage: React.FC = () => {
 
                   return previousRounds
                     .reverse()
-                    .map((order: any) => <OrderHistoryItem key={order.id} order={order} />);
+                    .map((order: any) => (
+                      <OrderHistoryItem key={order.id} order={order} />
+                    ));
                 })()}
               </div>
             )}
-
-            {/* Total Summary */}
-            <div className="w-full bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="text-gray-500 text-xs mb-1">Total</span>
-                  <span className="text-gray-600 text-sm">
-                    {(() => {
-                      const currentSessionRounds = JSON.parse(
-                        localStorage.getItem("currentSessionRounds") || "[]"
-                      );
-                      const roundCount = currentSessionRounds.length;
-                      return `${roundCount} Round${roundCount !== 1 ? "s" : ""}`;
-                    })()}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="text-gray-900 text-xl font-semibold">
-                    {(() => {
-                      const currentSessionRounds = JSON.parse(
-                        localStorage.getItem("currentSessionRounds") || "[]"
-                      );
-                      const totalAmount = currentSessionRounds.reduce(
-                        (sum: number, round: any) => sum + (round.total || 0),
-                        0
-                      );
-                      return `LKR ${totalAmount.toFixed(2)}`;
-                    })()}
-                  </span>
-                </div>
-              </div>
-            </div>
 
             {/* Action Buttons */}
             <div className="w-full space-y-3">
@@ -261,14 +294,18 @@ export const Customer_OrderSuccessPage: React.FC = () => {
                 }}
                 className="w-full h-12 bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-full flex justify-center items-center transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
               >
-                <span className="text-white text-base font-semibold">Order More</span>
+                <span className="text-white text-base font-semibold">
+                  Order More
+                </span>
               </button>
 
               <button
                 onClick={handleFinishDining}
                 className="w-full h-12 bg-white border border-gray-300 hover:bg-gray-50 rounded-full flex justify-center items-center transition-colors"
               >
-                <span className="text-gray-700 text-base font-semibold">Finish Dining</span>
+                <span className="text-gray-700 text-base font-semibold">
+                  Finish Dining
+                </span>
               </button>
             </div>
           </div>

@@ -56,116 +56,123 @@ import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
+import { Customer_Root } from "./ui/customer";
 
 export const router = createBrowserRouter([
-  // Customer login as a top-level page (no layout/header/footer)
-  {
-    path: "/customer/login",
-    element: <Customer_LoginPage />,
-    errorElement: <ErrorPage />,
-  },
-  // Order summary page - shows current order status and allows more ordering rounds
-  {
-    path: "/order-summary",
-    element: <Customer_MenuViewOnly />,
-    errorElement: <ErrorPage />,
-  },
-  // Individual dish details page
-  {
-    path: "/dish/:dishId",
-    element: <Customer_DishDetailPage />,
-    errorElement: <ErrorPage />,
-  },
-  // View menu page - dine-in experience after login (no layout/header/footer)
-  {
-    path: "/view-menu",
-    element: <Customer_ViewMenuPage />,
-    errorElement: <ErrorPage />,
-  },
-  // Cart page - view and manage cart items
-  {
-    path: "/cart",
-    element: <Customer_CartPage />,
-    errorElement: <ErrorPage />,
-  },
-  // Order success page
-  {
-    path: "/order-success",
-    element: <Customer_OrderSuccessPage />,
-    errorElement: <ErrorPage />,
-  },
-  // Feedback page
-  {
-    path: "/feedback",
-    element: <Customer_FeedbackPage />,
-    errorElement: <ErrorPage />,
-  },
-  // Place order page as a top-level page (no layout/header/footer) - mobile/tablet focused
-  // {
-  //   path: "/place-order",
-  //   element: <Customer_Menu />,
-  //   errorElement: <ErrorPage />,
-  // },
   {
     path: "/",
-    errorElement: <ErrorPage />,
-    element: <Customer_Layout />,
+    element: <Customer_Root />,
     children: [
+      // Customer login as a top-level page (no layout/header/footer)
       {
-        index: true,
-        element: <Customer_HomePage />,
+        path: "/customer/login",
+        element: <Customer_LoginPage />,
+        errorElement: <ErrorPage />,
       },
+      // Order summary page - shows current order status and allows more ordering rounds
       {
-        path: "reservations",
-        element: <Customer_Reservations />,
-      },
-      {
-        path: "menu",
+        path: "/order-summary",
         element: <Customer_MenuViewOnly />,
+        errorElement: <ErrorPage />,
       },
+      // Individual dish details page
       {
-        path: "dish/:dishId",
+        path: "/dish/:dishId",
         element: <Customer_DishDetailPage />,
+        errorElement: <ErrorPage />,
       },
+      // View menu page - dine-in experience after login (no layout/header/footer)
       {
-        path: "dine-in/:tableId",
-        element: <Customer_DineInLayout />,
+        path: "/view-menu",
+        element: <Customer_ViewMenuPage />,
+        errorElement: <ErrorPage />,
+      },
+      // Cart page - view and manage cart items
+      {
+        path: "/cart",
+        element: <Customer_CartPage />,
+        errorElement: <ErrorPage />,
+      },
+      // Order success page
+      {
+        path: "/order-success",
+        element: <Customer_OrderSuccessPage />,
+        errorElement: <ErrorPage />,
+      },
+      // Feedback page
+      {
+        path: "/feedback",
+        element: <Customer_FeedbackPage />,
+        errorElement: <ErrorPage />,
+      },
+      // Place order page as a top-level page (no layout/header/footer) - mobile/tablet focused
+      // {
+      //   path: "/place-order",
+      //   element: <Customer_Menu />,
+      //   errorElement: <ErrorPage />,
+      // },
+      {
+        path: "/",
+        errorElement: <ErrorPage />,
+        element: <Customer_Layout />,
         children: [
           {
             index: true,
-            element: <Customer_DineInMenuPage />,
+            element: <Customer_HomePage />,
           },
           {
-            path: "confirm",
-            element: <Customer_DineInConfirm />,
+            path: "reservations",
+            element: <Customer_Reservations />,
           },
           {
-            path: "status",
-            element: <Customer_DineInStatusPage />,
+            path: "menu",
+            element: <Customer_MenuViewOnly />,
+          },
+          {
+            path: "dish/:dishId",
+            element: <Customer_DishDetailPage />,
+          },
+          {
+            path: "dine-in/:tableId",
+            element: <Customer_DineInLayout />,
+            children: [
+              {
+                index: true,
+                element: <Customer_DineInMenuPage />,
+              },
+              {
+                path: "confirm",
+                element: <Customer_DineInConfirm />,
+              },
+              {
+                path: "status",
+                element: <Customer_DineInStatusPage />,
+              },
+            ],
+          },
+          {
+            path: "takeaway",
+            children: [
+              { index: true, element: <Customer_TakeAway /> },
+              {
+                path: "cart",
+                element: <Customer_TakeAway_CartPage />,
+              },
+            ],
+          },
+          {
+            path: "our-story",
+            element: <Customer_AboutPage />,
+          },
+          {
+            path: "dining-areas",
+            element: <Customer_DiningAreasPage />,
+          },
+          {
+            path: "contact",
+            element: <Customer_ContactPage />,
           },
         ],
-      },
-      {
-        path: "takeaway",
-        children: [
-          { index: true, element: <Customer_TakeAway /> },
-          {
-            path: "cart",
-            element: <Customer_TakeAway_CartPage />,
-          },
-        ],
-      },
-      {
-        path: "our-story",
-        element: <Customer_AboutPage />,
-      },
-      {
-        path: "dining-areas",
-        element: <Customer_DiningAreasPage />,
-      },
-      {
-        path: "contact",
-        element: <Customer_ContactPage />,
       },
     ],
   },
