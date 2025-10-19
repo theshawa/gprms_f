@@ -1,19 +1,17 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
+import type { Order } from "@/interfaces/orders";
 import { type TakeAwayOrder } from "@/interfaces/take-away-order";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { OrderCard } from "./order-card";
 import { useSocketConnection } from "../socket-context";
+import { OrderCard } from "./order-card";
 import { TakeAwayOrderCard } from "./take-away-order-card";
-import type { Order } from "@/interfaces/orders";
 
 export const KitchenManager_OrdersPage: FC = () => {
   const [orderType, setOrderType] = useState<"current" | "archived">("current");
-  const [allTakeAwayOrders, setAllTakeAwayOrders] = useState<TakeAwayOrder[]>(
-    []
-  );
+  const [allTakeAwayOrders, setAllTakeAwayOrders] = useState<TakeAwayOrder[]>([]);
   const [allDineInOrders, setAllDineInOrders] = useState<Order[]>([]);
 
   const socket = useSocketConnection();
@@ -23,85 +21,75 @@ export const KitchenManager_OrdersPage: FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("getTakeAwayOrders");
+    socket.emit("get-takeaway-orders");
 
-    socket.on("takeAwayOrdersResults", (orders) => {
+    socket.on("takeaway-orders-results", (orders) => {
       setAllTakeAwayOrders(orders);
     });
 
-    socket.on("takeAwayOrdersResultsError", (err) => {
-      showError(
-        `Failed to fetch take away orders: ${getBackendErrorMessage(err)}`
-      );
+    socket.on("takeaway-orders-results-error", (err) => {
+      showError(`Failed to fetch take away orders: ${getBackendErrorMessage(err)}`);
     });
 
-    socket.on("newTakeAwayOrder", (order: TakeAwayOrder) => {
+    socket.on("takeaway-order-placed", (order: TakeAwayOrder) => {
       setAllTakeAwayOrders((oto) => [order, ...oto]);
     });
 
-    socket.on("takeAwayOrderCancelled", (two: TakeAwayOrder) => {
-      setAllTakeAwayOrders((oto) =>
-        oto.map((o) => (o.id === two.id ? { ...o, status: "Cancelled" } : o))
-      );
+    socket.on("takeaway-order-cancelled", (two: TakeAwayOrder) => {
+      setAllTakeAwayOrders((oto) => oto.map((o) => (o.id === two.id ? two : o)));
     });
 
-    socket.emit("getDineInOrders");
-
-    socket.on("dineInOrdersResults", (orders) => {
-      setAllDineInOrders(orders);
+    socket.on("takeaway-order-completed", (two: TakeAwayOrder) => {
+      setAllTakeAwayOrders((oto) => oto.map((o) => (o.id === two.id ? two : o)));
     });
 
-    socket.on("dineInOrdersError", (err) => {
-      showError(
-        `Failed to fetch dine in orders: ${getBackendErrorMessage(err)}`
-      );
-    });
+    // socket.emit("getDineInOrders");
 
-    socket.on("newDineInOrder", (order: Order) => {
-      setAllDineInOrders((prev) => [order, ...prev]);
-    });
+    // socket.on("dineInOrdersResults", (orders) => {
+    //   setAllDineInOrders(orders);
+    // });
 
-    socket.on("dineInOrderStatusChanged", (updated: Order) => {
-      setAllDineInOrders((prev) =>
-        prev.map((o) => (o.id === updated.id ? updated : o))
-      );
-    });
+    // socket.on("dineInOrdersError", (err) => {
+    //   showError(`Failed to fetch dine in orders: ${getBackendErrorMessage(err)}`);
+    // });
+
+    // socket.on("newDineInOrder", (order: Order) => {
+    //   setAllDineInOrders((prev) => [order, ...prev]);
+    // });
+
+    // socket.on("dineInOrderStatusChanged", (updated: Order) => {
+    //   setAllDineInOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
+    // });
 
     return () => {
-      socket.off("takeAwayOrdersResults");
-      socket.off("takeAwayOrdersResultsError");
-      socket.off("newTakeAwayOrder");
-      socket.off("takeAwayOrderCancelled");
-      socket.off("dineInOrdersResults");
-      socket.off("dineInOrdersError");
-      socket.off("newDineInOrder");
-      socket.off("dineInOrderStatusChanged");
+      socket.off("takeaway-orders-results");
+      socket.off("takeaway-orders-results-error");
+
+      socket.off("takeaway-order-placed");
+      socket.off("takeaway-order-cancelled");
+      socket.off("takeaway-order-completed");
+
+      // socket.off("takeAwayOrdersResults");
+      // socket.off("takeAwayOrdersResultsError");
+      // socket.off("newTakeAwayOrder");
+      // socket.off("takeAwayOrderCancelled");
+      // socket.off("dineInOrdersResults");
+      // socket.off("dineInOrdersError");
+      // socket.off("newDineInOrder");
+      // socket.off("dineInOrderStatusChanged");
     };
   }, [socket]);
 
-  const handleToggle = (
-    _: React.SyntheticEvent,
-    newValue: "current" | "archived"
-  ) => {
+  const handleToggle = (_: React.SyntheticEvent, newValue: "current" | "archived") => {
     if (newValue) setOrderType(newValue);
   };
 
-  const updateTakeAwayOrderStatus = async (
-    id: number,
-    status: "Preparing" | "Prepared"
-  ) => {
-    setAllTakeAwayOrders((oto) =>
-      oto.map((to) => (to.id === id ? { ...to, status } : to))
-    );
+  const updateTakeAwayOrderStatus = async (id: number, status: "Preparing" | "Prepared") => {
+    setAllTakeAwayOrders((oto) => oto.map((to) => (to.id === id ? { ...to, status } : to)));
   };
 
-  const updateOrderStatus = async (
-    id: number,
-    status: "InProgress" | "Ready"
-  ) => {
-    setAllDineInOrders((oto) =>
-      oto.map((to) => (to.id === id ? { ...to, status } : to))
-    );
+  const updateOrderStatus = async (id: number, status: "InProgress" | "Ready") => {
+    setAllDineInOrders((oto) => oto.map((to) => (to.id === id ? { ...to, status } : to)));
   };
 
   return (
@@ -137,9 +125,7 @@ export const KitchenManager_OrdersPage: FC = () => {
                 .map((order) => (
                   <Grid size={1} key={order.id}>
                     <OrderCard
-                      updateParentStatus={() =>
-                        updateOrderStatus(order.id, "InProgress")
-                      }
+                      updateParentStatus={() => updateOrderStatus(order.id, "InProgress")}
                       order={order}
                     />
                   </Grid>
@@ -168,9 +154,7 @@ export const KitchenManager_OrdersPage: FC = () => {
                 .map((order) => (
                   <Grid size={1} key={order.id}>
                     <OrderCard
-                      updateParentStatus={() =>
-                        updateOrderStatus(order.id, "Ready")
-                      }
+                      updateParentStatus={() => updateOrderStatus(order.id, "Ready")}
                       order={order}
                     />
                   </Grid>
@@ -199,9 +183,7 @@ export const KitchenManager_OrdersPage: FC = () => {
                 .map((order) => (
                   <Grid size={1} key={order.id}>
                     <TakeAwayOrderCard
-                      updateParentStatus={() =>
-                        updateTakeAwayOrderStatus(order.id, "Preparing")
-                      }
+                      updateParentStatus={() => updateTakeAwayOrderStatus(order.id, "Preparing")}
                       order={order}
                     />
                   </Grid>
@@ -226,9 +208,7 @@ export const KitchenManager_OrdersPage: FC = () => {
                 .map((order) => (
                   <Grid size={1} key={order.id}>
                     <TakeAwayOrderCard
-                      updateParentStatus={() =>
-                        updateTakeAwayOrderStatus(order.id, "Prepared")
-                      }
+                      updateParentStatus={() => updateTakeAwayOrderStatus(order.id, "Prepared")}
                       order={order}
                     />
                   </Grid>

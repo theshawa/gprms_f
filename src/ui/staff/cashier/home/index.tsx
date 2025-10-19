@@ -24,38 +24,35 @@ export const Cashier_HomePage: FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("getTakeAwayOrders");
+    socket.emit("get-takeaway-orders");
 
-    socket.on("takeAwayOrdersResults", (orders) => {
+    socket.on("takeaway-orders-results", (orders) => {
       setAllTakeAwayOrders(orders);
     });
 
-    socket.on("takeAwayOrdersResultsError", (err) => {
+    socket.on("takeaway-orders-results-error", (err) => {
       showError(`Failed to fetch take away orders: ${getBackendErrorMessage(err)}`);
     });
 
-    socket.on("newTakeAwayOrder", (order: TakeAwayOrder) => {
-      setAllTakeAwayOrders((oto) => [order, ...oto]);
+    socket.on("takeaway-order-placed", (two: TakeAwayOrder) => {
+      setAllTakeAwayOrders((otwo) => [two, ...otwo]);
     });
 
-    socket.on("takeAwayOrderPreparing", (two: TakeAwayOrder) => {
-      setAllTakeAwayOrders((oto) =>
-        oto.map((o) => (o.id === two.id ? { ...o, status: "Preparing" } : o))
-      );
+    socket.on("takeaway-order-marked-preparing", (two: TakeAwayOrder) => {
+      setAllTakeAwayOrders((otwo) => otwo.map((o) => (o.id === two.id ? two : o)));
     });
 
-    socket.on("takeAwayOrderPrepared", (two: TakeAwayOrder) => {
-      setAllTakeAwayOrders((oto) =>
-        oto.map((o) => (o.id === two.id ? { ...o, status: "Prepared" } : o))
-      );
+    socket.on("takeaway-order-marked-prepared", (two: TakeAwayOrder) => {
+      setAllTakeAwayOrders((otwo) => otwo.map((o) => (o.id === two.id ? two : o)));
     });
 
     return () => {
-      socket.off("takeAwayOrdersResults");
-      socket.off("takeAwayOrdersResultsError");
-      socket.off("newTakeAwayOrder");
-      socket.off("takeAwayOrderPreparing");
-      socket.off("takeAwayOrderPrepared");
+      socket.off("takeaway-orders-results");
+      socket.off("takeaway-orders-results-error");
+
+      socket.off("takeaway-order-placed");
+      socket.off("takeaway-order-marked-preparing");
+      socket.off("takeaway-order-marked-prepared");
     };
   }, [socket]);
 
