@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { teal, blue, green, orange, purple, red, grey } from "@mui/material/colors";
+import { blue, green, grey, orange, purple, red, teal } from "@mui/material/colors";
 
 export const muiTheme = createTheme({
   typography: {
@@ -10,37 +10,37 @@ export const muiTheme = createTheme({
       light: teal[100],
       main: teal[600],
       dark: teal[800],
-      contrastText: '#ffffff',
+      contrastText: "#ffffff",
     },
     secondary: {
       light: blue[100],
       main: blue[600],
       dark: blue[800],
-      contrastText: '#ffffff',
+      contrastText: "#ffffff",
     },
     success: {
       light: green[100],
       main: green[600],
       dark: green[800],
-      contrastText: '#ffffff',
+      contrastText: "#ffffff",
     },
     warning: {
       light: orange[100],
       main: orange[600],
       dark: orange[800],
-      contrastText: '#ffffff',
+      contrastText: "#ffffff",
     },
     error: {
       light: red[100],
       main: red[600],
       dark: red[800],
-      contrastText: '#ffffff',
+      contrastText: "#ffffff",
     },
     info: {
       light: blue[100],
       main: blue[600],
       dark: blue[800],
-      contrastText: '#ffffff',
+      contrastText: "#ffffff",
     },
     grey: {
       50: grey[50],
@@ -63,12 +63,11 @@ export const muiTheme = createTheme({
           fontWeight: 600,
         },
       },
-
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
           borderRadius: 12,
         },
       },
@@ -77,7 +76,7 @@ export const muiTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 8,
-          textTransform: 'none',
+          textTransform: "none",
           fontWeight: 600,
         },
       },
@@ -136,3 +135,4 @@ export const avatarColors = {
   },
 };
 
+// Hello
