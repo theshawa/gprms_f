@@ -43,17 +43,11 @@ export const Waiter_HomePage: FC = () => {
       );
     });
 
-    socket.on("customer-login-notification", (data) => {
-      console.log("Customer login notification received:", data);
-      // Show toast, alert, or popup in UI
-    });
-
     return () => {
       socket.off("diningTables");
       socket.off("diningTablesError");
       socket.off("ongoingOrdersCount");
       socket.off("ongoingOrdersCountError");
-      socket.off("customer-login-notification");
     };
   }, [socket]);
 

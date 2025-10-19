@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSocketConnection } from "../socket-context";
+import { getBackendErrorMessage } from "@/backend";
+import { useAlert } from "@/hooks/useAlert";
 
 // Order History Item Component
 const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
@@ -101,6 +103,7 @@ export const Customer_OrderSuccessPage: React.FC = () => {
   const { auth } = useCustomerAuth();
   const [showOrderHistory, setShowOrderHistory] = useState(false);
   const [showFinishConfirmation, setShowFinishConfirmation] = useState(false);
+  const [waiterAssignedFlag, setWaiterAssignedFlag] = useState(false);
 
   // Get customer first name
   const firstName = auth?.user?.name?.split(" ")[0] || "Guest";
@@ -112,6 +115,8 @@ export const Customer_OrderSuccessPage: React.FC = () => {
     queryKey: ["customer_order"],
     queryFn: () => OrderService.getOrder(orderCode),
   });
+
+  const { showError } = useAlert();
 
   const socket = useSocketConnection();
 
@@ -154,21 +159,33 @@ export const Customer_OrderSuccessPage: React.FC = () => {
       }
     }
 
-    if (!socket || !order) return;
+    if (!socket) return;
+    // socket.emit("getWaiterAssignedFlag", order.tableId);
 
-    socket.on("diningTableStatusUpdate", (data: any) => {
-      console.log("Received table status update:", data);
+    // socket.on("waiterAssignedFlag", (data)) => {
+    //   if(data.tableId === order.tableId) {
+    //     setWaiterAssignedFlag(data.status);
+    //   }
+    // }
 
-      // if (data.waiterId == order.waiterId) {
-      //   if (data.message.includes("Waiter assigned")) {
+    // socket.on("accepted-table-customer-emit", (tableId: number, status: boolean) => {
+    //   if(data.tableId === order.tableId) {
+    //     // waiterAssignedFlag = true
+    //     setWaiterAssignedFlag(status);
+    //   }
+    // });
 
-
-      //   }
-      // }
-    });
+    // socket.on("waiterAssigedFlagError", (tableId, err) => {
+    //   if (data.tableId === order.tableId) {
+    //     showError(
+    //       `Failed to fetch table status: ${getBackendErrorMessage(err)}`
+    //     );
+    //   }
+    // });
 
     return () => {
-      socket.off("diningTableStatusUpdate");
+      // socket.off("waiterAssignedFlag");
+      // socket.off("accepted-table-customer-emit");
     };
   }, [order, cartItems, socket, order]);
 
@@ -192,6 +209,17 @@ export const Customer_OrderSuccessPage: React.FC = () => {
     setShowFinishConfirmation(false);
   };
 
+  if (!waiterAssignedFlag) {
+    return (
+      <div className="w-full min-h-screen flex flex-col justify-center items-center bg-white">
+        <div className="w-20 h-20 border-4 border-gray-200 border-t-green-500 rounded-full animate-spin"></div>
+        <p className="mt-6 text-gray-700 text-base font-medium">
+          Waiting for waiter to accept your table...
+        </p>
+        <p className="text-gray-500 text-sm mt-2">Please wait a moment.</p>
+      </div>
+    );
+  }
   return (
     <div className="w-full mx-auto min-h-screen bg-white overflow-y-auto">
       {/* Header */}

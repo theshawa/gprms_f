@@ -32,16 +32,12 @@ export const AcceptTableDialog: FC<{
       updateParentStatus("order-ongoing");
       handleClose();
       if (socket) {
-        socket.emit("waiterAcceptedTable", {
+        socket.emit("waiter-accepted-table", {
           tableId,
           waiterId,
-          message: `Waiter accepted table ${tableId}`,
-          timestamp: new Date().toISOString(),
-          source: "waiter",
         });
-        console.log("Socket emitted waiterAcceptedTable for table:", tableId);
       } else {
-        console.warn("Socket not connected, cannot emit waiterAcceptedTable");
+        console.warn("Socket not connected, cannot emit waiter-accepted-table");
       }
     },
     onError(err) {

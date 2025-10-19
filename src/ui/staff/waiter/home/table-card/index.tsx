@@ -29,7 +29,8 @@ export const TableCard: FC<{
     socket.emit("getDiningTableStatus", diningTable.id);
 
     socket.on("diningTableStatus", (tableId: number, status: string | null) => {
-      if (tableId == diningTable.id) {
+      if (tableId === diningTable.id) {
+        console.log("status: ", status);
         setStatus(status);
       }
     });
@@ -38,27 +39,28 @@ export const TableCard: FC<{
       showError(`Failed to fetch table status: ${getBackendErrorMessage(err)}`);
     });
 
-    socket.on("diningTableStatusUpdate", (data) => {
-      console.log("Received customer login notification:", data);
-
-      console.log(diningTable.id);
-      if (data.tableNo == diningTable.id) {
-        if (data.message.includes("waiting")) {
-          setStatus("WaitingForWaiter");
-        } else if (data.message.includes("accepted")) {
-          setStatus("Dining");
-        } else {
-          setStatus("Available");
-        }
+    socket.on("customer-waiting", (tableId: number) => {
+      if (tableId == diningTable.id) {
+        setStatus("WaitingForWaiter");
+        // play notification sound
+        const audio = new Audio("/sounds/notification.mp3");
+        audio.play().catch(() => {
+          console.warn("Autoplay blocked until user interacts with the page.");
+        });
       }
+    });
+
+    socket.on("accepted-table-emit", () => {
+      socket.emit("getDiningTableStatus", diningTable.id);
     });
 
     return () => {
       socket.off("diningTableStatus");
       socket.off("diningTableStatusError");
-      socket.off("diningTableStatusUpdate");
+      socket.off("customer-waiting");
+      socket.off("accepted-table-emit");
     };
-  }, [socket, diningTable]);
+  }, [socket, diningTable.id]);
 
   return (
     <>

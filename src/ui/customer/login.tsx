@@ -22,8 +22,8 @@ export const Customer_LoginPage: React.FC = () => {
 
   const { showSuccess, showError } = useAlert();
 
-  const tableNo = useMemo(() => {
-    const t = searchParams.get("table") || searchParams.get("tableNo") || "2";
+  const tableId = useMemo(() => {
+    const t = searchParams.get("table") || searchParams.get("tableId") || "2";
     return String(t).slice(0, 3);
   }, [searchParams]);
 
@@ -33,15 +33,15 @@ export const Customer_LoginPage: React.FC = () => {
     if (!socket) return;
 
     socket.emit("customer-login-opened", {
-      tableNo,
+      tableId,
       message: "A customer started dine in process",
       timestamp: new Date().toISOString(),
     });
 
     return () => {
-      socket.emit("customer-login-closed", { tableNo });
+      socket.emit("customer-login-closed", { tableId });
     };
-  }, [socket, tableNo]);
+  }, [socket, tableId]);
 
   // ----- LOGIN SUBMIT -----
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -114,10 +114,10 @@ export const Customer_LoginPage: React.FC = () => {
     // Verification Form
     return (
       <main className="cl-root">
-        <header className="cl-header" aria-label={`Table number ${tableNo}`}>
+        <header className="cl-header" aria-label={`Table number ${tableId}`}>
           <div className="cl-table">
             <span className="cl-table__label">Table No.</span>
-            <span className="cl-table__value">{tableNo}</span>
+            <span className="cl-table__value">{tableId}</span>
           </div>
         </header>
 
@@ -169,7 +169,7 @@ export const Customer_LoginPage: React.FC = () => {
   // Login Form
   return (
     <main className="cl-root">
-      <header className="cl-header" aria-label={`Table number ${tableNo}`}>
+      <header className="cl-header" aria-label={`Table number ${tableId}`}>
         <div className="cl-table">
           <span className="cl-table__label">Table No.</span>
           <span className="cl-table__value">
@@ -191,7 +191,7 @@ export const Customer_LoginPage: React.FC = () => {
                 fill="black"
               />
             </svg>
-            <span className="cl-table__num">{tableNo}</span>
+            <span className="cl-table__num">{tableId}</span>
           </span>
         </div>
       </header>
