@@ -21,6 +21,7 @@ import { Customer_DineInMenuPage } from "./ui/customer/dine-in/menu";
 import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 // import { Customer_Menu } from "./ui/customer/place-order";
+import { Customer_Root } from "./ui/customer";
 import { Customer_AboutPage } from "./ui/customer/about-us";
 import { Customer_ContactPage } from "./ui/customer/contact";
 import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
@@ -56,7 +57,6 @@ import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
-import { Customer_Root } from "./ui/customer";
 
 export const router = createBrowserRouter([
   {
@@ -427,6 +427,7 @@ export const router = createBrowserRouter([
       {
         path: "payroll",
         element: <Staff_PayrollPage />,
+      },
       {
         path: "receptionist",
         element: (
