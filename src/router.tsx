@@ -1,7 +1,7 @@
 import { StaffAuthGuard } from "@/components/staff-auth-guard";
 import { StaffRole } from "@/enums/staff-role";
-import { Customer_HomePage } from "@/ui/customer/home";
 import { Customer_DishDetailPage } from "@/ui/customer/dish-detail";
+import { Customer_HomePage } from "@/ui/customer/home";
 import { Customer_Layout } from "@/ui/customer/layout";
 import { ErrorPage } from "@/ui/error";
 import { NotFoundPage } from "@/ui/not-found";
@@ -21,10 +21,17 @@ import { Customer_DineInMenuPage } from "./ui/customer/dine-in/menu";
 import { Customer_DineInStatusPage } from "./ui/customer/dine-in/status";
 import { Customer_MenuViewOnly } from "./ui/customer/menu";
 // import { Customer_Menu } from "./ui/customer/place-order";
+import { Customer_AboutPage } from "./ui/customer/about-us";
+import { Customer_ContactPage } from "./ui/customer/contact";
+import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
+import { Customer_FeedbackPage } from "./ui/customer/feedback";
 import { Customer_LoginPage } from "./ui/customer/login";
+import { Customer_OrderSuccessPage } from "./ui/customer/order-success";
 import { Customer_Reservations } from "./ui/customer/reservations";
+import { Customer_CartPage } from "./ui/customer/shopping-cart";
 import { Customer_TakeAway } from "./ui/customer/takeaway";
 import { Customer_TakeAway_CartPage } from "./ui/customer/takeaway/cart";
+import { Customer_HomePage as Customer_ViewMenuPage } from "./ui/customer/view-menu";
 import { Admin_CalenderPage } from "./ui/staff/admin/calender";
 import { Admin_CustomerPage } from "./ui/staff/admin/customers";
 import { Admin_DiningAreasPage } from "./ui/staff/admin/dining-areas";
@@ -36,23 +43,19 @@ import { Admin_ManageOffersHomePage } from "./ui/staff/admin/offers";
 import { Admin_OrdersLayout } from "./ui/staff/admin/orders";
 import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders";
 import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
+import { Admin_PayrollPage } from "./ui/staff/admin/payroll";
+import { Admin_PayrollConfigsPage } from "./ui/staff/admin/payroll/configs";
 import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
 import { Cashier_Root } from "./ui/staff/cashier";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
+import { Staff_PayrollPage } from "./ui/staff/common/payroll";
 import { KitchenManager_Root } from "./ui/staff/kitchen-manager";
+import { KitchenManager_DishesPage } from "./ui/staff/kitchen-manager/dishes";
 import { ReceptionistDashboard } from "./ui/staff/receptionist/receptionist-homepage";
 import { Waiter_Root } from "./ui/staff/waiter";
 import { Waiter_CustomerFeedbacksPage } from "./ui/staff/waiter/customer-feedbacks";
 import { Waiter_HomePage } from "./ui/staff/waiter/home";
 import { Waiter_CustomerReservationsPage } from "./ui/staff/waiter/reservations";
-import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
-import { Customer_AboutPage } from "./ui/customer/about-us";
-import { Customer_ContactPage } from "./ui/customer/contact";
-import { Customer_HomePage as Customer_ViewMenuPage } from "./ui/customer/view-menu";
-import { Customer_CartPage } from "./ui/customer/shopping-cart";
-import { Customer_OrderSuccessPage } from "./ui/customer/order-success";
-import { Customer_FeedbackPage } from "./ui/customer/feedback";
-import { KitchenManager_DishesPage } from "./ui/staff/kitchen-manager/dishes";
 import { Customer_Root } from "./ui/customer";
 
 export const router = createBrowserRouter([
@@ -312,6 +315,27 @@ export const router = createBrowserRouter([
               </StaffAuthGuard>
             ),
           },
+          {
+            path: "payroll",
+            children: [
+              {
+                index: true,
+                element: (
+                  <StaffAuthGuard role={StaffRole.Admin}>
+                    <Admin_PayrollPage />
+                  </StaffAuthGuard>
+                ),
+              },
+              {
+                path: "configs",
+                element: (
+                  <StaffAuthGuard role={StaffRole.Admin}>
+                    <Admin_PayrollConfigsPage />
+                  </StaffAuthGuard>
+                ),
+              },
+            ],
+          },
         ],
       },
       // Waiter routes
@@ -399,6 +423,10 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      // Common staff payroll route
+      {
+        path: "payroll",
+        element: <Staff_PayrollPage />,
       {
         path: "receptionist",
         element: (
