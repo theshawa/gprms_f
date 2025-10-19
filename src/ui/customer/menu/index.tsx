@@ -111,7 +111,7 @@ export const Customer_MenuViewOnly: FC = () => {
     return matchMeal && matchCategory && matchSearch;
   });
   return (
-    <main className="min-h-screen bg-white py-4  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="py-6 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col min-h-full">
       <Box sx={{ maxWidth: 1200, mx: "auto" }}>
         <Typography
           sx={{ fontFamily: "serif" }}
@@ -137,7 +137,7 @@ export const Customer_MenuViewOnly: FC = () => {
           <ToggleButtonGroup
             value={selectedMealType}
             exclusive
-            onChange={(e, value) => value && setSelectedMealType(value)}
+            onChange={(_, value) => value && setSelectedMealType(value)}
             aria-label="Meal Type"
             fullWidth
             size="small"

@@ -43,8 +43,8 @@ export const Customer_Reservations: FC = () => {
   const [timeSlot, setTimeSlot] = useState("");
 
   return (
-    <main className="min-h-screen bg-white py-4  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 xl:gap-12 py-6 lg:py-12 bg-white">
+    <main className="py-6 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col min-h-full">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 xl:gap-12 py-6 lg:py-12">
         {/* Left Content Section */}
         <div className="w-full lg:w-1/2 xl:w-3/5 max-w-none lg:max-w-2xl xl:max-w-none order-2 lg:order-1">
           {step === 1 && (
