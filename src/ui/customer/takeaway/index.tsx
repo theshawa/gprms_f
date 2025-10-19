@@ -50,13 +50,12 @@ export const Customer_TakeAway: FC = () => {
   }, [dishes, searchQuery]);
 
   return (
-    <main className="py-6 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col">
+    <main className="py-6 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col min-h-full">
       <Stack
         direction={{ xs: "column", md: "row" }}
         alignItems={{ xs: "stretch", md: "end" }}
         justifyContent={"space-between"}
         mb={4}
-        zIndex={10}
       >
         <Stack textAlign={{ xs: "center", md: "left" }}>
           <Typography variant="h4" component={"h1"}>
