@@ -93,15 +93,17 @@ export const Customer_Layout: FC = () => {
   }
 
   return (
-    <>
+    <div className={`min-h-screen flex flex-col ${inDineInPage ? '' : 'bg-gray-50'}`}>
       {!inDineInPage && <Header />}
 
       <LoginDialog />
 
-      <Outlet />
+      <div className="flex-1">
+        <Outlet />
+      </div>
 
       {!inDineInPage && (
-        <footer className="bg-[#003d2d] text-white px-6 py-8">
+        <footer className="bg-[#003d2d] text-white px-6 py-8 mt-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between gap-8">
             <div>
               <img src="/logo.png" alt="Logo" className="h-8 mb-4" />
@@ -143,14 +145,12 @@ export const Customer_Layout: FC = () => {
               <Link to="/cookies-settings">Cookies Settings</Link>
             </div>
             <p className="text-gray-400">
-              © {new Date().getFullYear()} Your Restaurant Name. All rights
+              © {new Date().getFullYear()} THON HOTELS. All rights
               reserved.
             </p>
           </div>
         </footer>
       )}
-
-      {/* Footer (unchanged) */}
-    </>
+    </div>
   );
 };
