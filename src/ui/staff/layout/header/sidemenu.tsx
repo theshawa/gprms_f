@@ -1,4 +1,3 @@
-import { Login } from "@mui/icons-material";
 import {
   Box,
   Drawer,
@@ -23,14 +22,7 @@ export const SideMenu: FC<{
     if (auth?.user) {
       return getSideMenuLinks(auth.user.role);
     }
-    return [
-      {
-        title: "Login",
-        link: "/staff/login",
-        Icon: Login,
-        exactLinkMatch: true,
-      },
-    ];
+    return [];
   }, [auth]);
 
   return (

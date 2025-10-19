@@ -12,6 +12,18 @@ import type { FC } from "react";
 export const ConfirmationComponent: FC = () => {
   const { _confirmation } = useConfirmation();
 
+  // Function to render message with bold text support
+  const renderMessage = (message: string) => {
+    const parts = message.split(/(\*\*[^*]+\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        const boldText = part.slice(2, -2);
+        return <strong key={index}>{boldText}</strong>;
+      }
+      return part;
+    });
+  };
+
   return (
     <Dialog
       open={_confirmation.open}
@@ -23,7 +35,9 @@ export const ConfirmationComponent: FC = () => {
     >
       <DialogTitle>{_confirmation?.title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{_confirmation?.message}</DialogContentText>
+        <DialogContentText>
+          {renderMessage(_confirmation?.message || '')}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button

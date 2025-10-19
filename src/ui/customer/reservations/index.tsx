@@ -1,46 +1,60 @@
-import { Box, Step, StepLabel, Stepper } from "@mui/material";
-import type { StepperProps } from "@mui/material/Stepper";
-import { type FC, useState } from "react";
-
-export const CustomStepper = (props: StepperProps) => (
-  <Stepper
-    {...props}
-    sx={{
-      "& .MuiStepLabel-root .Mui-active": {
-        color: "#166534", // active label
-      },
-      "& .MuiStepLabel-root .Mui-completed": {
-        color: "#166534", // completed label
-      },
-      "& .MuiStepConnector-root .MuiStepConnector-line": {
-        borderColor: "#166534", // line between steps
-      },
-      "& .MuiStepIcon-root": {
-        color: "#d1d5db", // default step icon
-      },
-      "& .MuiStepIcon-root.Mui-active": {
-        color: "#166534", // active step icon
-      },
-      "& .MuiStepIcon-root.Mui-completed": {
-        color: "#166534", // completed step icon
-      },
-    }}
-  />
-);
+import { getBackendErrorMessage } from "@/backend";
+import { CustomerReservationService } from "@/services/customer/reservation";
+import { Alert, Box, LinearProgress, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { useState, type FC } from "react";
+import { QKs } from "../query-keys";
+import { ReservationContext } from "./context";
+import { DefaultReservationData, type ReservationData } from "./reservation-data.interface";
+import { ReservationStepContent } from "./reservation-step-content";
+import { ReservationStepper } from "./reservation-stepper";
 
 export const Customer_Reservations: FC = () => {
-  const steps = ["", "", "", "", "", ""];
+  const [currentStep, setCurrentStep] = useState(0);
+  const [data, setData] = useState<ReservationData>(DefaultReservationData);
 
-  const [step, setStep] = useState(1);
+  const {
+    data: diningAreas,
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: QKs.customer_reservation_dining_areas,
+    queryFn: () => CustomerReservationService.getDiningAreas(),
+  });
 
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
-  const done = () => setStep(1);
+  if (isPending) {
+    return (
+      <div className="min-h-72 flex items-center justify-center">
+        <Box sx={{ width: "100%", maxWidth: "10rem" }}>
+          <LinearProgress />
+        </Box>
+      </div>
+    );
+  }
 
-  const [selectedBuffet, setSelectedBuffet] = useState("");
-  const [selectedGuests, setSelectedGuests] = useState("");
-  const [reservationDate, setReservationDate] = useState("");
-  const [timeSlot, setTimeSlot] = useState("");
+  if (error) {
+    return (
+      <main className="min-h-screen bg-white py-4  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Box p={3}>
+          <Alert severity="error">
+            Failed to load data related to this view: {getBackendErrorMessage(error)}
+          </Alert>
+        </Box>
+      </main>
+    );
+  }
+
+  if (!diningAreas?.length) {
+    return (
+      <main className="min-h-screen bg-white py-4  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Box p={3}>
+          <Alert severity="warning">
+            No dining areas are available for reservations at the moment. Please try again later.
+          </Alert>
+        </Box>
+      </main>
+    );
+  }
 
   return (
     <main className="py-6 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col min-h-full">

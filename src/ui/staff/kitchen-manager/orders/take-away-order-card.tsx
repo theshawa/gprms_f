@@ -21,7 +21,7 @@ import {
 import { useCallback, useState, type FC } from "react";
 import { useSocketConnection } from "../socket-context";
 
-export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus: () => void }> = ({
+export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: () => void }> = ({
   order,
   updateParentStatus,
 }) => {
@@ -43,7 +43,7 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus: (
     setUpdating(true);
     try {
       await KitchenManagerTakeAwayOrderService.markTakeAwayOrderPrepared(order.id);
-      updateParentStatus();
+      updateParentStatus?.();
     } catch (error) {
       showError(`Failed to update status to prepared: ${getBackendErrorMessage(error)}`);
     } finally {
@@ -55,7 +55,7 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus: (
     setUpdating(true);
     try {
       await KitchenManagerTakeAwayOrderService.markTakeAwayOrderPreparing(order.id);
-      updateParentStatus();
+      updateParentStatus?.();
     } catch (error) {
       showError(`Failed to update status to preparing: ${getBackendErrorMessage(error)}`);
     } finally {
@@ -119,7 +119,7 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus: (
               }}
               sx={{ flex: 1 }}
             >
-              {order.status === "New" ? "Make as Preparing" : "Make as Prepared"}
+              {order.status === "New" ? "Mark as Preparing" : "Mark as Prepared"}
             </Button>
           )}
         </Stack>

@@ -1,5 +1,6 @@
 import { StaffRole } from "@/enums/staff-role";
 import {
+  AccountBalanceWallet,
   AttachMoney,
   CalendarToday,
   EggAlt,
@@ -67,6 +68,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           Icon: MenuBook,
         },
         {
+          title: "Payroll",
+          link: "/staff/admin/payroll",
+          Icon: AccountBalanceWallet,
+        },
+        {
           title: "Calendar",
           link: "/staff/admin/calendar",
           Icon: CalendarToday,
@@ -119,6 +125,11 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Ingredients",
           link: "/staff/kitchen-manager/ingredients",
           Icon: Kitchen,
+        },
+        {
+          title: "My Payroll",
+          link: "/staff/payroll",
+          Icon: AccountBalanceWallet,
         }
         // {
         //   title: "Settings",
@@ -144,14 +155,34 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Customer Feedbacks",
           link: "/staff/waiter/customer-feedbacks",
           Icon: RateReview,
+        },
+        {
+          title: "My Payroll",
+          link: "/staff/payroll",
+          Icon: AccountBalanceWallet,
         }
       );
       break;
     case StaffRole.Cashier:
+      links.push(
+        {
+          title: "Orders",
+          link: "/staff/cashier",
+          Icon: ReceiptLong,
+        },
+        {
+          title: "My Payroll",
+          link: "/staff/payroll",
+          Icon: AccountBalanceWallet,
+        }
+      );
+      break;
+    case StaffRole.Receptionist:
       links.push({
-        title: "Orders",
-        link: "/staff/cashier",
-        Icon: ReceiptLong,
+        title: "Dashboard",
+        link: "/staff/receptionist",
+        Icon: Home,
+        exactLinkMatch: true,
       });
       break;
     default:

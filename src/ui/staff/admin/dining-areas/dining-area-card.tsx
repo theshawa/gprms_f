@@ -83,6 +83,13 @@ export const DiningAreaCard: FC<{
               }
             />
           </Stack>
+          <Typography variant="subtitle2" mr={1} mt={4} mb={1}>
+            {diningArea.reservationSeatsCount
+              ? `${diningArea.reservationSeatsCount} Seat${
+                  diningArea.reservationSeatsCount === 1 ? "" : "s"
+                } Reservable`
+              : "Not Reservable"}
+          </Typography>
         </CardContent>
         <CardActions>
           <Button
@@ -120,7 +127,7 @@ export const DiningAreaCard: FC<{
               }
             }}
           >
-            Delete
+            {isDeleting ? "Deleting..." : "Delete"}
           </Button>
         </CardActions>
       </Card>
