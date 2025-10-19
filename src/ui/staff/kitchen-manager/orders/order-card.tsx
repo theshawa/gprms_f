@@ -1,7 +1,5 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
-import type { TakeAwayOrder } from "@/interfaces/take-away-order";
-import { KitchenManagerTakeAwayOrderService } from "@/services/staff/kitchen-manager/take-away";
 import { formatCurrency } from "@/utils/currency-format";
 import { formatDateTime } from "@/utils/time-format";
 import {
@@ -20,8 +18,10 @@ import {
 } from "@mui/material";
 import { useCallback, useState, type FC } from "react";
 import { useSocketConnection } from "../socket-context";
+import type { Order } from "@/interfaces/orders";
+import { OrdersService } from "@/services/staff/kitchen-manager/orders";
 
-export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: () => void }> = ({
+export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = ({
   order,
   updateParentStatus,
 }) => {
@@ -42,10 +42,10 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: 
   const markAsPrepared = useCallback(async () => {
     setUpdating(true);
     try {
-      await KitchenManagerTakeAwayOrderService.markTakeAwayOrderPrepared(order.id);
+      await OrdersService.markOrderPrepared(order.id);
       updateParentStatus?.();
     } catch (error) {
-      showError(`Failed to update status to prepared: ${getBackendErrorMessage(error)}`);
+      showError(`Failed to update status to ready: ${getBackendErrorMessage(error)}`);
     } finally {
       setUpdating(false);
     }
@@ -54,10 +54,10 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: 
   const markAsPreparing = useCallback(async () => {
     setUpdating(true);
     try {
-      await KitchenManagerTakeAwayOrderService.markTakeAwayOrderPreparing(order.id);
+      await OrdersService.markOrderPreparing(order.id);
       updateParentStatus?.();
     } catch (error) {
-      showError(`Failed to update status to preparing: ${getBackendErrorMessage(error)}`);
+      showError(`Failed to update status to in progress: ${getBackendErrorMessage(error)}`);
     } finally {
       setUpdating(false);
     }
@@ -68,22 +68,22 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: 
       <Box component={Paper} p={2} sx={{ boxShadow: 2 }}>
         <Stack direction={"row"}>
           <Stack flex={1}>
-            <Typography variant="subtitle1">{order.customerName}</Typography>
-            <Typography variant="caption">{order.customerPhone}</Typography>
+            <Typography variant="subtitle1">{order.orderCode}</Typography>
+            {/* <Typography variant="caption">Waiter: {order.waiterId}</Typography> */}
           </Stack>
 
           <Stack direction={"row"} gap={1}>
-            <Chip label={`#${order.id}`} />
+            <Chip label={`Waiter#${order.waiterId}`} />
             <Chip label={formatDateTime(order.createdAt)} />
           </Stack>
         </Stack>
 
         <List disablePadding sx={{ mt: 2 }}>
-          {order.items.map((item, index) => (
+          {order.orderItems.map((item, index) => (
             <ListItem sx={{ py: 0.5 }} key={index}>
               <Box display="flex" justifyContent="space-between" width="100%">
                 <Typography>{item.quantity}x</Typography>
-                <Typography sx={{ textTransform: "capitalize" }}>{item.dish.name}</Typography>
+                <Typography sx={{ textTransform: "capitalize" }}>{item.dishId}</Typography>
               </Box>
             </ListItem>
           ))}
@@ -108,7 +108,7 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: 
           <Button fullWidth variant="outlined" onClick={openModal} sx={{ flex: 1 }}>
             Order Details ↗
           </Button>
-          {["New", "Preparing"].includes(order.status) && (
+          {["New", "InProgress"].includes(order.status) && (
             <Button
               fullWidth
               variant="contained"
@@ -130,7 +130,7 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: 
         <DialogTitle>Order #{order.id}</DialogTitle>
         <DialogContent dividers>
           <Typography variant="subtitle1">
-            Customer: {order.customerName}({order.customerPhone})
+            OrderCode: {order.orderCode}
           </Typography>
           <Typography variant="subtitle1">{formatCurrency(order.totalAmount)}</Typography>
           <Typography variant="subtitle2" color="text.secondary">
@@ -140,11 +140,11 @@ export const TakeAwayOrderCard: FC<{ order: TakeAwayOrder; updateParentStatus?: 
           <Box mt={2}>
             <Typography variant="h6">Items</Typography>
             <List>
-              {order.items.map((item, idx) => (
+              {order.orderItems.map((item, idx) => (
                 <ListItem key={idx} sx={{ py: 0.5 }}>
                   <Box display="flex" justifyContent="space-between" width="100%">
                     <Typography>{item.quantity}x</Typography>
-                    <Typography sx={{ textTransform: "capitalize" }}>{item.dish.name}</Typography>
+                    <Typography sx={{ textTransform: "capitalize" }}>{item.dishId}</Typography>
                   </Box>
                 </ListItem>
               ))}

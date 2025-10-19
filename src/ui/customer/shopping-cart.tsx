@@ -1,3 +1,4 @@
+import { cloudinary, getCloudinaryImageUrl } from "@/cloudinary";
 import { useAlert } from "@/hooks/useAlert";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { useCustomerCart } from "@/hooks/useCustomerCart";
@@ -7,10 +8,16 @@ import { useNavigate } from "react-router-dom";
 
 export const Customer_CartPage: React.FC = () => {
   const navigate = useNavigate();
-  const { cartItems, removeItemFromCart, increaseItemQuantity, decreaseItemQuantity, clearCart } =
-    useCustomerCart();
+  const {
+    cartItems,
+    removeItemFromCart,
+    increaseItemQuantity,
+    decreaseItemQuantity,
+    clearCart,
+  } = useCustomerCart();
   const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
-  const [showClearAllConfirmation, setShowClearAllConfirmation] = useState(false);
+  const [showClearAllConfirmation, setShowClearAllConfirmation] =
+    useState(false);
   const [dishToRemove, setDishToRemove] = useState<number | null>(null);
   const [orderNote, setOrderNote] = useState("");
   const [showNoteInput, setShowNoteInput] = useState(false);
@@ -18,7 +25,10 @@ export const Customer_CartPage: React.FC = () => {
   const { showError } = useAlert();
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.dish.price * item.quantity, 0);
+    return cartItems.reduce(
+      (total, item) => total + item.dish.price * item.quantity,
+      0
+    );
   };
 
   const handleIncrease = (dishId: number) => {
@@ -112,7 +122,9 @@ export const Customer_CartPage: React.FC = () => {
               />
             </svg>
           </button>
-          <div className="flex-1 text-center text-black text-xl font-semibold">Your Cart</div>
+          <div className="flex-1 text-center text-black text-xl font-semibold">
+            Your Cart
+          </div>
           {cartItems.length > 0 && (
             <button
               onClick={handleClearCart}
@@ -167,28 +179,42 @@ export const Customer_CartPage: React.FC = () => {
                   <div className="w-full p-4 flex gap-4">
                     <img
                       className="w-16 h-16 rounded-xl object-cover bg-gray-200"
-                      src={item.dish.image || "https://placehold.co/64x64"}
+                      src={
+                        cloudinary
+                          ? getCloudinaryImageUrl(item.dish.image)
+                          : item.dish.image || "https://placehold.co/64x64"
+                      }
                       alt={item.dish.name}
                     />
                     <div className="flex-1 flex flex-col gap-2">
-                      <div className="text-black text-base font-semibold">{item.dish.name}</div>
+                      <div className="text-black text-base font-semibold">
+                        {item.dish.name}
+                      </div>
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-1">
-                          <span className="text-gray-600 text-sm">Quantity</span>
-                          <span className="text-black text-sm">{item.quantity}</span>
+                          <span className="text-gray-600 text-sm">
+                            Quantity
+                          </span>
+                          <span className="text-black text-sm">
+                            {item.quantity}
+                          </span>
                         </div>
                         <div className="flex items-center bg-gray-100 rounded-lg px-2 py-1 gap-3">
                           <button
                             onClick={() => handleDecrease(item.dish.id)}
                             className="w-8 h-8 flex justify-center items-center hover:bg-gray-200 rounded-md transition-colors"
                           >
-                            <span className="text-black text-lg font-medium">−</span>
+                            <span className="text-black text-lg font-medium">
+                              −
+                            </span>
                           </button>
                           <button
                             onClick={() => handleIncrease(item.dish.id)}
                             className="w-8 h-8 flex justify-center items-center hover:bg-gray-200 rounded-md transition-colors"
                           >
-                            <span className="text-black text-lg font-medium">+</span>
+                            <span className="text-black text-lg font-medium">
+                              +
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -204,13 +230,17 @@ export const Customer_CartPage: React.FC = () => {
               <div className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div className="flex flex-col gap-3">
                   <div className="flex justify-between items-center">
-                    <div className="text-black text-base font-semibold">Add an order note</div>
+                    <div className="text-black text-base font-semibold">
+                      Add an order note
+                    </div>
                     {!showNoteInput && (
                       <button
                         onClick={() => setShowNoteInput(true)}
                         className="w-8 h-8 bg-white rounded-lg flex justify-center items-center hover:bg-gray-50 transition-colors border border-gray-200"
                       >
-                        <span className="text-black text-lg font-medium">+</span>
+                        <span className="text-black text-lg font-medium">
+                          +
+                        </span>
                       </button>
                     )}
                   </div>
@@ -278,7 +308,9 @@ export const Customer_CartPage: React.FC = () => {
           <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-sm bg-white border-t border-gray-200 z-10">
             <div className="px-6 py-4">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-black text-base font-semibold">Subtotal</span>
+                <span className="text-black text-base font-semibold">
+                  Subtotal
+                </span>
                 <span className="text-black text-base font-medium">
                   LKR {calculateTotal().toFixed(2)}
                 </span>
@@ -287,7 +319,9 @@ export const Customer_CartPage: React.FC = () => {
                 onClick={handleOrderNow}
                 className="w-full h-12 bg-green-600 hover:bg-green-700 rounded-full flex justify-center items-center transition-colors"
               >
-                <span className="text-white text-base font-semibold">Order Now</span>
+                <span className="text-white text-base font-semibold">
+                  Order Now
+                </span>
               </button>
             </div>
           </div>

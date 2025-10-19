@@ -49,14 +49,19 @@ export const useCustomerCart = () => {
       id: Math.floor(Math.random() * 10000),
       items: [...cartItems],
       timestamp: new Date(),
-      total: cartItems.reduce((total, item) => total + (item.dish.price * item.quantity), 0)
+      total: cartItems.reduce(
+        (total, item) => total + item.dish.price * item.quantity,
+        0
+      ),
     };
-    
+
     // Store in localStorage for persistence (you could also use a separate atom)
-    const existingOrders = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+    const existingOrders = JSON.parse(
+      localStorage.getItem("orderHistory") || "[]"
+    );
     existingOrders.push(orderSnapshot);
-    localStorage.setItem('orderHistory', JSON.stringify(existingOrders));
-    
+    localStorage.setItem("orderHistory", JSON.stringify(existingOrders));
+
     // Don't clear cart immediately - let user decide
     return orderSnapshot;
   };

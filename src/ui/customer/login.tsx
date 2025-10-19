@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { CustomerAuthService } from "@/services/customer/customer-auth";
@@ -6,6 +6,7 @@ import { getBackendErrorMessage } from "@/backend";
 import "./login.css";
 import { useAlert } from "@/hooks/useAlert";
 import { useForm } from "react-hook-form";
+import { useSocketConnection } from "./socket-context";
 
 export const Customer_LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -17,15 +18,30 @@ export const Customer_LoginPage: React.FC = () => {
   const [phoneError, setPhoneError] = useState("");
   const [readyToVerify, setReadyToVerify] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
+  const socket = useSocketConnection();
 
   const { showSuccess, showError } = useAlert();
 
   const tableNo = useMemo(() => {
-    const t = searchParams.get("table") || searchParams.get("tableNo") || "05";
-    return String(t).slice(0, 3).padStart(2, "0");
+    const t = searchParams.get("table") || searchParams.get("tableNo") || "2";
+    return String(t).slice(0, 3);
   }, [searchParams]);
 
   const { reset } = useForm<{ name: string; phone: string }>();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.emit("customer-login-opened", {
+      tableNo,
+      message: "A customer started dine in process",
+      timestamp: new Date().toISOString(),
+    });
+
+    return () => {
+      socket.emit("customer-login-closed", { tableNo });
+    };
+  }, [socket, tableNo]);
 
   // ----- LOGIN SUBMIT -----
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

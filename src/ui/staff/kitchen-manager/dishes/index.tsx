@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DishesService } from "@/services/staff/kitchen-manager/dishes";
 import { PageLoader } from "../../shared/page-loader";
 import { PageError } from "../../shared/page-error";
+import { cloudinary, getCloudinaryImageUrl } from "@/cloudinary";
 
 const columns: GridColDef<Dish>[] = [
   {
@@ -29,7 +30,13 @@ const columns: GridColDef<Dish>[] = [
     width: 80,
     renderCell: (params: GridRenderCellParams<Dish, string>) => (
       <Avatar
-        src={params.value}
+        src={
+          cloudinary
+            ? params.value
+              ? getCloudinaryImageUrl(params.value)
+              : params.value
+            : "https://placehold.co/64x64"
+        }
         variant="rounded"
         sx={{ width: 56, height: 56 }}
       />
@@ -110,7 +117,7 @@ export const KitchenManager_DishesPage: FC = () => {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        maxWidth="md"
+        maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {
@@ -138,9 +145,16 @@ export const KitchenManager_DishesPage: FC = () => {
               <Box
                 sx={{
                   height: 200,
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${selectedDish.image})`,
-                  backgroundSize: "cover",
+                  backgroundImage: `url(${
+                    cloudinary
+                      ? selectedDish.image
+                        ? getCloudinaryImageUrl(selectedDish.image)
+                        : selectedDish.image
+                      : "https://placehold.co/64x64"
+                  })`,
+                  backgroundSize: "contain",
                   backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
                   display: "flex",
                   alignItems: "flex-end",
                   p: 3,
@@ -193,23 +207,29 @@ export const KitchenManager_DishesPage: FC = () => {
                     Ingredients
                   </Typography>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                    {selectedDish.ingredients.map((dishIngredient, index) => (
-                      <Chip
-                        key={dishIngredient.id ?? index}
-                        label={`${dishIngredient.ingredient.name} (${dishIngredient.quantity})`}
-                        variant="outlined"
-                        size="small"
-                        sx={{
-                          borderRadius: 2,
-                          fontWeight: 500,
-                          "&:hover": {
-                            backgroundColor: "primary.light",
-                            color: "white",
-                            borderColor: "primary.main",
-                          },
-                        }}
-                      />
-                    ))}
+                    {selectedDish.ingredients?.length ? (
+                      selectedDish.ingredients.map((ing, index) => (
+                        <Chip
+                          key={ing.id ?? index}
+                          label={`${ing.ingredient.name} (${ing.quantity})`}
+                          variant="outlined"
+                          size="small"
+                          sx={{
+                            borderRadius: 2,
+                            fontWeight: 500,
+                            "&:hover": {
+                              backgroundColor: "primary.light",
+                              color: "white",
+                              borderColor: "primary.main",
+                            },
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No ingredients listed
+                      </Typography>
+                    )}
                   </Box>
                 </Box>
               </Box>
@@ -221,7 +241,7 @@ export const KitchenManager_DishesPage: FC = () => {
                 pt: 2,
                 backgroundColor: "grey.50",
                 gap: 2,
-                justifyContent: "space-between",
+                justifyContent: "right",
               }}
             >
               <Button
@@ -236,7 +256,7 @@ export const KitchenManager_DishesPage: FC = () => {
               >
                 Close
               </Button>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="primary"
                 sx={{
@@ -251,7 +271,7 @@ export const KitchenManager_DishesPage: FC = () => {
                 }}
               >
                 Edit Meal
-              </Button>
+              </Button> */}
             </DialogActions>
           </>
         )}

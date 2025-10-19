@@ -29,7 +29,7 @@ export const TableCard: FC<{
     socket.emit("getDiningTableStatus", diningTable.id);
 
     socket.on("diningTableStatus", (tableId: number, status: string | null) => {
-      if (tableId === diningTable.id) {
+      if (tableId == diningTable.id) {
         setStatus(status);
       }
     });
@@ -38,9 +38,25 @@ export const TableCard: FC<{
       showError(`Failed to fetch table status: ${getBackendErrorMessage(err)}`);
     });
 
+    socket.on("diningTableStatusUpdate", (data) => {
+      console.log("Received customer login notification:", data);
+
+      console.log(diningTable.id);
+      if (data.tableNo == diningTable.id) {
+        if (data.message.includes("waiting")) {
+          setStatus("WaitingForWaiter");
+        } else if (data.message.includes("accepted")) {
+          setStatus("Dining");
+        } else {
+          setStatus("Available");
+        }
+      }
+    });
+
     return () => {
       socket.off("diningTableStatus");
       socket.off("diningTableStatusError");
+      socket.off("diningTableStatusUpdate");
     };
   }, [socket, diningTable]);
 
@@ -49,15 +65,15 @@ export const TableCard: FC<{
       <Grid size={1}>
         <Card
           onClick={() => {
-            if (status === "waiting-for-waiter") {
+            if (status === "WaitingForWaiter") {
               setAcceptDialogOpen(true);
             }
           }}
           sx={{
             backgroundColor:
-              status === "waiting-for-waiter"
+              status === "WaitingForWaiter"
                 ? "orange"
-                : status === "order-ongoing"
+                : status === "Dining"
                 ? "lightgreen"
                 : "white",
           }}
@@ -80,17 +96,17 @@ export const TableCard: FC<{
           <CardActions>
             <Chip
               label={
-                status === "waiting-for-waiter"
+                status === "WaitingForWaiter"
                   ? "Customer Waiting"
-                  : status === "order-ongoing"
+                  : status === "Dining"
                   ? "Order Ongoing"
                   : "Available"
               }
               size="small"
               color={
-                status === "waiting-for-waiter"
+                status === "WaitingForWaiter"
                   ? "warning"
-                  : status === "order-ongoing"
+                  : status === "Dining"
                   ? "success"
                   : "default"
               }
@@ -98,7 +114,7 @@ export const TableCard: FC<{
           </CardActions>
         </Card>
       </Grid>
-      {status === "waiting-for-waiter" && (
+      {status === "WaitingForWaiter" && (
         <AcceptTableDialog
           open={acceptDialogOpen}
           handleClose={() => setAcceptDialogOpen(false)}
