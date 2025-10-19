@@ -67,15 +67,11 @@ export const ManageIngredientDialog: FC<{
 
       queryClient.invalidateQueries({ queryKey: QKs.admin_ingredients });
 
-      showSuccess(
-        `Ingredient ${editingIngredient ? "updated" : "created"} successfully!`
-      );
+      showSuccess(`Ingredient ${editingIngredient ? "updated" : "created"} successfully!`);
 
       handleClose();
     } catch (error) {
-      showError(
-        `Failed to create ingredient: ${getBackendErrorMessage(error)}`
-      );
+      showError(`Failed to create ingredient: ${getBackendErrorMessage(error)}`);
     }
   };
 
@@ -83,9 +79,7 @@ export const ManageIngredientDialog: FC<{
 
   return (
     <Dialog open={open} component="form" onSubmit={handleSubmit(onSubmit)}>
-      <DialogTitle>
-        {editingIngredient ? "Update" : "New"} Ingredient
-      </DialogTitle>
+      <DialogTitle>{editingIngredient ? "Update" : "New"} Ingredient</DialogTitle>
       <DialogContent dividers>
         <TextField
           {...register("name", {
@@ -135,17 +129,17 @@ export const ManageIngredientDialog: FC<{
           variant="filled"
           fullWidth
           type="number"
+          slotProps={{
+            htmlInput: {
+              step: 0.01,
+            },
+          }}
           error={!!errors.costPerUnit}
           helperText={errors.costPerUnit?.message}
           margin="dense"
           placeholder="e.g., 5.99"
         />
-        <FormControl
-          fullWidth
-          margin="dense"
-          variant="filled"
-          error={!!errors.unit}
-        >
+        <FormControl fullWidth margin="dense" variant="filled" error={!!errors.unit}>
           <InputLabel id="unit-select-label">Unit</InputLabel>
           <Controller
             name="unit"
