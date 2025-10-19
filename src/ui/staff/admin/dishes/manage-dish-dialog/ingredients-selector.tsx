@@ -27,9 +27,7 @@ export const IngredientsSelector: FC<{
   } = useFormContext();
 
   const [search, setSearch] = useState("");
-  const [showingIngredients, setShowingIngredients] = useState<Ingredient[]>(
-    []
-  );
+  const [showingIngredients, setShowingIngredients] = useState<Ingredient[]>([]);
 
   useEffect(() => {
     const term = search.trim().toLowerCase();
@@ -39,9 +37,7 @@ export const IngredientsSelector: FC<{
     }
 
     setShowingIngredients(
-      allIngredients.filter((ingredient) =>
-        ingredient.name.toLowerCase().includes(term)
-      )
+      allIngredients.filter((ingredient) => ingredient.name.toLowerCase().includes(term))
     );
   }, [search, allIngredients]);
 
@@ -50,9 +46,7 @@ export const IngredientsSelector: FC<{
     selectedIngredients: { ingredient: Ingredient; quantity: number }[],
     onChange: (value: { ingredient: Ingredient; quantity: number }[]) => void
   ) => {
-    const exists = selectedIngredients.find(
-      (item) => item.ingredient.id === ingredient.id
-    );
+    const exists = selectedIngredients.find((item) => item.ingredient.id === ingredient.id);
     if (!exists) {
       onChange([...selectedIngredients, { ingredient, quantity: 1 }]);
     }
@@ -63,9 +57,7 @@ export const IngredientsSelector: FC<{
     selectedIngredients: { ingredient: Ingredient; quantity: number }[],
     onChange: (value: { ingredient: Ingredient; quantity: number }[]) => void
   ) => {
-    onChange(
-      selectedIngredients.filter((item) => item.ingredient.id !== ingredientId)
-    );
+    onChange(selectedIngredients.filter((item) => item.ingredient.id !== ingredientId));
   };
 
   const handleQuantityChange = (
@@ -86,10 +78,7 @@ export const IngredientsSelector: FC<{
     selectedIngredients: { ingredient: Ingredient; quantity: number }[]
   ) => {
     return showingIngredients.filter(
-      (ingredient) =>
-        !selectedIngredients.find(
-          (item) => item.ingredient.id === ingredient.id
-        )
+      (ingredient) => !selectedIngredients.find((item) => item.ingredient.id === ingredient.id)
     );
   };
 
@@ -112,10 +101,7 @@ export const IngredientsSelector: FC<{
         },
       }}
       render={({
-        field: {
-          onChange,
-          value = [] as { ingredient: Ingredient; quantity: number }[],
-        },
+        field: { onChange, value = [] as { ingredient: Ingredient; quantity: number }[] },
       }) => {
         const availableIngredients = getAvailableIngredients(value);
 
@@ -125,110 +111,95 @@ export const IngredientsSelector: FC<{
               Select Ingredients
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              Add ingredients to this dish. Ensure they are already created in
-              the system.
+              Add ingredients to this dish. Ensure they are already created in the system.
             </Typography>
 
             {value.length > 0 && (
               <Box mt={2}>
-                <Typography
-                  variant="overline"
-                  color="textSecondary"
-                  gutterBottom
-                >
+                <Typography variant="overline" color="textSecondary" gutterBottom>
                   Selected Ingredients
                 </Typography>
                 <Stack spacing={1}>
-                  {value.map(
-                    (item: { ingredient: Ingredient; quantity: number }) => (
-                      <Box
-                        key={item.ingredient.id}
-                        sx={{
-                          display: "flex",
-                          flexDirection: { xs: "column", sm: "row" },
-                          alignItems: {
-                            xs: "start",
-                            sm: "center",
-                          },
-                          p: 1,
-                          border: 1,
-                          borderColor: "divider",
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Box sx={{ flex: 1 }} mb={{ xs: 1, sm: 0 }}>
-                          <Typography variant="body2">
-                            {item.ingredient.name}
+                  {value.map((item: { ingredient: Ingredient; quantity: number }) => (
+                    <Box
+                      key={item.ingredient.id}
+                      sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
+                        alignItems: {
+                          xs: "start",
+                          sm: "center",
+                        },
+                        p: 1,
+                        border: 1,
+                        borderColor: "divider",
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Box sx={{ flex: 1 }} mb={{ xs: 1, sm: 0 }}>
+                        <Typography variant="body2">{item.ingredient.name}</Typography>
+                        {item.ingredient.description && (
+                          <Typography variant="caption" color="textSecondary">
+                            {item.ingredient.description}
                           </Typography>
-                          {item.ingredient.description && (
-                            <Typography variant="caption" color="textSecondary">
-                              {item.ingredient.description}
-                            </Typography>
-                          )}
-                        </Box>
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              handleQuantityChange(
-                                item.ingredient.id,
-                                item.quantity - 1,
-                                value,
-                                onChange
-                              )
-                            }
-                          >
-                            <Remove fontSize="small" />
-                          </IconButton>
-                          <TextField
-                            size="small"
-                            type="number"
-                            value={item.quantity}
-                            label={`Qty (${item.ingredient.unit.toUpperCase()})`}
-                            onChange={(e) =>
-                              handleQuantityChange(
-                                item.ingredient.id,
-                                parseInt(e.target.value) || 0,
-                                value,
-                                onChange
-                              )
-                            }
-                            sx={{ width: 80 }}
-                            inputProps={{ min: 0 }}
-                            error={item.quantity === 0}
-                          />
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              handleQuantityChange(
-                                item.ingredient.id,
-                                item.quantity + 1,
-                                value,
-                                onChange
-                              )
-                            }
-                          >
-                            <Add fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              handleRemoveIngredient(
-                                item.ingredient.id,
-                                value,
-                                onChange
-                              )
-                            }
-                            color="error"
-                          >
-                            <Delete fontSize="small" />
-                          </IconButton>
-                        </Box>
+                        )}
                       </Box>
-                    )
-                  )}
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.ingredient.id,
+                              item.quantity - 1,
+                              value,
+                              onChange
+                            )
+                          }
+                        >
+                          <Remove fontSize="small" />
+                        </IconButton>
+                        <TextField
+                          size="small"
+                          type="number"
+                          value={item.quantity}
+                          label={`Qty (${item.ingredient.unit.toUpperCase()})`}
+                          onChange={(e) =>
+                            handleQuantityChange(
+                              item.ingredient.id,
+                              parseInt(e.target.value) || 0,
+                              value,
+                              onChange
+                            )
+                          }
+                          sx={{ width: 80 }}
+                          inputProps={{ min: 0 }}
+                          error={item.quantity === 0}
+                        />
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.ingredient.id,
+                              item.quantity + 1,
+                              value,
+                              onChange
+                            )
+                          }
+                        >
+                          <Add fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleRemoveIngredient(item.ingredient.id, value, onChange)
+                          }
+                          color="error"
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  ))}
                 </Stack>
                 <Divider sx={{ my: 2 }} />
               </Box>
@@ -263,15 +234,8 @@ export const IngredientsSelector: FC<{
             <List sx={{ maxHeight: 300, overflow: "auto" }}>
               {availableIngredients.map((ingredient) => (
                 <ListItem key={ingredient.id} disablePadding>
-                  <ListItemButton
-                    onClick={() =>
-                      handleAddIngredient(ingredient, value, onChange)
-                    }
-                  >
-                    <ListItemText
-                      primary={ingredient.name}
-                      secondary={ingredient.description}
-                    />
+                  <ListItemButton onClick={() => handleAddIngredient(ingredient, value, onChange)}>
+                    <ListItemText primary={ingredient.name} secondary={ingredient.description} />
                   </ListItemButton>
                 </ListItem>
               ))}
