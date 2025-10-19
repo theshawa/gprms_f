@@ -1,32 +1,33 @@
 import { customerBackend } from "@/backend";
 import type { Customer } from "@/interfaces/customer";
-
+import type { DiningArea } from "@/interfaces/dining-area";
+import type { ReservationData } from "@/ui/customer/reservations/reservation-data.interface";
 
 export interface CreateReservationRequest {
-    phoneNumber: string;
-    customerName: string;
-    reservationDate: string; // ISO string
-    timeSlot: string;
-    guestCount: number;
-    meal: "Brunch" | "Lunch" | "HighTea" | "Dinner";
-    diningAreaId?: number;
-    specialRequests?: string;
+  phoneNumber: string;
+  customerName: string;
+  reservationDate: string; // ISO string
+  timeSlot: string;
+  guestCount: number;
+  meal: "Brunch" | "Lunch" | "HighTea" | "Dinner";
+  diningAreaId?: number;
+  specialRequests?: string;
 }
 
 export interface Reservation {
-    id: number;
-    reservationCode: string;
-    customerId: number;
-    phoneNumber: string;
-    reservationDate: string;
-    timeSlot: string;
-    guestCount: number;
-    meal: string;
-    status: "Pending" | "Confirmed" | "Cancelled" | "Completed";
-    specialRequests?: string;
-    createdAt: string;
-    updatedAt: string;
-    customer: Customer;
+  id: number;
+  reservationCode: string;
+  customerId: number;
+  phoneNumber: string;
+  reservationDate: string;
+  timeSlot: string;
+  guestCount: number;
+  meal: string;
+  status: "Pending" | "Confirmed" | "Cancelled" | "Completed";
+  specialRequests?: string;
+  createdAt: string;
+  updatedAt: string;
+  customer: Customer;
 }
 
 export interface ReservationResponse {
@@ -51,13 +52,18 @@ export interface CustomerReservationsResponse {
 export class ReservationService {
   // Create new reservation
   static async createReservation(data: CreateReservationRequest): Promise<ReservationResponse> {
-    const { data: response } = await customerBackend.post<ReservationResponse>("/reservation", data);
+    const { data: response } = await customerBackend.post<ReservationResponse>(
+      "/reservation",
+      data
+    );
     return response;
   }
 
   // Get reservations by phone number
   static async getReservationsByPhone(phoneNumber: string): Promise<CustomerReservationsResponse> {
-    const { data } = await customerBackend.get<CustomerReservationsResponse>(`/reservation/phone/${phoneNumber}`);
+    const { data } = await customerBackend.get<CustomerReservationsResponse>(
+      `/reservation/phone/${phoneNumber}`
+    );
     return data;
   }
 
@@ -67,9 +73,6 @@ export class ReservationService {
     return data;
   }
 }
-import { customerBackend } from "@/backend";
-import type { DiningArea } from "@/interfaces/dining-area";
-import type { ReservationData } from "@/ui/customer/reservations/reservation-data.interface";
 
 export class CustomerReservationService {
   static async getDiningAreas() {
