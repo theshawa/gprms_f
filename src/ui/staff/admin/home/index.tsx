@@ -1,7 +1,6 @@
 import {
   AttachMoney,
   ShoppingCart,
-  Star,
   TableRestaurant,
   TrendingUp,
 } from "@mui/icons-material";
@@ -13,7 +12,6 @@ import {
   CardContent,
   Chip,
   Grid,
-  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -22,79 +20,16 @@ import {
   TableHead,
   TableRow,
   Typography,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { avatarColors } from "../../../../muitheme";
-
-// Mock data - replace with real API calls later
-const mockDashboardData = {
-  todayStats: {
-    totalOrders: 142,
-    revenue: 1625000,
-    activeOrders: 18,
-    activeTables: 24,
-    totalTables: 32,
-    avgOrderValue: 11444,
-    tips: 162500,
-    customerSatisfaction: 4.7,
-  },
-  recentOrders: [
-    {
-      id: "#12453",
-      table: "A-12",
-      status: "preparing",
-      time: "12:30 PM",
-      total: 16315,
-    },
-    {
-      id: "#12454",
-      table: "B-05",
-      status: "served",
-      time: "12:45 PM",
-      total: 11603,
-    },
-    {
-      id: "#12455",
-      table: "C-08",
-      status: "pending",
-      time: "1:00 PM",
-      total: 20378,
-    },
-    {
-      id: "#12456",
-      table: "A-03",
-      status: "preparing",
-      time: "1:15 PM",
-      total: 11960,
-    },
-  ],
-  topDishes: [
-    { name: "Grilled Salmon", orders: 23, revenue: 74750 },
-    { name: "Beef Burger", orders: 31, revenue: 60450 },
-    { name: "Caesar Salad", orders: 18, revenue: 35100 },
-    { name: "Pasta Carbonara", orders: 15, revenue: 29250 },
-  ],
-  staffPerformance: [
-    {
-      name: "Tharaka Perera",
-      role: "Waiter",
-      tables: 8,
-      rating: 4.9,
-      orders: 24,
-    },
-    { name: "Nuwan Silva", role: "Waiter", tables: 6, rating: 4.7, orders: 18 },
-    { name: "Sanduni Fernando", role: "Kitchen", rating: 4.8, orders: 42 },
-  ],
-  hourlyData: [
-    { hour: "11:00", orders: 8, revenue: 450 },
-    { hour: "12:00", orders: 15, revenue: 825 },
-    { hour: "13:00", orders: 22, revenue: 1200 },
-    { hour: "14:00", orders: 18, revenue: 950 },
-    { hour: "15:00", orders: 12, revenue: 650 },
-  ],
-};
+import { AdminDashboardService } from "@/services/staff/admin/dashboard";
+import { getBackendErrorMessage } from "@/backend";
 
 const StatCard: FC<{
   title: string;
@@ -164,13 +99,19 @@ const StatCard: FC<{
 );
 
 const getStatusColor = (status: string) => {
-  switch (status) {
-    case "pending":
+  const statusLower = status.toLowerCase();
+  switch (statusLower) {
+    case "new":
       return "warning";
+    case "inprogress":
     case "preparing":
       return "info";
-    case "served":
+    case "ready":
+    case "prepared":
       return "success";
+    case "completed":
+      return "success";
+    case "rejected":
     case "cancelled":
       return "error";
     default:
@@ -178,19 +119,68 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const formatStatus = (status: string) => {
+  // Convert status to readable format
+  return status
+    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+    .trim()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
 export const Admin_HomePage: FC = () => {
   const navigate = useNavigate();
-  const [data] = useState(mockDashboardData);
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Fetch dashboard stats from backend
+  const {
+    data: dashboardStats,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useQuery({
+    queryKey: ["admin-dashboard-stats"],
+    queryFn: () => AdminDashboardService.getStats(),
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Fetch recent orders from backend
+  const {
+    data: recentOrdersData,
+    isLoading: ordersLoading,
+    error: ordersError,
+  } = useQuery({
+    queryKey: ["admin-recent-orders"],
+    queryFn: () => AdminDashboardService.getRecentOrders(),
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Fetch dishes from backend
+  const {
+    data: dishesData,
+    isLoading: dishesLoading,
+    error: dishesError,
+  } = useQuery({
+    queryKey: ["admin-dishes"],
+    queryFn: () => AdminDashboardService.getDishes(),
+    refetchInterval: 60000, // Refetch every 60 seconds
+  });
+
+  // Fetch staff members from backend
+  const {
+    data: staffData,
+    isLoading: staffLoading,
+    error: staffError,
+  } = useQuery({
+    queryKey: ["admin-staff"],
+    queryFn: () => AdminDashboardService.getStaffMembers(),
+    refetchInterval: 60000, // Refetch every 60 seconds
+  });
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const tableOccupancyRate = Math.round(
-    (data.todayStats.activeTables / data.todayStats.totalTables) * 100
-  );
 
   return (
     <Box p={3}>
@@ -215,63 +205,53 @@ export const Admin_HomePage: FC = () => {
             • {currentTime.toLocaleTimeString()}
           </Typography>
         </Box>
-        <Stack direction="row" spacing={2}>
-          <Button
-            variant="outlined"
-            onClick={() => navigate("/staff/admin/analytics")}
-          >
-            View Analytics
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => navigate("/staff/admin/orders")}
-          >
-            Manage Orders
-          </Button>
-        </Stack>
       </Stack>
 
       {/* Key Stats */}
-      <Grid container spacing={3} mb={4}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Today's Orders"
-            value={data.todayStats.totalOrders}
-            icon={<ShoppingCart />}
-            color="primary.main"
-            trend={12}
-          />
+      {statsLoading ? (
+        <Box display="flex" justifyContent="center" my={4}>
+          <CircularProgress />
+        </Box>
+      ) : statsError ? (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          Failed to load dashboard statistics: {getBackendErrorMessage(statsError)}
+        </Alert>
+      ) : dashboardStats ? (
+        <Grid container spacing={3} mb={4}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <StatCard
+              title="Today's Orders"
+              value={dashboardStats.todayOrders}
+              icon={<ShoppingCart />}
+              color="primary.main"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <StatCard
+              title="Today's Revenue"
+              value={`LKR ${dashboardStats.todayRevenue.toLocaleString()}`}
+              icon={<AttachMoney />}
+              color="success.main"
+              subtitle={
+                dashboardStats.todayOrders > 0
+                  ? `Avg: LKR ${Math.round(
+                      dashboardStats.todayRevenue / dashboardStats.todayOrders
+                    ).toLocaleString()}/order`
+                  : undefined
+              }
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <StatCard
+              title="Total Tables"
+              value={dashboardStats.totalTables}
+              icon={<TableRestaurant />}
+              color="info.main"
+              subtitle="Tables in system"
+            />
+          </Grid>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Today's Revenue"
-            value={`LKR ${data.todayStats.revenue.toLocaleString()}`}
-            icon={<AttachMoney />}
-            color="success.main"
-            subtitle={`Avg: LKR ${data.todayStats.avgOrderValue.toLocaleString()}/order`}
-            trend={8}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Active Tables"
-            value={`${data.todayStats.activeTables}/${data.todayStats.totalTables}`}
-            icon={<TableRestaurant />}
-            color="info.main"
-            subtitle={`${tableOccupancyRate}% occupancy`}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Customer Rating"
-            value={data.todayStats.customerSatisfaction}
-            icon={<Star />}
-            color="warning.main"
-            subtitle="Based on today's feedback"
-            trend={3}
-          />
-        </Grid>
-      </Grid>
+      ) : null}
 
       <Grid container spacing={3}>
         {/* Recent Orders */}
@@ -285,7 +265,7 @@ export const Admin_HomePage: FC = () => {
                 mb={2}
               >
                 <Typography variant="h6" fontWeight="bold">
-                  Recent Orders
+                  Recent Orders (Today)
                 </Typography>
                 <Button
                   size="small"
@@ -294,45 +274,75 @@ export const Admin_HomePage: FC = () => {
                   View All
                 </Button>
               </Stack>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Order ID</TableCell>
-                      <TableCell>Table</TableCell>
-                      <TableCell>Time</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell align="right">Total</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.recentOrders.map((order) => (
-                      <TableRow key={order.id} hover>
-                        <TableCell sx={{ fontWeight: "medium" }}>
-                          {order.id}
-                        </TableCell>
-                        <TableCell>{order.table}</TableCell>
-                        <TableCell>{order.time}</TableCell>
-                        <TableCell>
-                          <Chip
-                            label={order.status}
-                            color={getStatusColor(order.status) as any}
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          LKR {order.total.toLocaleString()}
-                        </TableCell>
+              
+              {ordersLoading ? (
+                <Box display="flex" justifyContent="center" py={4}>
+                  <CircularProgress />
+                </Box>
+              ) : ordersError ? (
+                <Alert severity="error">
+                  Failed to load recent orders: {getBackendErrorMessage(ordersError)}
+                </Alert>
+              ) : recentOrdersData && recentOrdersData.orders.length > 0 ? (
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Order Code</TableCell>
+                        <TableCell>Type</TableCell>
+                        <TableCell>Customer/Table</TableCell>
+                        <TableCell>Time</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell align="right">Total</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      {recentOrdersData.orders.map((order) => (
+                        <TableRow key={`${order.type}-${order.id}`} hover>
+                          <TableCell sx={{ fontWeight: "medium" }}>
+                            {order.orderCode}
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={order.type === "dine-in" ? "Dine-In" : "Take-Away"}
+                              size="small"
+                              variant="outlined"
+                              color={order.type === "dine-in" ? "primary" : "secondary"}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {order.type === "dine-in" 
+                              ? order.tableInfo || "N/A"
+                              : order.customerName || "N/A"}
+                          </TableCell>
+                          <TableCell>{order.time}</TableCell>
+                          <TableCell>
+                            <Chip
+                              label={formatStatus(order.status)}
+                              color={getStatusColor(order.status) as any}
+                              size="small"
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            LKR {order.totalAmount.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Box py={4} textAlign="center">
+                  <Typography variant="body2" color="text.secondary">
+                    No orders today yet
+                  </Typography>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Top Dishes */}
+        {/* All Dishes in System */}
         <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
@@ -343,7 +353,7 @@ export const Admin_HomePage: FC = () => {
                 mb={2}
               >
                 <Typography variant="h6" fontWeight="bold">
-                  Top Dishes Today
+                  Dishes in System
                 </Typography>
                 <Button
                   size="small"
@@ -352,39 +362,82 @@ export const Admin_HomePage: FC = () => {
                   Manage Menu
                 </Button>
               </Stack>
-              <Stack spacing={2}>
-                {data.topDishes.map((dish, index) => (
-                  <Box key={index}>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Box>
-                        <Typography variant="body1" fontWeight="medium">
-                          {dish.name}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {dish.orders} orders
-                        </Typography>
+              
+              {dishesLoading ? (
+                <Box display="flex" justifyContent="center" py={4}>
+                  <CircularProgress />
+                </Box>
+              ) : dishesError ? (
+                <Alert severity="error">
+                  Failed to load dishes: {getBackendErrorMessage(dishesError)}
+                </Alert>
+              ) : dishesData && dishesData.dishes.length > 0 ? (
+                <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
+                  <Stack spacing={1.5}>
+                    {dishesData.dishes.map((dish) => (
+                      <Box
+                        key={dish.id}
+                        sx={{
+                          p: 2,
+                          borderRadius: 1,
+                          bgcolor: "background.default",
+                          transition: "background-color 0.2s",
+                          "&:hover": {
+                            bgcolor: "action.hover",
+                          },
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                        >
+                          <Box flex={1}>
+                            <Typography variant="body1" fontWeight="medium">
+                              {dish.name}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{
+                                display: "-webkit-box",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                              }}
+                            >
+                              {dish.description}
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            fontWeight="bold"
+                            color="primary.main"
+                          >
+                            LKR {dish.price.toLocaleString()}
+                          </Typography>
+                        </Stack>
                       </Box>
-                      <Typography variant="body1" fontWeight="bold">
-                        LKR {dish.revenue.toLocaleString()}
-                      </Typography>
-                    </Stack>
-                    <LinearProgress
-                      variant="determinate"
-                      value={(dish.orders / 31) * 100}
-                      sx={{ mt: 1 }}
-                    />
+                    ))}
+                  </Stack>
+                  <Box mt={2} textAlign="center">
+                    <Typography variant="caption" color="text.secondary">
+                      Total: {dishesData.total} {dishesData.total === 1 ? "dish" : "dishes"}
+                    </Typography>
                   </Box>
-                ))}
-              </Stack>
+                </Box>
+              ) : (
+                <Box py={4} textAlign="center">
+                  <Typography variant="body2" color="text.secondary">
+                    No dishes available
+                  </Typography>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Staff Performance */}
+        {/* Staff */}
         <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
@@ -395,7 +448,7 @@ export const Admin_HomePage: FC = () => {
                 mb={2}
               >
                 <Typography variant="h6" fontWeight="bold">
-                  Staff Performance
+                  Staff
                 </Typography>
                 <Button
                   size="small"
@@ -404,46 +457,64 @@ export const Admin_HomePage: FC = () => {
                   Manage Staff
                 </Button>
               </Stack>
-              <Stack spacing={2}>
-                {data.staffPerformance.map((staff, index) => (
-                  <Stack
-                    key={index}
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Avatar sx={{ bgcolor: "primary.main" }}>
-                        {staff.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </Avatar>
-                      <Box>
-                        <Typography variant="body1" fontWeight="medium">
-                          {staff.name}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {staff.role} • {staff.orders} orders
-                        </Typography>
+
+              {staffLoading ? (
+                <Box display="flex" justifyContent="center" py={4}>
+                  <CircularProgress />
+                </Box>
+              ) : staffError ? (
+                <Alert severity="error">
+                  Failed to load staff: {getBackendErrorMessage(staffError)}
+                </Alert>
+              ) : staffData && staffData.staffMembers.length > 0 ? (
+                <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
+                  <Stack spacing={2}>
+                    {staffData.staffMembers.map((staff) => (
+                      <Box
+                        key={staff.id}
+                        sx={{
+                          p: 2,
+                          borderRadius: 1,
+                          bgcolor: "background.default",
+                          transition: "background-color 0.2s",
+                          "&:hover": {
+                            bgcolor: "action.hover",
+                          },
+                        }}
+                      >
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <Avatar sx={{ bgcolor: "primary.main" }}>
+                            {staff.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()}
+                          </Avatar>
+                          <Box flex={1}>
+                            <Typography variant="body1" fontWeight="medium">
+                              {staff.name}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {staff.role}
+                            </Typography>
+                          </Box>
+                        </Stack>
                       </Box>
-                    </Stack>
-                    <Stack alignItems="flex-end">
-                      <Stack direction="row" alignItems="center" spacing={0.5}>
-                        <Star fontSize="small" sx={{ color: "warning.main" }} />
-                        <Typography variant="body2" fontWeight="medium">
-                          {staff.rating}
-                        </Typography>
-                      </Stack>
-                      {staff.tables && (
-                        <Typography variant="caption" color="text.secondary">
-                          {staff.tables} tables
-                        </Typography>
-                      )}
-                    </Stack>
+                    ))}
                   </Stack>
-                ))}
-              </Stack>
+                  <Box mt={2} textAlign="center">
+                    <Typography variant="caption" color="text.secondary">
+                      Total: {staffData.total} {staffData.total === 1 ? "member" : "members"}
+                    </Typography>
+                  </Box>
+                </Box>
+              ) : (
+                <Box py={4} textAlign="center">
+                  <Typography variant="body2" color="text.secondary">
+                    No staff members available
+                  </Typography>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
