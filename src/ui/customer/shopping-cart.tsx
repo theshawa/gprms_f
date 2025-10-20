@@ -2,7 +2,7 @@ import { cloudinary, getCloudinaryImageUrl } from "@/cloudinary";
 import { useAlert } from "@/hooks/useAlert";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { useCustomerCart } from "@/hooks/useCustomerCart";
-import { OrderService } from "@/services/customer/order";
+import { CustomerOrderService } from "@/services/customer/order";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -89,7 +89,7 @@ export const Customer_CartPage: React.FC = () => {
         notes: orderNote,
       };
 
-      const order = await OrderService.placeOrder(orderData);
+      const order = await CustomerOrderService.placeOrder(orderData);
       const orderCode = order.orderCode;
 
       // Clear cart after successful order

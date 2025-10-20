@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { PageLoader } from "@/ui/staff/shared/page-loader";
 import { PageError } from "@/ui/staff/shared/page-error";
-import { DishesService } from "@/services/customer/dishes";
+import { CustomerDishesService } from "@/services/customer/dishes";
 import { cloudinary, getCloudinaryImageUrl } from "@/cloudinary";
 
 // Mock data for Sri Lankan categories and dishes
@@ -300,7 +300,7 @@ export const Customer_HomePage: FC = () => {
     error,
   } = useQuery({
     queryKey: ["customer_dishes"],
-    queryFn: () => DishesService.getAll(),
+    queryFn: () => CustomerDishesService.getAll(),
   });
 
   if (isPending) {

@@ -32,9 +32,9 @@ export const Customer_DineInConfirm: FC = () => {
 
   useEffect(() => {
     if (cartItems.length === 0) {
-      navigate(`/dine-in/${tableId}`);
+      navigate(`/dine-in/${tableId}/menu`);
     }
-  }, [cartItems]);
+  }, [cartItems, navigate, tableId]);
 
   return (
     <>
@@ -116,11 +116,11 @@ export const Customer_DineInConfirm: FC = () => {
       <BottomBar
         previous={{
           name: "Back to Menu",
-          link: `/dine-in/${tableId}`,
+          link: `/dine-in/${tableId}/menu`,
         }}
         next={{
           name: "Confirm Order",
-          link: `/dine-in/${tableId}/status`,
+          link: `/dine-in/${tableId}/order-status`,
         }}
       />
     </>

@@ -28,6 +28,7 @@ import { Customer_DiningAreasPage } from "./ui/customer/dining-areas";
 import { Customer_FeedbackPage } from "./ui/customer/feedback";
 import { Customer_LoginPage } from "./ui/customer/login";
 import { Customer_OrderSuccessPage } from "./ui/customer/order-success";
+import { DineInTestPage } from "./ui/customer/dine-in-test";
 import { Customer_Reservations } from "./ui/customer/reservations";
 import { Customer_CartPage } from "./ui/customer/shopping-cart";
 import { Customer_TakeAway } from "./ui/customer/takeaway";
@@ -67,6 +68,12 @@ export const router = createBrowserRouter([
       {
         path: "/customer/login",
         element: <Customer_LoginPage />,
+        errorElement: <ErrorPage />,
+      },
+      // Dine-in test page to show new routing structure
+      {
+        path: "/dine-in-test",
+        element: <DineInTestPage />,
         errorElement: <ErrorPage />,
       },
       // Order summary page - shows current order status and allows more ordering rounds
@@ -132,6 +139,7 @@ export const router = createBrowserRouter([
             path: "dish/:dishId",
             element: <Customer_DishDetailPage />,
           },
+          // Dine-in experience with proper table-based routing
           {
             path: "dine-in/:tableId",
             element: <Customer_DineInLayout />,
@@ -141,11 +149,23 @@ export const router = createBrowserRouter([
                 element: <Customer_DineInMenuPage />,
               },
               {
-                path: "confirm",
+                path: "menu",
+                element: <Customer_DineInMenuPage />,
+              },
+              {
+                path: "dish/:dishId",
+                element: <Customer_DishDetailPage />,
+              },
+              {
+                path: "confirm-order",
                 element: <Customer_DineInConfirm />,
               },
               {
-                path: "status",
+                path: "order-status",
+                element: <Customer_DineInStatusPage />,
+              },
+              {
+                path: "orders/:orderCode/status",
                 element: <Customer_DineInStatusPage />,
               },
             ],

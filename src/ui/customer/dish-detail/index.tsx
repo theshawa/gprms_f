@@ -5,7 +5,7 @@ import { useCustomerCart } from "@/hooks/useCustomerCart";
 import { useQuery } from "@tanstack/react-query";
 import { PageLoader } from "@/ui/staff/shared/page-loader";
 import { PageError } from "@/ui/staff/shared/page-error";
-import { DishesService } from "@/services/customer/dishes";
+import { CustomerDishesService } from "@/services/customer/dishes";
 import { cloudinary, getCloudinaryImageUrl } from "@/cloudinary";
 
 export const Customer_DishDetailPage: FC = () => {
@@ -24,7 +24,7 @@ export const Customer_DishDetailPage: FC = () => {
   } = useQuery({
     queryKey: ["customer_dish"],
     enabled: !!dishId,
-    queryFn: () => DishesService.get(dishId as string),
+    queryFn: () => CustomerDishesService.get(dishId as string),
   });
 
   if (isPending) {

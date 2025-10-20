@@ -1,6 +1,6 @@
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { useCustomerCart } from "@/hooks/useCustomerCart";
-import { OrderService } from "@/services/customer/order";
+import { CustomerOrderService } from "@/services/customer/order";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -110,7 +110,7 @@ export const Customer_OrderSuccessPage: React.FC = () => {
 
   const { data: order } = useQuery({
     queryKey: ["customer_order"],
-    queryFn: () => OrderService.getOrder(orderCode),
+    queryFn: () => CustomerOrderService.getOrder(orderCode),
   });
 
   const socket = useSocketConnection();
