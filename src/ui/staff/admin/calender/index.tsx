@@ -26,6 +26,7 @@ import {
   MenuItem,
   Switch,
   FormControlLabel,
+  CircularProgress,
 } from "@mui/material";
 import {
   AccessTime,
@@ -37,10 +38,14 @@ import {
   Event,
   Group,
   Restaurant,
+  Delete,
 } from "@mui/icons-material";
 import { type FC, useState, useMemo } from "react";
 import { PageLayout } from "../../shared/page-layout";
-import { sampleReservations, sampleClosures, type CalendarReservation, type RestaurantClosure } from "./sample-data";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { CalendarService, type CalendarReservation, type ClosedDay } from "@/services/staff/admin/calendar";
+import { useAlert } from "@/hooks/useAlert";
+import { getBackendErrorMessage } from "@/backend";
 
 export const Admin_CalenderPage: FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -51,20 +56,172 @@ export const Admin_CalenderPage: FC = () => {
   const [closureDialogOpen, setClosureDialogOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<CalendarReservation | null>(null);
   const [reservationDialogOpen, setReservationDialogOpen] = useState(false);
+  const [isRangeMode, setIsRangeMode] = useState(false);
   
   // Closure form state
   const [closureForm, setClosureForm] = useState({
     date: "",
+    endDate: "",
     startTime: "",
     endTime: "",
-    isFullDay: false,
+    isFullDay: true,
     reason: "",
     description: "",
   });
 
+  const queryClient = useQueryClient();
+  const { showError, showSuccess } = useAlert();
+
   const formatDate = (date: Date): string => {
     return date.toISOString().split('T')[0];
   };
+
+  // Fetch closed days
+  const {
+    data: closedDays = [],
+  } = useQuery({
+    queryKey: ["admin", "calendar", "closed-days"],
+    queryFn: () => CalendarService.getClosedDays(),
+  });
+
+  // Fetch reservations for selected date
+  const {
+    data: selectedDateReservations = [],
+    isLoading: isLoadingReservations,
+    error: reservationsError,
+  } = useQuery({
+    queryKey: ["admin", "calendar", "reservations", formatDate(selectedDate)],
+    queryFn: () => CalendarService.getReservationsByDate(formatDate(selectedDate)),
+  });
+
+  // Fetch all reservations for the current month to show counts
+  const {
+    data: monthReservations = [],
+  } = useQuery({
+    queryKey: ["admin", "calendar", "month-reservations", currentMonth.getFullYear(), currentMonth.getMonth()],
+    queryFn: async () => {
+      // Get start and end of the month
+      const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+      const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+      
+      // Fetch all reservations for the month
+      const reservationsService = await import("@/services/staff/admin/reservations");
+      const allReservations = await reservationsService.ReservationsService.getAll();
+      
+      // Filter for current month
+      return allReservations.filter(res => {
+        const resDate = new Date(res.reservationDate);
+        return resDate >= startOfMonth && resDate <= endOfMonth;
+      });
+    },
+  });
+
+  // Debug log
+  console.log("Selected date:", selectedDate);
+  console.log("Formatted date:", formatDate(selectedDate));
+  console.log("Selected date reservations:", selectedDateReservations);
+  console.log("Is loading:", isLoadingReservations);
+  console.log("Error:", reservationsError);
+
+  // Fetch all reservations for list view
+  const {
+    data: allReservationsData = [],
+  } = useQuery({
+    queryKey: ["admin", "reservations"],
+    queryFn: async () => {
+      // This uses the existing reservations endpoint
+      const reservationsService = await import("@/services/staff/admin/reservations");
+      return reservationsService.ReservationsService.getAll();
+    },
+    enabled: viewMode === "list",
+  });
+
+  // Map the Reservation type to CalendarReservation type for display
+  const allReservations = useMemo(() => {
+    return allReservationsData.map((res): CalendarReservation => ({
+      id: res.id,
+      reservationCode: res.reservationCode,
+      customerName: res.customerName,
+      customerPhone: res.customerPhone,
+      meal: res.meal,
+      diningAreaId: res.diningAreaId,
+      diningArea: res.diningArea ? {
+        id: res.diningArea.id,
+        name: res.diningArea.name,
+        description: res.diningArea.description || "",
+        image: "",
+        reservationSeatsCount: 0,
+      } : {
+        id: 0,
+        name: "Unknown",
+        description: "",
+        image: "",
+        reservationSeatsCount: 0,
+      },
+      noOfSeats: res.noOfSeats,
+      reservationDate: res.reservationDate.toString(),
+      status: res.status,
+      notes: res.notes,
+      createdAt: res.createdAt.toString(),
+    }));
+  }, [allReservationsData]);
+
+  // Create closed day mutation
+  const createClosedDayMutation = useMutation({
+    mutationFn: async (isRange: boolean): Promise<ClosedDay[]> => {
+      if (isRange) {
+        return CalendarService.createClosedDaysRange({
+          startDate: closureForm.date,
+          endDate: closureForm.endDate,
+          startTime: closureForm.isFullDay ? undefined : closureForm.startTime,
+          endTime: closureForm.isFullDay ? undefined : closureForm.endTime,
+          isFullDay: closureForm.isFullDay,
+          reason: closureForm.reason,
+          description: closureForm.description || undefined,
+        });
+      } else {
+        const singleDay = await CalendarService.createClosedDay({
+          date: closureForm.date,
+          startTime: closureForm.isFullDay ? undefined : closureForm.startTime,
+          endTime: closureForm.isFullDay ? undefined : closureForm.endTime,
+          isFullDay: closureForm.isFullDay,
+          reason: closureForm.reason,
+          description: closureForm.description || undefined,
+        });
+        return [singleDay];
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "calendar", "closed-days"] });
+      showSuccess("Restaurant closure created successfully");
+      setClosureDialogOpen(false);
+      setClosureForm({
+        date: "",
+        endDate: "",
+        startTime: "",
+        endTime: "",
+        isFullDay: true,
+        reason: "",
+        description: "",
+      });
+      setIsRangeMode(false);
+    },
+    onError: (error) => {
+      showError(getBackendErrorMessage(error));
+    },
+  });
+
+  // Delete closed day mutation
+  const deleteClosedDayMutation = useMutation({
+    mutationFn: (id: number) => CalendarService.deleteClosedDay(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "calendar", "closed-days"] });
+      showSuccess("Closed day removed successfully");
+    },
+    onError: (error) => {
+      showError(getBackendErrorMessage(error));
+    },
+  });
 
   const isSameDay = (date1: Date, date2: Date): boolean => {
     return date1.getDate() === date2.getDate() &&
@@ -99,26 +256,25 @@ export const Admin_CalenderPage: FC = () => {
     return days;
   };
 
-  const getReservationsForDate = (date: Date): CalendarReservation[] => {
+  const getClosuresForDate = (date: Date): ClosedDay[] => {
     const dateStr = formatDate(date);
-    return sampleReservations.filter(reservation => {
-      const reservationDate = new Date(reservation.reservationTime).toISOString().split('T')[0];
-      return reservationDate === dateStr;
+    return closedDays.filter(closure => {
+      const closureDate = new Date(closure.date).toISOString().split('T')[0];
+      return closureDate === dateStr;
     });
   };
 
-  const getClosuresForDate = (date: Date): RestaurantClosure[] => {
+  const getReservationCountForDate = (date: Date): number => {
     const dateStr = formatDate(date);
-    return sampleClosures.filter(closure => closure.date === dateStr);
+    return monthReservations.filter(res => {
+      const resDate = new Date(res.reservationDate).toISOString().split('T')[0];
+      return resDate === dateStr;
+    }).length;
   };
-
-  const selectedDateReservations = useMemo(() => {
-    return getReservationsForDate(selectedDate);
-  }, [selectedDate]);
 
   const selectedDateClosures = useMemo(() => {
     return getClosuresForDate(selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate, closedDays]);
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     setCurrentMonth(prev => {
@@ -130,20 +286,31 @@ export const Admin_CalenderPage: FC = () => {
       }
       return newMonth;
     });
+    // Invalidate month reservations when month changes
+    queryClient.invalidateQueries({ 
+      queryKey: ["admin", "calendar", "month-reservations"] 
+    });
   };
 
   const handleClosureSubmit = () => {
-    // In a real app, this would make an API call
-    console.log("Creating closure:", closureForm);
-    setClosureDialogOpen(false);
-    setClosureForm({
-      date: "",
-      startTime: "",
-      endTime: "",
-      isFullDay: false,
-      reason: "",
-      description: "",
-    });
+    if (!closureForm.date) {
+      showError("Please select a date");
+      return;
+    }
+    if (isRangeMode && !closureForm.endDate) {
+      showError("Please select an end date");
+      return;
+    }
+    if (!closureForm.reason) {
+      showError("Please select a reason");
+      return;
+    }
+    if (!closureForm.isFullDay && (!closureForm.startTime || !closureForm.endTime)) {
+      showError("Please select start and end times");
+      return;
+    }
+
+    createClosedDayMutation.mutate(isRangeMode);
   };
 
   const getStatusColor = (status: string) => {
@@ -237,8 +404,8 @@ export const Admin_CalenderPage: FC = () => {
                       const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
                       const isSelected = isSameDay(day, selectedDate);
                       const isToday = isSameDay(day, new Date());
-                      const reservations = getReservationsForDate(day);
                       const closures = getClosuresForDate(day);
+                      const reservationCount = isCurrentMonth ? getReservationCountForDate(day) : 0;
                       
                       return (
                         <Paper
@@ -252,6 +419,7 @@ export const Admin_CalenderPage: FC = () => {
                             border: isToday ? 2 : 0,
                             borderColor: "primary.main",
                             opacity: isCurrentMonth ? 1 : 0.5,
+                            position: "relative",
                           }}
                           onClick={() => isCurrentMonth && setSelectedDate(day)}
                         >
@@ -265,13 +433,21 @@ export const Admin_CalenderPage: FC = () => {
                             {day.getDate()}
                           </Typography>
                           
-                          {/* Reservations indicator */}
-                          {reservations.length > 0 && (
+                          {/* Reservation count indicator */}
+                          {isCurrentMonth && reservationCount > 0 && (
                             <Chip
+                              icon={<Event sx={{ fontSize: "0.7rem !important" }} />}
                               size="small"
-                              label={reservations.length}
+                              label={`${reservationCount}`}
                               color="primary"
-                              sx={{ fontSize: "0.7rem", height: 16 }}
+                              variant="filled"
+                              sx={{ 
+                                fontSize: "0.65rem", 
+                                height: 18, 
+                                mt: 0.5,
+                                "& .MuiChip-label": { px: 0.5 },
+                                "& .MuiChip-icon": { ml: 0.5 }
+                              }}
                             />
                           )}
                           
@@ -308,15 +484,15 @@ export const Admin_CalenderPage: FC = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {sampleReservations.slice(0, 10).map((reservation) => (
+                        {allReservations.slice(0, 20).map((reservation: CalendarReservation) => (
                           <TableRow key={reservation.id}>
                             <TableCell>
                               <Box>
                                 <Typography variant="body2">
-                                  {new Date(reservation.reservationTime).toLocaleDateString()}
+                                  {new Date(reservation.reservationDate).toLocaleDateString()}
                                 </Typography>
                                 <Typography variant="caption" color="text.secondary">
-                                  {new Date(reservation.reservationTime).toLocaleTimeString([], {
+                                  {new Date(reservation.reservationDate).toLocaleTimeString([], {
                                     hour: '2-digit',
                                     minute: '2-digit'
                                   })}
@@ -332,12 +508,9 @@ export const Admin_CalenderPage: FC = () => {
                               </Box>
                             </TableCell>
                             <TableCell>
-                              <Typography variant="body2">{reservation.tableNumber}</Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                {reservation.diningAreaName}
-                              </Typography>
+                              <Typography variant="body2">{reservation.diningArea.name}</Typography>
                             </TableCell>
-                            <TableCell>{reservation.guestCount}</TableCell>
+                            <TableCell>{reservation.noOfSeats}</TableCell>
                             <TableCell>
                               <Chip
                                 label={reservation.status}
@@ -389,11 +562,21 @@ export const Admin_CalenderPage: FC = () => {
                     {selectedDateClosures.map((closure) => (
                       <Card key={closure.id} variant="outlined" sx={{ mb: 1, bgcolor: "error.50" }}>
                         <CardContent sx={{ py: 1.5 }}>
-                          <Box display="flex" alignItems="center" gap={1} mb={1}>
-                            <Block color="error" fontSize="small" />
-                            <Typography variant="body2" fontWeight="bold">
-                              {closure.isFullDay ? "Full Day Closure" : `${closure.startTime} - ${closure.endTime}`}
-                            </Typography>
+                          <Box display="flex" justifyContent="space-between" alignItems="start" mb={1}>
+                            <Box display="flex" alignItems="center" gap={1}>
+                              <Block color="error" fontSize="small" />
+                              <Typography variant="body2" fontWeight="bold">
+                                {closure.isFullDay ? "Full Day Closure" : `${closure.startTime} - ${closure.endTime}`}
+                              </Typography>
+                            </Box>
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => deleteClosedDayMutation.mutate(closure.id)}
+                              disabled={deleteClosedDayMutation.isPending}
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
                           </Box>
                           <Typography variant="body2" gutterBottom>
                             {closure.reason}
@@ -414,7 +597,11 @@ export const Admin_CalenderPage: FC = () => {
                   Reservations ({selectedDateReservations.length})
                 </Typography>
                 
-                {selectedDateReservations.length === 0 ? (
+                {isLoadingReservations ? (
+                  <Box display="flex" justifyContent="center" py={3}>
+                    <CircularProgress size={24} />
+                  </Box>
+                ) : selectedDateReservations.length === 0 ? (
                   <Typography variant="body2" color="text.secondary" textAlign="center" py={3}>
                     No reservations for this date
                   </Typography>
@@ -445,7 +632,7 @@ export const Admin_CalenderPage: FC = () => {
                           <Box display="flex" alignItems="center" gap={1} mb={0.5}>
                             <AccessTime fontSize="small" color="action" />
                             <Typography variant="caption">
-                              {new Date(reservation.reservationTime).toLocaleTimeString([], {
+                              {new Date(reservation.reservationDate).toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit'
                               })}
@@ -455,14 +642,14 @@ export const Admin_CalenderPage: FC = () => {
                           <Box display="flex" alignItems="center" gap={1} mb={0.5}>
                             <Restaurant fontSize="small" color="action" />
                             <Typography variant="caption">
-                              {reservation.tableNumber} - {reservation.diningAreaName}
+                              {reservation.diningArea.name}
                             </Typography>
                           </Box>
                           
                           <Box display="flex" alignItems="center" gap={1}>
                             <Group fontSize="small" color="action" />
                             <Typography variant="caption">
-                              {reservation.guestCount} guests • {reservation.buffetType}
+                              {reservation.noOfSeats} guests • {reservation.meal}
                             </Typography>
                           </Box>
                         </CardContent>
@@ -480,15 +667,38 @@ export const Admin_CalenderPage: FC = () => {
       <Dialog open={closureDialogOpen} onClose={() => setClosureDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Close Restaurant</DialogTitle>
         <DialogContent>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isRangeMode}
+                onChange={(e) => setIsRangeMode(e.target.checked)}
+              />
+            }
+            label="Close Multiple Days (Date Range)"
+            sx={{ mb: 2 }}
+          />
+
           <TextField
             fullWidth
-            label="Date"
+            label={isRangeMode ? "Start Date" : "Date"}
             type="date"
             value={closureForm.date}
             onChange={(e) => setClosureForm(prev => ({ ...prev, date: e.target.value }))}
             InputLabelProps={{ shrink: true }}
             margin="normal"
           />
+          
+          {isRangeMode && (
+            <TextField
+              fullWidth
+              label="End Date"
+              type="date"
+              value={closureForm.endDate}
+              onChange={(e) => setClosureForm(prev => ({ ...prev, endDate: e.target.value }))}
+              InputLabelProps={{ shrink: true }}
+              margin="normal"
+            />
+          )}
           
           <FormControlLabel
             control={
@@ -549,9 +759,16 @@ export const Admin_CalenderPage: FC = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setClosureDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleClosureSubmit} variant="contained" color="error">
-            Close Restaurant
+          <Button onClick={() => setClosureDialogOpen(false)} disabled={createClosedDayMutation.isPending}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleClosureSubmit} 
+            variant="contained" 
+            color="error"
+            disabled={createClosedDayMutation.isPending}
+          >
+            {createClosedDayMutation.isPending ? "Closing..." : "Close Restaurant"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -580,28 +797,32 @@ export const Admin_CalenderPage: FC = () => {
                   <Typography variant="body1">{selectedReservation.customerPhone}</Typography>
                 </Box>
                 <Box mb={2}>
-                  <Typography variant="body2" color="text.secondary">Guest Count</Typography>
-                  <Typography variant="body1">{selectedReservation.guestCount} guests</Typography>
+                  <Typography variant="body2" color="text.secondary">Number of Seats</Typography>
+                  <Typography variant="body1">{selectedReservation.noOfSeats} seats</Typography>
                 </Box>
               </Grid>
               
               <Grid size={6}>
                 <Typography variant="h6" gutterBottom>Reservation Details</Typography>
                 <Box mb={2}>
+                  <Typography variant="body2" color="text.secondary">Reservation Code</Typography>
+                  <Typography variant="body1">{selectedReservation.reservationCode}</Typography>
+                </Box>
+                <Box mb={2}>
                   <Typography variant="body2" color="text.secondary">Date & Time</Typography>
                   <Typography variant="body1">
-                    {new Date(selectedReservation.reservationTime).toLocaleString()}
+                    {new Date(selectedReservation.reservationDate).toLocaleString()}
                   </Typography>
                 </Box>
                 <Box mb={2}>
-                  <Typography variant="body2" color="text.secondary">Table</Typography>
+                  <Typography variant="body2" color="text.secondary">Dining Area</Typography>
                   <Typography variant="body1">
-                    {selectedReservation.tableNumber} - {selectedReservation.diningAreaName}
+                    {selectedReservation.diningArea.name}
                   </Typography>
                 </Box>
                 <Box mb={2}>
-                  <Typography variant="body2" color="text.secondary">Buffet Type</Typography>
-                  <Typography variant="body1">{selectedReservation.buffetType}</Typography>
+                  <Typography variant="body2" color="text.secondary">Meal Type</Typography>
+                  <Typography variant="body1">{selectedReservation.meal}</Typography>
                 </Box>
                 <Box mb={2}>
                   <Typography variant="body2" color="text.secondary">Status</Typography>
@@ -613,27 +834,12 @@ export const Admin_CalenderPage: FC = () => {
                 </Box>
               </Grid>
               
-              {(selectedReservation.specialRequests || selectedReservation.occasionType || selectedReservation.preferredSeating) && (
+              {selectedReservation.notes && (
                 <Grid size={12}>
-                  <Typography variant="h6" gutterBottom>Additional Information</Typography>
-                  {selectedReservation.occasionType && (
-                    <Box mb={2}>
-                      <Typography variant="body2" color="text.secondary">Occasion Type</Typography>
-                      <Typography variant="body1">{selectedReservation.occasionType}</Typography>
-                    </Box>
-                  )}
-                  {selectedReservation.preferredSeating && (
-                    <Box mb={2}>
-                      <Typography variant="body2" color="text.secondary">Preferred Seating</Typography>
-                      <Typography variant="body1">{selectedReservation.preferredSeating}</Typography>
-                    </Box>
-                  )}
-                  {selectedReservation.specialRequests && (
-                    <Box mb={2}>
-                      <Typography variant="body2" color="text.secondary">Special Requests</Typography>
-                      <Typography variant="body1">{selectedReservation.specialRequests}</Typography>
-                    </Box>
-                  )}
+                  <Typography variant="h6" gutterBottom>Notes</Typography>
+                  <Box mb={2}>
+                    <Typography variant="body1">{selectedReservation.notes}</Typography>
+                  </Box>
                 </Grid>
               )}
             </Grid>

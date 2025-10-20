@@ -46,7 +46,7 @@ import { Admin_OrdersDineInOrders } from "./ui/staff/admin/orders/dine-in-orders
 import { Admin_OrdersTakeAwayOrders } from "./ui/staff/admin/orders/take-away-orders";
 import { Admin_PayrollPage } from "./ui/staff/admin/payroll";
 import { Admin_PayrollConfigsPage } from "./ui/staff/admin/payroll/configs";
-import { Admin_ReservationsHomePage } from "./ui/staff/admin/reservations";
+import { Admin_ReservationsPage } from "./ui/staff/admin/reservations";
 import { Cashier_Root } from "./ui/staff/cashier";
 import { Cashier_HomePage } from "./ui/staff/cashier/home";
 import { Staff_PayrollPage } from "./ui/staff/common/payroll";
@@ -255,7 +255,7 @@ export const router = createBrowserRouter([
             path: "reservations",
             element: (
               <StaffAuthGuard role={StaffRole.Admin}>
-                <Admin_ReservationsHomePage />
+                <Admin_ReservationsPage />
               </StaffAuthGuard>
             ),
           },
