@@ -74,10 +74,27 @@ export class ReservationService {
   }
 }
 
+export interface ClosedDay {
+  id: number;
+  date: string;
+  startTime: string | null;
+  endTime: string | null;
+  isFullDay: boolean;
+  reason: string;
+  description: string | null;
+}
+
 export class CustomerReservationService {
   static async getDiningAreas() {
     const { data } = await customerBackend.get<DiningArea[]>("/reservation/dining-areas");
     return data;
+  }
+
+  static async getClosedDays() {
+    const { data } = await customerBackend.get<{ success: boolean; data: ClosedDay[] }>(
+      "/reservation/closed-days"
+    );
+    return data.data;
   }
 
   static async verifyPhoneNumberAndPlaceReservation(

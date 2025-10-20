@@ -4,6 +4,7 @@ import {
   AttachMoney,
   CalendarToday,
   EggAlt,
+  EventSeat,
   Fastfood,
   Home,
   Kitchen,
@@ -86,12 +87,12 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
           title: "Orders",
           link: "/staff/admin/orders",
           Icon: AttachMoney,
+        },
+        {
+          title: "Reservations",
+          link: "/staff/admin/reservations",
+          Icon: EventSeat,
         }
-        // {
-        //   title: "Reservations",
-        //   link: "/staff/admin/reservations",
-        //   Icon: EventSeat,
-        // },
         // {
         //   title: "Offers",
         //   link: "/staff/admin/offers",
