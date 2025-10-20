@@ -7,4 +7,5 @@ export interface DiningTable {
   isReservable: boolean;
   maxSeats: number;
   diningArea: DiningArea;
+  tableStatus: string | null;
 }

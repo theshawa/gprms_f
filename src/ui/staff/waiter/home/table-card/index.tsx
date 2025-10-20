@@ -1,5 +1,4 @@
-import { getBackendErrorMessage } from "@/backend";
-import { useAlert } from "@/hooks/useAlert";
+import { useStaffAuth } from "@/hooks/useStaffAuth";
 import type { DiningTable } from "@/interfaces/dining-table";
 import {
   Card,
@@ -16,52 +15,46 @@ import { AcceptTableDialog } from "./accept-table-dialog";
 export const TableCard: FC<{
   diningTable: DiningTable;
 }> = ({ diningTable }) => {
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(diningTable.tableStatus);
   const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
 
   const socket = useSocketConnection();
 
-  const { showError } = useAlert();
+  const { auth } = useStaffAuth();
+  const userId = auth?.user?.id;
 
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("getDiningTableStatus", diningTable.id);
-
-    socket.on("diningTableStatus", (tableId: number, status: string | null) => {
-      console.log("status: ", status);
-      if (tableId == diningTable.id) {
-        setStatus(status);
-      }
-    });
-
-    socket.on("diningTableStatusError", (err) => {
-      showError(`Failed to fetch table status: ${getBackendErrorMessage(err)}`);
-    });
-
     socket.on("customer-started-dining", (tableId: number) => {
-      console.log("first");
       if (tableId == diningTable.id) {
         setStatus("WaitingForWaiter");
-        // play notification sound
-        const audio = new Audio("/sounds/notification.mp3");
-        audio.play().catch(() => {
-          console.warn("Autoplay blocked until user interacts with the page.");
-        });
       }
     });
 
-    socket.on("accepted-table", (tableId: number) => {
-      socket.emit("getDiningTableStatus", tableId);
-    });
+    socket.on(
+      "accepted-table",
+      ({ tableId, waiterId }: { tableId: number; waiterId: number }) => {
+        if (tableId == diningTable.id && waiterId !== userId) {
+          setStatus("Occupied");
+        }
+      }
+    );
 
     return () => {
-      socket.off("diningTableStatus");
-      socket.off("diningTableStatusError");
       socket.off("customer-started-dining");
-      socket.off("accepted-table-emit");
     };
   }, [socket, diningTable.id]);
+
+  useEffect(() => {
+    if (!status) return;
+    if (status === "WaitingForWaiter") {
+      const audio = new Audio("/sounds/notification.mp3");
+      audio.play().catch(() => {
+        console.warn("Autoplay blocked until user interacts with the page.");
+      });
+    }
+  }, [status]);
 
   return (
     <>
@@ -78,6 +71,8 @@ export const TableCard: FC<{
                 ? "orange"
                 : status === "Dining"
                 ? "lightgreen"
+                : status === "Occupied"
+                ? "lightgray"
                 : "white",
           }}
         >
@@ -103,6 +98,8 @@ export const TableCard: FC<{
                   ? "Customer Waiting"
                   : status === "Dining"
                   ? "Order Ongoing"
+                  : status === "Occupied"
+                  ? "Served by another waiter"
                   : "Available"
               }
               size="small"
@@ -111,6 +108,8 @@ export const TableCard: FC<{
                   ? "warning"
                   : status === "Dining"
                   ? "success"
+                  : status === "Occupied"
+                  ? "secondary"
                   : "default"
               }
             />

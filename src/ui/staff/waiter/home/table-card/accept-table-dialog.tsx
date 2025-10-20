@@ -1,5 +1,6 @@
 import { getBackendErrorMessage } from "@/backend";
 import { useAlert } from "@/hooks/useAlert";
+import { useStaffAuth } from "@/hooks/useStaffAuth";
 import { WaiterService } from "@/services/staff/waiter";
 import {
   Button,
@@ -9,9 +10,8 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 import { useSocketConnection } from "../../socket-context";
-import { useStaffAuth } from "@/hooks/useStaffAuth";
 
 export const AcceptTableDialog: FC<{
   open: boolean;
@@ -24,21 +24,32 @@ export const AcceptTableDialog: FC<{
   const { auth } = useStaffAuth();
   const waiterId = auth?.user?.id;
 
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("waiter-accepted-table-error", (err) => {
+      showError(`Failed to accept table: ${getBackendErrorMessage(err)}`);
+    });
+
+    return () => {
+      socket.off("waiter-accepted-table-error");
+    };
+  }, [socket]);
+
   const { mutate: action } = useMutation({
     mutationFn: () => WaiterService.acceptTable(tableId),
     mutationKey: ["waiterAcceptTable", tableId],
     onSuccess() {
       showSuccess("Table accepted successfully.");
-      updateParentStatus("order-ongoing");
+      updateParentStatus("Dining");
       handleClose();
-      if (socket) {
-        socket.emit("waiter-accepted-table", {
-          tableId,
-          waiterId,
-        });
-      } else {
-        console.warn("Socket not connected, cannot emit waiter-accepted-table");
+      if (!socket) {
+        throw new Error("Socket not connected");
       }
+      socket.emit("waiter-accepted-table", {
+        tableId,
+        waiterId,
+      });
     },
     onError(err) {
       showError(`Failed to accept table: ${getBackendErrorMessage(err)}`);

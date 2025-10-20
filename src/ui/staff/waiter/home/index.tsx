@@ -9,22 +9,17 @@ import { TableCard } from "./table-card";
 
 export const Waiter_HomePage: FC = () => {
   const [diningTables, setDiningTables] = useState<DiningTable[]>([]);
-  const [ongoingOrdersCount, setOngoingOrdersCount] = useState(0);
   const socket = useSocketConnection();
   const { showError } = useAlert();
   const { auth } = useStaffAuth();
 
   useEffect(() => {
     if (!socket) return;
-    console.log("ammoooo")
 
     const waiterId = auth?.user.id;
     socket.emit("waiter-id", waiterId);
 
-    socket.emit("getDiningTables", (tables: DiningTable[]) => {
-      console.log("hello");
-      setDiningTables(tables);
-    });
+    socket.emit("getDiningTables");
 
     socket.on("diningTables", (tables: DiningTable[]) => {
       setDiningTables(tables);
@@ -36,23 +31,9 @@ export const Waiter_HomePage: FC = () => {
       );
     });
 
-    socket.emit("getOngoingOrdersCount", auth!.user.id);
-
-    socket.on("ongoingOrdersCount", (count: number) => {
-      setOngoingOrdersCount(count);
-    });
-
-    socket.on("ongoingOrdersCountError", (err) => {
-      showError(
-        `Failed to fetch ongoing orders count: ${getBackendErrorMessage(err)}`
-      );
-    });
-
     return () => {
       socket.off("diningTables");
       socket.off("diningTablesError");
-      socket.off("ongoingOrdersCount");
-      socket.off("ongoingOrdersCountError");
     };
   }, [socket]);
 
