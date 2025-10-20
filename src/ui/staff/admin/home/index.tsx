@@ -1,3 +1,5 @@
+import { getBackendErrorMessage } from "@/backend";
+import { AdminDashboardService } from "@/services/staff/admin/dashboard";
 import {
   AttachMoney,
   ShoppingCart,
@@ -5,12 +7,14 @@ import {
   TrendingUp,
 } from "@mui/icons-material";
 import {
+  Alert,
   Avatar,
   Box,
   Button,
   Card,
   CardContent,
   Chip,
+  CircularProgress,
   Grid,
   Stack,
   Table,
@@ -20,16 +24,12 @@ import {
   TableHead,
   TableRow,
   Typography,
-  CircularProgress,
-  Alert,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { avatarColors } from "../../../../muitheme";
-import { AdminDashboardService } from "@/services/staff/admin/dashboard";
-import { getBackendErrorMessage } from "@/backend";
 
 const StatCard: FC<{
   title: string;
@@ -74,23 +74,40 @@ const StatCard: FC<{
             </Stack>
           )}
         </Box>
-        <Avatar sx={{ 
-          bgcolor: color === "primary" ? avatarColors.primary.bg :
-                   color === "success" ? avatarColors.success.bg :
-                   color === "warning" ? avatarColors.warning.bg :
-                   color === "error" ? avatarColors.error.bg :
-                   avatarColors.neutral.bg,
-          color: color === "primary" ? avatarColors.primary.color :
-                 color === "success" ? avatarColors.success.color :
-                 color === "warning" ? avatarColors.warning.color :
-                 color === "error" ? avatarColors.error.color :
-                 avatarColors.neutral.color,
-          border: color === "primary" ? `1px solid ${avatarColors.primary.border}` :
-                  color === "success" ? `1px solid ${avatarColors.success.border}` :
-                  color === "warning" ? `1px solid ${avatarColors.warning.border}` :
-                  color === "error" ? `1px solid ${avatarColors.error.border}` :
-                  `1px solid ${avatarColors.neutral.border}`,
-        }}>
+        <Avatar
+          sx={{
+            bgcolor:
+              color === "primary"
+                ? avatarColors.primary.bg
+                : color === "success"
+                ? avatarColors.success.bg
+                : color === "warning"
+                ? avatarColors.warning.bg
+                : color === "error"
+                ? avatarColors.error.bg
+                : avatarColors.neutral.bg,
+            color:
+              color === "primary"
+                ? avatarColors.primary.color
+                : color === "success"
+                ? avatarColors.success.color
+                : color === "warning"
+                ? avatarColors.warning.color
+                : color === "error"
+                ? avatarColors.error.color
+                : avatarColors.neutral.color,
+            border:
+              color === "primary"
+                ? `1px solid ${avatarColors.primary.border}`
+                : color === "success"
+                ? `1px solid ${avatarColors.success.border}`
+                : color === "warning"
+                ? `1px solid ${avatarColors.warning.border}`
+                : color === "error"
+                ? `1px solid ${avatarColors.error.border}`
+                : `1px solid ${avatarColors.neutral.border}`,
+          }}
+        >
           {icon}
         </Avatar>
       </Stack>
@@ -122,11 +139,11 @@ const getStatusColor = (status: string) => {
 const formatStatus = (status: string) => {
   // Convert status to readable format
   return status
-    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+    .replace(/([A-Z])/g, " $1") // Add space before capital letters
     .trim()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 };
 
 export const Admin_HomePage: FC = () => {
@@ -214,7 +231,8 @@ export const Admin_HomePage: FC = () => {
         </Box>
       ) : statsError ? (
         <Alert severity="error" sx={{ mb: 4 }}>
-          Failed to load dashboard statistics: {getBackendErrorMessage(statsError)}
+          Failed to load dashboard statistics:{" "}
+          {getBackendErrorMessage(statsError)}
         </Alert>
       ) : dashboardStats ? (
         <Grid container spacing={3} mb={4}>
@@ -274,14 +292,15 @@ export const Admin_HomePage: FC = () => {
                   View All
                 </Button>
               </Stack>
-              
+
               {ordersLoading ? (
                 <Box display="flex" justifyContent="center" py={4}>
                   <CircularProgress />
                 </Box>
               ) : ordersError ? (
                 <Alert severity="error">
-                  Failed to load recent orders: {getBackendErrorMessage(ordersError)}
+                  Failed to load recent orders:{" "}
+                  {getBackendErrorMessage(ordersError)}
                 </Alert>
               ) : recentOrdersData && recentOrdersData.orders.length > 0 ? (
                 <TableContainer>
@@ -304,14 +323,22 @@ export const Admin_HomePage: FC = () => {
                           </TableCell>
                           <TableCell>
                             <Chip
-                              label={order.type === "dine-in" ? "Dine-In" : "Take-Away"}
+                              label={
+                                order.type === "dine-in"
+                                  ? "Dine-In"
+                                  : "Take-Away"
+                              }
                               size="small"
                               variant="outlined"
-                              color={order.type === "dine-in" ? "primary" : "secondary"}
+                              color={
+                                order.type === "dine-in"
+                                  ? "primary"
+                                  : "secondary"
+                              }
                             />
                           </TableCell>
                           <TableCell>
-                            {order.type === "dine-in" 
+                            {order.type === "dine-in"
                               ? order.tableInfo || "N/A"
                               : order.customerName || "N/A"}
                           </TableCell>
@@ -362,7 +389,7 @@ export const Admin_HomePage: FC = () => {
                   Manage Menu
                 </Button>
               </Stack>
-              
+
               {dishesLoading ? (
                 <Box display="flex" justifyContent="center" py={4}>
                   <CircularProgress />
@@ -422,7 +449,8 @@ export const Admin_HomePage: FC = () => {
                   </Stack>
                   <Box mt={2} textAlign="center">
                     <Typography variant="caption" color="text.secondary">
-                      Total: {dishesData.total} {dishesData.total === 1 ? "dish" : "dishes"}
+                      Total: {dishesData.total}{" "}
+                      {dishesData.total === 1 ? "dish" : "dishes"}
                     </Typography>
                   </Box>
                 </Box>
@@ -494,7 +522,10 @@ export const Admin_HomePage: FC = () => {
                             <Typography variant="body1" fontWeight="medium">
                               {staff.name}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               {staff.role}
                             </Typography>
                           </Box>
@@ -504,7 +535,8 @@ export const Admin_HomePage: FC = () => {
                   </Stack>
                   <Box mt={2} textAlign="center">
                     <Typography variant="caption" color="text.secondary">
-                      Total: {staffData.total} {staffData.total === 1 ? "member" : "members"}
+                      Total: {staffData.total}{" "}
+                      {staffData.total === 1 ? "member" : "members"}
                     </Typography>
                   </Box>
                 </Box>

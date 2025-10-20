@@ -1,12 +1,12 @@
+import { IngredientsService } from "@/services/staff/kitchen-manager/ingredients";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { Box, InputBase, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import type { FC } from "react";
 import { useState } from "react";
-import { IngredientCard } from "../shared/ingredient-card";
-import { IngredientsService } from "@/services/staff/kitchen-manager/ingredients";
-import { useQuery } from "@tanstack/react-query";
-import { PageLoader } from "../../shared/page-loader";
 import { PageError } from "../../shared/page-error";
+import { PageLoader } from "../../shared/page-loader";
+import { IngredientCard } from "../shared/ingredient-card";
 
 export const KitchenManager_IngredientsPage: FC = () => {
   const [searchTerm, setSearchTerm] = useState("");

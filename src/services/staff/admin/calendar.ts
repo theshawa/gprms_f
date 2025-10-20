@@ -58,25 +58,28 @@ export interface CreateClosedDaysRangePayload {
 }
 
 export class CalendarService {
-  static async getReservationsByDate(date: string): Promise<CalendarReservation[]> {
+  static async getReservationsByDate(
+    date: string
+  ): Promise<CalendarReservation[]> {
     try {
       console.log("=== CalendarService.getReservationsByDate ===");
       console.log("Fetching reservations for date:", date);
       console.log("Full URL:", `/admin/calendar/reservations?date=${date}`);
-      
-      const res = await staffBackend.get<{ success: boolean; data: CalendarReservation[] }>(
-        `/admin/calendar/reservations?date=${date}`
-      );
-      
+
+      const res = await staffBackend.get<{
+        success: boolean;
+        data: CalendarReservation[];
+      }>(`/admin/calendar/reservations?date=${date}`);
+
       console.log("Reservations response status:", res.status);
       console.log("Reservations response data:", res.data);
       console.log("Number of reservations:", res.data?.data?.length || 0);
-      
+
       if (!res.data || !res.data.data) {
         console.error("Invalid response structure:", res.data);
         return [];
       }
-      
+
       console.log("Returning reservations:", res.data.data);
       return res.data.data;
     } catch (error: any) {
@@ -95,7 +98,9 @@ export class CalendarService {
     return res.data.data;
   }
 
-  static async createClosedDay(payload: CreateClosedDayPayload): Promise<ClosedDay> {
+  static async createClosedDay(
+    payload: CreateClosedDayPayload
+  ): Promise<ClosedDay> {
     const res = await staffBackend.post<{ success: boolean; data: ClosedDay }>(
       "/admin/calendar/closed-days",
       payload
@@ -103,11 +108,13 @@ export class CalendarService {
     return res.data.data;
   }
 
-  static async createClosedDaysRange(payload: CreateClosedDaysRangePayload): Promise<ClosedDay[]> {
-    const res = await staffBackend.post<{ success: boolean; data: ClosedDay[] }>(
-      "/admin/calendar/closed-days/range",
-      payload
-    );
+  static async createClosedDaysRange(
+    payload: CreateClosedDaysRangePayload
+  ): Promise<ClosedDay[]> {
+    const res = await staffBackend.post<{
+      success: boolean;
+      data: ClosedDay[];
+    }>("/admin/calendar/closed-days/range", payload);
     return res.data.data;
   }
 

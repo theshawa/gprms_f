@@ -1,30 +1,30 @@
+import { OrdersService } from "@/services/staff/admin/orders";
 import {
+  Alert,
   Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  CircularProgress,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-  CircularProgress,
-  Alert,
-  Chip,
-  Card,
-  CardContent,
-  Grid,
   TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import type { FC } from "react";
-import { useState, useMemo } from "react";
-import { OrdersService } from "@/services/staff/admin/orders";
+import { useMemo, useState } from "react";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -54,17 +54,25 @@ export const Admin_OrdersTakeAwayOrders: FC = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["admin", "orders", "take-away", filterType, selectedDate, selectedMonth, selectedYear],
+    queryKey: [
+      "admin",
+      "orders",
+      "take-away",
+      filterType,
+      selectedDate,
+      selectedMonth,
+      selectedYear,
+    ],
     queryFn: () => {
       const filters: any = {};
-      
+
       if (filterType === "day" && selectedDate) {
         filters.date = selectedDate;
       } else if (filterType === "month" && selectedMonth && selectedYear) {
         filters.month = selectedMonth;
         filters.year = selectedYear;
       }
-      
+
       return OrdersService.getTakeAwayOrders(filters);
     },
   });
@@ -263,11 +271,14 @@ export const Admin_OrdersTakeAwayOrders: FC = () => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{order.customerPhone}</Typography>
+                    <Typography variant="body2">
+                      {order.customerPhone}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {order.items.length} item{order.items.length !== 1 ? "s" : ""}
+                      {order.items.length} item
+                      {order.items.length !== 1 ? "s" : ""}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {order.items
@@ -283,10 +294,16 @@ export const Admin_OrdersTakeAwayOrders: FC = () => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Chip label={order.status} size="small" color={getStatusColor(order.status)} />
+                    <Chip
+                      label={order.status}
+                      size="small"
+                      color={getStatusColor(order.status)}
+                    />
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{formatDate(order.createdAt)}</Typography>
+                    <Typography variant="body2">
+                      {formatDate(order.createdAt)}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography

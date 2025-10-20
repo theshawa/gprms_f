@@ -50,23 +50,30 @@ export interface StaffMembersResponse {
 
 export class AdminDashboardService {
   static async getStats(): Promise<DashboardStats> {
-    const response = await staffBackend.get<DashboardStats>("/admin/dashboard/stats");
+    const response = await staffBackend.get<DashboardStats>(
+      "/admin/dashboard/stats"
+    );
     return response.data;
   }
 
   static async getRecentOrders(): Promise<RecentOrdersResponse> {
-    const response = await staffBackend.get<RecentOrdersResponse>("/admin/dashboard/recent-orders");
+    const response = await staffBackend.get<RecentOrdersResponse>(
+      "/admin/dashboard/recent-orders"
+    );
     return response.data;
   }
 
   static async getDishes(): Promise<DishesResponse> {
-    const response = await staffBackend.get<DishesResponse>("/admin/dashboard/dishes");
+    const response = await staffBackend.get<DishesResponse>(
+      "/admin/dashboard/dishes"
+    );
     return response.data;
   }
 
   static async getStaffMembers(): Promise<StaffMembersResponse> {
-    const response = await staffBackend.get<StaffMembersResponse>("/admin/dashboard/staff");
+    const response = await staffBackend.get<StaffMembersResponse>(
+      "/admin/dashboard/staff"
+    );
     return response.data;
   }
 }
-

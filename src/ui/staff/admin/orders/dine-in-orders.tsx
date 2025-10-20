@@ -1,30 +1,30 @@
+import { OrdersService } from "@/services/staff/admin/orders";
 import {
+  Alert,
   Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  CircularProgress,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-  CircularProgress,
-  Alert,
-  Chip,
-  Card,
-  CardContent,
-  Grid,
   TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import type { FC } from "react";
-import { useState, useMemo } from "react";
-import { OrdersService } from "@/services/staff/admin/orders";
+import { useMemo, useState } from "react";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -54,17 +54,25 @@ export const Admin_OrdersDineInOrders: FC = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["admin", "orders", "dine-in", filterType, selectedDate, selectedMonth, selectedYear],
+    queryKey: [
+      "admin",
+      "orders",
+      "dine-in",
+      filterType,
+      selectedDate,
+      selectedMonth,
+      selectedYear,
+    ],
     queryFn: () => {
       const filters: any = {};
-      
+
       if (filterType === "day" && selectedDate) {
         filters.date = selectedDate;
       } else if (filterType === "month" && selectedMonth && selectedYear) {
         filters.month = selectedMonth;
         filters.year = selectedYear;
       }
-      
+
       return OrdersService.getDineInOrders(filters);
     },
   });
@@ -270,7 +278,9 @@ export const Admin_OrdersDineInOrders: FC = () => {
                   <TableCell>
                     {order.customer ? (
                       <Box>
-                        <Typography variant="body2">{order.customer.name}</Typography>
+                        <Typography variant="body2">
+                          {order.customer.name}
+                        </Typography>
                         <Typography variant="caption" color="text.secondary">
                           {order.customer.phoneNumber}
                         </Typography>
@@ -283,7 +293,9 @@ export const Admin_OrdersDineInOrders: FC = () => {
                   </TableCell>
                   <TableCell>
                     {order.waiter ? (
-                      <Typography variant="body2">{order.waiter.username}</Typography>
+                      <Typography variant="body2">
+                        {order.waiter.username}
+                      </Typography>
                     ) : (
                       <Typography variant="body2" color="text.secondary">
                         N/A
@@ -292,7 +304,8 @@ export const Admin_OrdersDineInOrders: FC = () => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {order.orderItems.length} item{order.orderItems.length !== 1 ? "s" : ""}
+                      {order.orderItems.length} item
+                      {order.orderItems.length !== 1 ? "s" : ""}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {order.orderItems
@@ -308,10 +321,16 @@ export const Admin_OrdersDineInOrders: FC = () => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Chip label={order.status} size="small" color={getStatusColor(order.status)} />
+                    <Chip
+                      label={order.status}
+                      size="small"
+                      color={getStatusColor(order.status)}
+                    />
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{formatDate(order.createdAt)}</Typography>
+                    <Typography variant="body2">
+                      {formatDate(order.createdAt)}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography

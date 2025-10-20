@@ -51,7 +51,9 @@ export interface CustomerReservationsResponse {
 
 export class ReservationService {
   // Create new reservation
-  static async createReservation(data: CreateReservationRequest): Promise<ReservationResponse> {
+  static async createReservation(
+    data: CreateReservationRequest
+  ): Promise<ReservationResponse> {
     const { data: response } = await customerBackend.post<ReservationResponse>(
       "/reservation",
       data
@@ -60,7 +62,9 @@ export class ReservationService {
   }
 
   // Get reservations by phone number
-  static async getReservationsByPhone(phoneNumber: string): Promise<CustomerReservationsResponse> {
+  static async getReservationsByPhone(
+    phoneNumber: string
+  ): Promise<CustomerReservationsResponse> {
     const { data } = await customerBackend.get<CustomerReservationsResponse>(
       `/reservation/phone/${phoneNumber}`
     );
@@ -69,7 +73,9 @@ export class ReservationService {
 
   // Get reservation by ID
   static async getReservationById(id: number): Promise<Reservation> {
-    const { data } = await customerBackend.get<Reservation>(`/reservation/${id}`);
+    const { data } = await customerBackend.get<Reservation>(
+      `/reservation/${id}`
+    );
     return data;
   }
 }
@@ -86,14 +92,17 @@ export interface ClosedDay {
 
 export class CustomerReservationService {
   static async getDiningAreas() {
-    const { data } = await customerBackend.get<DiningArea[]>("/reservation/dining-areas");
+    const { data } = await customerBackend.get<DiningArea[]>(
+      "/reservation/dining-areas"
+    );
     return data;
   }
 
   static async getClosedDays() {
-    const { data } = await customerBackend.get<{ success: boolean; data: ClosedDay[] }>(
-      "/reservation/closed-days"
-    );
+    const { data } = await customerBackend.get<{
+      success: boolean;
+      data: ClosedDay[];
+    }>("/reservation/closed-days");
     return data.data;
   }
 
@@ -102,21 +111,30 @@ export class CustomerReservationService {
     code: string,
     reservationData: ReservationData
   ) {
-    await customerBackend.post("/reservation/verify-phone-number-and-place-reservation", {
-      phoneNumber,
-      code,
-      reservationData,
-    });
+    await customerBackend.post(
+      "/reservation/verify-phone-number-and-place-reservation",
+      {
+        phoneNumber,
+        code,
+        reservationData,
+      }
+    );
   }
 
   static async placeReservation(reservationData: ReservationData) {
-    const { data } = await customerBackend.post("/reservation/place-reservation", reservationData);
+    const { data } = await customerBackend.post(
+      "/reservation/place-reservation",
+      reservationData
+    );
     return data;
   }
 
   static async sendReservationVerificationCode(phoneNumber: string) {
-    return await customerBackend.post<{ status: string }>("/reservation/send-verification-code", {
-      phoneNumber,
-    });
+    return await customerBackend.post<{ status: string }>(
+      "/reservation/send-verification-code",
+      {
+        phoneNumber,
+      }
+    );
   }
 }

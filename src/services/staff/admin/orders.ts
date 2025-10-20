@@ -58,24 +58,28 @@ export interface OrderFilters {
 export class OrdersService {
   static async getDineInOrders(filters?: OrderFilters) {
     const params = new URLSearchParams();
-    
+
     if (filters?.date) params.append("date", filters.date);
     if (filters?.month) params.append("month", filters.month);
     if (filters?.year) params.append("year", filters.year);
 
-    const url = `/admin/orders/dine-in${params.toString() ? `?${params.toString()}` : ""}`;
+    const url = `/admin/orders/dine-in${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
     const { data } = await staffBackend.get<DineInOrder[]>(url);
     return data;
   }
 
   static async getTakeAwayOrders(filters?: OrderFilters) {
     const params = new URLSearchParams();
-    
+
     if (filters?.date) params.append("date", filters.date);
     if (filters?.month) params.append("month", filters.month);
     if (filters?.year) params.append("year", filters.year);
 
-    const url = `/admin/orders/take-away${params.toString() ? `?${params.toString()}` : ""}`;
+    const url = `/admin/orders/take-away${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
     const { data } = await staffBackend.get<TakeAwayOrder[]>(url);
     return data;
   }
