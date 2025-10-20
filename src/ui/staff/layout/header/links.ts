@@ -108,14 +108,10 @@ export const getSideMenuLinks = (role: StaffRole): SideMenuLink[] => {
     case StaffRole.KitchenManager:
       links.push(
         {
-          title: "Home",
-          link: "/staff/kitchen-manager",
-          Icon: Home,
-        },
-        {
           title: "Orders",
-          link: "/staff/kitchen-manager/orders",
+          link: "/staff/kitchen-manager",
           Icon: Fastfood,
+          exactLinkMatch: true,
         },
         {
           title: "Dishes",

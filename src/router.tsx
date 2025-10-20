@@ -8,7 +8,6 @@ import { NotFoundPage } from "@/ui/not-found";
 import { Admin_FeedbackPage } from "@/ui/staff/admin/feedback";
 import { Admin_HomePage } from "@/ui/staff/admin/home";
 import { Admin_StaffPage } from "@/ui/staff/admin/staff";
-import { KitchenManager_HomePage } from "@/ui/staff/kitchen-manager/home";
 import { KitchenManager_IngredientsPage } from "@/ui/staff/kitchen-manager/ingredients";
 import { KitchenManager_OrdersPage } from "@/ui/staff/kitchen-manager/orders";
 import { Staff_Layout } from "@/ui/staff/layout";
@@ -368,14 +367,6 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: (
-              <StaffAuthGuard role={StaffRole.KitchenManager}>
-                <KitchenManager_HomePage />
-              </StaffAuthGuard>
-            ),
-          },
-          {
-            path: "orders",
             element: (
               <StaffAuthGuard role={StaffRole.KitchenManager}>
                 <KitchenManager_OrdersPage />

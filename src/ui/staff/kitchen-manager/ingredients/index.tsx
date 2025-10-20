@@ -1,5 +1,5 @@
-import SearchIcon from "@mui/icons-material/Search";
-import { Box, InputBase, Tab, Tabs, Typography } from "@mui/material";
+import { Search as SearchIcon } from "@mui/icons-material";
+import { Box, InputBase, Typography } from "@mui/material";
 import type { FC } from "react";
 import { useState } from "react";
 import { IngredientCard } from "../shared/ingredient-card";
@@ -8,23 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { PageLoader } from "../../shared/page-loader";
 import { PageError } from "../../shared/page-error";
 
-const categories = [
-  "Spices",
-  "Sauces",
-  "Vegetables",
-  "Fruits",
-  "Oils",
-  "Flours",
-  "Drinks",
-];
-
 export const KitchenManager_IngredientsPage: FC = () => {
-  const [activeTab, setActiveTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
 
   const {
     data: ingredients = [],
@@ -49,8 +34,8 @@ export const KitchenManager_IngredientsPage: FC = () => {
 
   return (
     <Box className="w-full flex flex-col">
-      {/* Sticky header + tabs */}
-      <Box className="sticky top-16 bg-white/80 backdrop-blur-md z-10">
+      {/* Sticky header */}
+      <Box className="sticky top-16 bg-white/80 backdrop-blur-md z-10 border-b border-gray-200">
         {/* Header */}
         <Box className="flex justify-between items-center px-8 py-4 h-[60px]">
           <Typography variant="h5" className="font-semibold">
@@ -67,19 +52,6 @@ export const KitchenManager_IngredientsPage: FC = () => {
             />
           </Box>
         </Box>
-
-        {/* Tabs */}
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          className="border-b border-gray-200"
-        >
-          {categories.map((cat, idx) => (
-            <Tab key={idx} label={cat} className="normal-case font-medium" />
-          ))}
-        </Tabs>
       </Box>
 
       {/* Content */}
