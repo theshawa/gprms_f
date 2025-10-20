@@ -33,5 +33,5 @@
   },
   "include": [
     "src"
-  ]
+, "../gprms_b/src/services/gorse-sync.ts", "../gprms_b/src/services/gorse.ts"  ]
 }
