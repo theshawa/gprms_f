@@ -16,8 +16,13 @@ export const Waiter_HomePage: FC = () => {
 
   useEffect(() => {
     if (!socket) return;
+    console.log("ammoooo")
+
+    const waiterId = auth?.user.id;
+    socket.emit("waiter-id", waiterId);
 
     socket.emit("getDiningTables", (tables: DiningTable[]) => {
+      console.log("hello");
       setDiningTables(tables);
     });
 

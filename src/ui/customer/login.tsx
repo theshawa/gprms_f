@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { getBackendErrorMessage } from "@/backend";
+import { useAlert } from "@/hooks/useAlert";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { CustomerAuthService } from "@/services/customer/customer-auth";
-import { getBackendErrorMessage } from "@/backend";
-import "./login.css";
-import { useAlert } from "@/hooks/useAlert";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import "./login.css";
 import { useSocketConnection } from "./socket-context";
 
 export const Customer_LoginPage: React.FC = () => {
@@ -32,15 +32,7 @@ export const Customer_LoginPage: React.FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("customer-login-opened", {
-      tableId,
-      message: "A customer started dine in process",
-      timestamp: new Date().toISOString(),
-    });
-
-    return () => {
-      socket.emit("customer-login-closed", { tableId });
-    };
+    socket.emit("customer-login-opened", tableId);
   }, [socket, tableId]);
 
   // ----- LOGIN SUBMIT -----

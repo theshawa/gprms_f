@@ -21,10 +21,10 @@ import { useSocketConnection } from "../socket-context";
 import type { Order } from "@/interfaces/orders";
 import { OrdersService } from "@/services/staff/kitchen-manager/orders";
 
-export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = ({
-  order,
-  updateParentStatus,
-}) => {
+export const OrderCard: FC<{
+  order: Order;
+  updateParentStatus?: () => void;
+}> = ({ order, updateParentStatus }) => {
   const [open, setOpen] = useState(false);
   const [updating, setUpdating] = useState(false);
   const socket = useSocketConnection();
@@ -45,7 +45,9 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
       await OrdersService.markOrderPrepared(order.id);
       updateParentStatus?.();
     } catch (error) {
-      showError(`Failed to update status to ready: ${getBackendErrorMessage(error)}`);
+      showError(
+        `Failed to update status to ready: ${getBackendErrorMessage(error)}`
+      );
     } finally {
       setUpdating(false);
     }
@@ -57,7 +59,11 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
       await OrdersService.markOrderPreparing(order.id);
       updateParentStatus?.();
     } catch (error) {
-      showError(`Failed to update status to in progress: ${getBackendErrorMessage(error)}`);
+      showError(
+        `Failed to update status to in progress: ${getBackendErrorMessage(
+          error
+        )}`
+      );
     } finally {
       setUpdating(false);
     }
@@ -66,13 +72,25 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
   return (
     <>
       <Box component={Paper} p={2} sx={{ boxShadow: 2 }}>
-        <Stack direction={"row"}>
+        <Stack
+          direction={"row"}
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
           <Stack flex={1}>
-            <Typography variant="subtitle1">{order.orderCode}</Typography>
-            {/* <Typography variant="caption">Waiter: {order.waiterId}</Typography> */}
+            <Typography variant="subtitle1" noWrap>
+              {order.orderCode}
+            </Typography>
+            <Typography variant="caption">Table: {order.tableId}</Typography>
           </Stack>
 
-          <Stack direction={"row"} gap={1}>
+          <Stack
+            direction="row"
+            spacing={1}
+            flexWrap="wrap"
+            gap={1}
+            justifyContent="flex-end"
+          >
             <Chip label={`Waiter#${order.waiterId}`} />
             <Chip label={formatDateTime(order.createdAt)} />
           </Stack>
@@ -83,7 +101,9 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
             <ListItem sx={{ py: 0.5 }} key={index}>
               <Box display="flex" justifyContent="space-between" width="100%">
                 <Typography>{item.quantity}x</Typography>
-                <Typography sx={{ textTransform: "capitalize" }}>{item.dishId}</Typography>
+                <Typography sx={{ textTransform: "capitalize" }}>
+                  {item.dish?.name}
+                </Typography>
               </Box>
             </ListItem>
           ))}
@@ -105,7 +125,12 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
         )}
 
         <Stack direction={"row"} gap={1} mt={2}>
-          <Button fullWidth variant="outlined" onClick={openModal} sx={{ flex: 1 }}>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={openModal}
+            sx={{ flex: 1 }}
+          >
             Order Details ↗
           </Button>
           {["New", "InProgress"].includes(order.status) && (
@@ -119,7 +144,9 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
               }}
               sx={{ flex: 1 }}
             >
-              {order.status === "New" ? "Mark as Preparing" : "Mark as Prepared"}
+              {order.status === "New"
+                ? "Mark as Preparing"
+                : "Mark as Prepared"}
             </Button>
           )}
         </Stack>
@@ -132,7 +159,9 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
           <Typography variant="subtitle1">
             OrderCode: {order.orderCode}
           </Typography>
-          <Typography variant="subtitle1">{formatCurrency(order.totalAmount)}</Typography>
+          <Typography variant="subtitle1">
+            {formatCurrency(order.totalAmount)}
+          </Typography>
           <Typography variant="subtitle2" color="text.secondary">
             Placed at: {formatDateTime(order.createdAt)}
           </Typography>
@@ -142,9 +171,15 @@ export const OrderCard: FC<{ order: Order; updateParentStatus?: () => void }> = 
             <List>
               {order.orderItems.map((item, idx) => (
                 <ListItem key={idx} sx={{ py: 0.5 }}>
-                  <Box display="flex" justifyContent="space-between" width="100%">
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
                     <Typography>{item.quantity}x</Typography>
-                    <Typography sx={{ textTransform: "capitalize" }}>{item.dishId}</Typography>
+                    <Typography sx={{ textTransform: "capitalize" }}>
+                      {item.dish?.name}
+                    </Typography>
                   </Box>
                 </ListItem>
               ))}

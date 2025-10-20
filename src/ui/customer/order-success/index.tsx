@@ -1,3 +1,4 @@
+import { useAlert } from "@/hooks/useAlert";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { useCustomerCart } from "@/hooks/useCustomerCart";
 import { OrderService } from "@/services/customer/order";
@@ -5,8 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSocketConnection } from "../socket-context";
-import { getBackendErrorMessage } from "@/backend";
-import { useAlert } from "@/hooks/useAlert";
 
 // Order History Item Component
 const OrderHistoryItem: React.FC<{ order: any }> = ({ order }) => {
@@ -160,32 +159,11 @@ export const Customer_OrderSuccessPage: React.FC = () => {
     }
 
     if (!socket) return;
-    // socket.emit("getWaiterAssignedFlag", order.tableId);
 
-    // socket.on("waiterAssignedFlag", (data)) => {
-    //   if(data.tableId === order.tableId) {
-    //     setWaiterAssignedFlag(data.status);
-    //   }
-    // }
-
-    // socket.on("accepted-table-customer-emit", (tableId: number, status: boolean) => {
-    //   if(data.tableId === order.tableId) {
-    //     // waiterAssignedFlag = true
-    //     setWaiterAssignedFlag(status);
-    //   }
-    // });
-
-    // socket.on("waiterAssigedFlagError", (tableId, err) => {
-    //   if (data.tableId === order.tableId) {
-    //     showError(
-    //       `Failed to fetch table status: ${getBackendErrorMessage(err)}`
-    //     );
-    //   }
-    // });
+    // socket.emit("get-order-cache", order);
 
     return () => {
-      // socket.off("waiterAssignedFlag");
-      // socket.off("accepted-table-customer-emit");
+      // socket.off("accepted-table");
     };
   }, [order, cartItems, socket, order]);
 

@@ -29,8 +29,8 @@ export const TableCard: FC<{
     socket.emit("getDiningTableStatus", diningTable.id);
 
     socket.on("diningTableStatus", (tableId: number, status: string | null) => {
-      if (tableId === diningTable.id) {
-        console.log("status: ", status);
+      console.log("status: ", status);
+      if (tableId == diningTable.id) {
         setStatus(status);
       }
     });
@@ -39,7 +39,8 @@ export const TableCard: FC<{
       showError(`Failed to fetch table status: ${getBackendErrorMessage(err)}`);
     });
 
-    socket.on("customer-waiting", (tableId: number) => {
+    socket.on("customer-started-dining", (tableId: number) => {
+      console.log("first");
       if (tableId == diningTable.id) {
         setStatus("WaitingForWaiter");
         // play notification sound
@@ -50,14 +51,14 @@ export const TableCard: FC<{
       }
     });
 
-    socket.on("accepted-table-emit", () => {
-      socket.emit("getDiningTableStatus", diningTable.id);
+    socket.on("accepted-table", (tableId: number) => {
+      socket.emit("getDiningTableStatus", tableId);
     });
 
     return () => {
       socket.off("diningTableStatus");
       socket.off("diningTableStatusError");
-      socket.off("customer-waiting");
+      socket.off("customer-started-dining");
       socket.off("accepted-table-emit");
     };
   }, [socket, diningTable.id]);

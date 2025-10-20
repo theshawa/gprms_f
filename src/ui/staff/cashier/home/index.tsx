@@ -11,7 +11,9 @@ export const Cashier_HomePage: FC = () => {
   const [tab, setTab] = useState<
     "active-dine-in" | "active-take-away" | "past-dine-in" | "past-take-away"
   >("active-take-away");
-  const [allTakeAwayOrders, setAllTakeAwayOrders] = useState<TakeAwayOrder[]>([]);
+  const [allTakeAwayOrders, setAllTakeAwayOrders] = useState<TakeAwayOrder[]>(
+    []
+  );
   const [allDineInOrders, setAllDineInOrders] = useState<any[]>([]);
   const [showingOrders, setShowingOrders] = useState<any[]>([]);
   const [activeOrder, setActiveOrder] = useState<any>(null);
@@ -24,38 +26,40 @@ export const Cashier_HomePage: FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("getTakeAwayOrders");
+    socket.emit("get-takeaway-orders");
 
-    socket.on("takeAwayOrdersResults", (orders) => {
+    socket.on("takeaway-orders-results", (orders) => {
       setAllTakeAwayOrders(orders);
     });
 
-    socket.on("takeAwayOrdersResultsError", (err) => {
-      showError(`Failed to fetch take away orders: ${getBackendErrorMessage(err)}`);
-    });
-
-    socket.on("newTakeAwayOrder", (order: TakeAwayOrder) => {
-      setAllTakeAwayOrders((oto) => [order, ...oto]);
-    });
-
-    socket.on("takeAwayOrderPreparing", (two: TakeAwayOrder) => {
-      setAllTakeAwayOrders((oto) =>
-        oto.map((o) => (o.id === two.id ? { ...o, status: "Preparing" } : o))
+    socket.on("takeaway-orders-results-error", (err) => {
+      showError(
+        `Failed to fetch take away orders: ${getBackendErrorMessage(err)}`
       );
     });
 
-    socket.on("takeAwayOrderPrepared", (two: TakeAwayOrder) => {
+    socket.on("takeaway-order-placed", (order: TakeAwayOrder) => {
+      setAllTakeAwayOrders((oto) => [order, ...oto]);
+    });
+
+    socket.on("takeaway-order-marked-preparing", (two: TakeAwayOrder) => {
       setAllTakeAwayOrders((oto) =>
-        oto.map((o) => (o.id === two.id ? { ...o, status: "Prepared" } : o))
+        oto.map((o) => (o.id === two.id ? two : o))
+      );
+    });
+
+    socket.on("takeaway-order-marked-prepared", (two: TakeAwayOrder) => {
+      setAllTakeAwayOrders((oto) =>
+        oto.map((o) => (o.id === two.id ? two : o))
       );
     });
 
     return () => {
-      socket.off("takeAwayOrdersResults");
-      socket.off("takeAwayOrdersResultsError");
-      socket.off("newTakeAwayOrder");
-      socket.off("takeAwayOrderPreparing");
-      socket.off("takeAwayOrderPrepared");
+      socket.off("takeaway-orders-resuts");
+      socket.off("takeaway-orders-resuts-error");
+      socket.off("takeaway-order-placed");
+      socket.off("takeaway-order-marked-preparing");
+      socket.off("takeaway-order-marked-prepared");
     };
   }, [socket]);
 
@@ -63,7 +67,9 @@ export const Cashier_HomePage: FC = () => {
     let orders;
     switch (tab) {
       case "active-dine-in":
-        orders = allDineInOrders.filter((o: any) => ["New", "Prepared"].includes(o.status));
+        orders = allDineInOrders.filter((o: any) =>
+          ["New", "Prepared"].includes(o.status)
+        );
         break;
       case "active-take-away":
         orders = allTakeAwayOrders.filter((o: TakeAwayOrder) =>
@@ -71,7 +77,9 @@ export const Cashier_HomePage: FC = () => {
         );
         break;
       case "past-dine-in":
-        orders = allDineInOrders.filter((o: any) => !["New", "Prepared"].includes(o.status));
+        orders = allDineInOrders.filter(
+          (o: any) => !["New", "Prepared"].includes(o.status)
+        );
         break;
       case "past-take-away":
         orders = allTakeAwayOrders.filter(
@@ -84,7 +92,8 @@ export const Cashier_HomePage: FC = () => {
 
     if (sq.trim()) {
       orders = orders.filter((o) => {
-        const isTakeAway = tab === "active-take-away" || tab === "past-take-away";
+        const isTakeAway =
+          tab === "active-take-away" || tab === "past-take-away";
         return o.id.toString().includes(sq.trim().toLowerCase()) || isTakeAway
           ? o.customerName.toLowerCase().includes(sq.trim().toLowerCase()) ||
               o.customerPhone.toLowerCase().includes(sq.trim().toLowerCase())
@@ -92,7 +101,10 @@ export const Cashier_HomePage: FC = () => {
       });
     }
 
-    orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    orders.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
 
     setShowingOrders(orders);
   }, [allTakeAwayOrders, allDineInOrders, tab, sq]);
@@ -183,7 +195,12 @@ export const Cashier_HomePage: FC = () => {
           </Box>
         </Stack>
 
-        <Stack width={"30%"} flexShrink={0} bgcolor={"background.paper"} overflow={"auto"}>
+        <Stack
+          width={"30%"}
+          flexShrink={0}
+          bgcolor={"background.paper"}
+          overflow={"auto"}
+        >
           {activeOrder ? (
             tab === "active-take-away" || tab === "past-take-away" ? (
               <TakeAwayOrderPreview
@@ -192,14 +209,18 @@ export const Cashier_HomePage: FC = () => {
                 cancelParentOrder={() => {
                   setAllTakeAwayOrders((oto) =>
                     oto.map((to) =>
-                      to.id === activeOrder?.id ? { ...to, status: "Cancelled" } : to
+                      to.id === activeOrder?.id
+                        ? { ...to, status: "Cancelled" }
+                        : to
                     )
                   );
                 }}
                 completeParentOrder={() => {
                   setAllTakeAwayOrders((oto) =>
                     oto.map((to) =>
-                      to.id === activeOrder?.id ? { ...to, status: "Completed" } : to
+                      to.id === activeOrder?.id
+                        ? { ...to, status: "Completed" }
+                        : to
                     )
                   );
                 }}
